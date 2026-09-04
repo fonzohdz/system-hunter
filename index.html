@@ -378,10 +378,15 @@ html,body{margin:0;background:var(--void)}
   pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
 @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 
-/* figure strokes — widths live on each path so depth is baked into the markup */
+/* figure strokes — widths live on each path so depth is baked into the markup.
+   .figout is the separating layer: the same near-side paths, fattened and in
+   --void, sitting behind the fills so overlaps read as edges. Group opacity on
+   .back drops the far side to ~45% so it recedes instead of competing. */
 .gnd{stroke:var(--line);stroke-width:1}
+.back{opacity:.45}
 .back path{stroke:var(--deepblade);fill:none;stroke-linecap:round;stroke-linejoin:round}
 .back ellipse{fill:var(--deepblade)}
+.figout path{stroke:var(--void);fill:none;stroke-linecap:round;stroke-linejoin:round}
 .front path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .eqf{fill:#D8C2CC}
 .eqo{fill:none;stroke:#D8C2CC;stroke-width:1.6}
@@ -992,8 +997,15 @@ function figSVG(prop,pprop){
      into the markup — upper thicker than lower, far side thinner than near —
      so the per-frame work stays down to setting `d`. Draw order is far limbs,
      torso, near limbs, head, which is what gives the depth. */
+  /* Widths, near side. The far side runs at the same proportions but thinner,
+     and the outline layer repeats the near paths fattened by twice HALO so
+     every overlap shows a hard edge instead of welding into one mass. */
+  const W={nk:2.8,fau:3.6,fal:2.6,flu:4.4,fll:3.2};
+  const HALO=1.2;
   const seg=(k,w)=>`<path data-s="${k}" stroke-width="${w}"/>`;
-  const cap=(k)=>`<ellipse data-c="${k}"/>`;
+  const near=k=>seg(k,W[k]), halo=k=>seg(k,W[k]+HALO*2);
+  const cap=k=>`<ellipse data-c="${k}"/>`;
+  const edge=`stroke="var(--void)" stroke-width="${HALO*2}" paint-order="stroke"`;
   return `<svg viewBox="0 0 100 100" aria-hidden="true">
     <defs><linearGradient id="mn${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--crimson)"/>
@@ -1001,13 +1013,14 @@ function figSVG(prop,pprop){
     <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
     ${stat}
     <g class="back">
-      ${seg('bau',4.7)}${seg('bal',3.5)}${seg('blu',5.8)}${seg('bll',4.4)}
+      ${seg('bau',3)}${seg('bal',2.1)}${seg('blu',3.6)}${seg('bll',2.6)}
       ${cap('bh')}${cap('bf')}</g>
     <path data-torso fill="url(#mn${id})"/>
+    <g class="figout">${halo('nk')}${halo('fau')}${halo('fal')}${halo('flu')}${halo('fll')}</g>
     <g class="front" stroke="url(#mn${id})">
-      ${seg('nk',4.4)}${seg('fau',5.7)}${seg('fal',4.3)}${seg('flu',7)}${seg('fll',5.3)}</g>
-    <g class="front" fill="url(#mn${id})" stroke="none">${cap('fh')}${cap('ff')}</g>
-    <g fill="url(#mn${id})"><ellipse data-head/><circle data-face r="2.9"/></g>
+      ${near('nk')}${near('fau')}${near('fal')}${near('flu')}${near('fll')}</g>
+    <g class="front" fill="url(#mn${id})" ${edge}>${cap('fh')}${cap('ff')}</g>
+    <circle data-head r="5.4" fill="url(#mn${id})" ${edge}/>
     <g class="eq">${dyn}</g></svg>`;
 }
 const DEG=57.2957795;
@@ -1015,9 +1028,12 @@ function paintFig(svg,pose,prop){
   const p=pts(pose);
   const A=svg.__fig||(svg.__fig={});                    // cache lookups; this runs every frame
   const q=k=>A[k]||(A[k]=svg.querySelector(`[data-${k}]`));
-  const qs=k=>A['s'+k]||(A['s'+k]=svg.querySelector(`[data-s="${k}"]`));
+  /* A near-side limb is two elements — the void halo and the fill — sharing one
+     key, so this writes the geometry to every copy. */
+  const qs=k=>A['s'+k]||(A['s'+k]=svg.querySelectorAll(`[data-s="${k}"]`));
   const qc=k=>A['c'+k]||(A['c'+k]=svg.querySelector(`[data-c="${k}"]`));
-  const line=(k,a,b)=>{const e=qs(k);if(e)e.setAttribute('d',`M${a.x} ${a.y}L${b.x} ${b.y}`)};
+  const line=(k,a,b)=>{const d=`M${a.x} ${a.y}L${b.x} ${b.y}`;
+    const es=qs(k);for(let i=0;i<es.length;i++)es[i].setAttribute('d',d)};
   const N=p[1],H=p[2],HD=p[0];
 
   /* Facing: perpendicular to the spine, flipped toward wherever the author put
@@ -1040,7 +1056,7 @@ function paintFig(svg,pose,prop){
   const T=(t,w)=>`${(N.x+ux*t+nx*w).toFixed(1)} ${(N.y+uy*t+ny*w).toFixed(1)}`;
   const to=q('torso');
   if(to)to.setAttribute('d',
-    `M${T(0,7.2)}Q${T(.42,8.3)} ${T(1,5.4)}L${T(1,-5.4)}Q${T(.42,-8.3)} ${T(0,-7.2)}Z`);
+    `M${T(0,5.4)}Q${T(.42,6)} ${T(1,4)}L${T(1,-4)}Q${T(.42,-6)} ${T(0,-5.4)}Z`);
 
   line('nk',N,HD);
   line('bau',N,p[3]); line('bal',p[3],p[4]);          // far arm
@@ -1058,12 +1074,10 @@ function paintFig(svg,pose,prop){
   cap('fh',p[8],ang(p[7],p[8]),3.1,2.4); cap('bh',p[4],ang(p[3],p[4]),2.6,2);
   cap('ff',p[10],fang,4.2,2.4);          cap('bf',p[6],fang,3.5,2.1);
 
+  /* A plain circle. The nub that used to mark facing read as a lump at 52px, so
+     facing now only steers the feet. */
   const hd=q('head');
-  if(hd){hd.setAttribute('cx',HD.x);hd.setAttribute('cy',HD.y);
-    hd.setAttribute('rx',6.1);hd.setAttribute('ry',7);
-    hd.setAttribute('transform',`rotate(${(ang(N,HD)+90).toFixed(1)} ${HD.x} ${HD.y})`)}
-  const fc=q('face');
-  if(fc){fc.setAttribute('cx',HD.x+fx*3.7);fc.setAttribute('cy',HD.y+fy*3.7)}
+  if(hd){hd.setAttribute('cx',HD.x);hd.setAttribute('cy',HD.y)}
 
   if(!prop)return;
   const bH=p[4],fH=p[8];
