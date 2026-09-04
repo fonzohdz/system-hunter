@@ -410,12 +410,64 @@ html,body{margin:0;background:var(--void)}
 
 /* Reduced motion: the aura loop and figure rig already check this in JS. Here
    the level-up burst becomes a plain fade and the sigil stops turning. */
+/* guided session — built for a phone on a bench, read at a metre, tapped with
+   sweaty hands. Primary actions are 56px+ and nothing important is small. */
+.runwrap{position:fixed;inset:0;z-index:70;background:
+  radial-gradient(60% 40% at 50% 12%, rgba(var(--c1),.14), transparent 70%), var(--void);
+  overflow-y:auto;display:flex;flex-direction:column;
+  padding:calc(8px + env(safe-area-inset-top)) env(safe-area-inset-right)
+          calc(18px + env(safe-area-inset-bottom)) env(safe-area-inset-left)}
+.runtop{display:flex;align-items:center;gap:10px;padding:4px 12px 0}
+.runpos{flex:1;text-align:center;font-size:11px;letter-spacing:.22em;color:var(--ash);text-transform:uppercase}
+.runx{width:44px;height:44px;flex:0 0 44px;background:none;border:1px solid var(--line);
+  color:var(--ash);font:inherit;font-size:16px;cursor:pointer}
+.run{flex:1;max-width:520px;width:100%;margin:0 auto;padding:14px 18px 0;display:flex;flex-direction:column}
+.run.center{align-items:center;text-align:center}
+.runstep{font-size:11px;letter-spacing:.28em;color:var(--ash);text-transform:uppercase;margin:8px 0 6px}
+.runh{font-family:var(--display);font-size:clamp(26px,7vw,38px);font-weight:700;
+  letter-spacing:.03em;margin:0 0 6px;line-height:1.12}
+.runsub{font-size:13px;color:var(--ash);margin:0 0 16px;letter-spacing:.04em}
+.btn.big{min-height:60px;font-size:16px;margin-top:18px}
+.bignum{font-family:var(--display);font-size:clamp(64px,22vw,110px);font-weight:700;
+  line-height:1;margin:18px 0 0;text-shadow:0 0 40px rgba(var(--m1),.45)}
+.logrow{margin-top:16px;display:flex;flex-direction:column;gap:7px;align-items:center}
+.logrow label{font-size:12px;color:var(--ash)}
+.logrow .prin{width:110px;font-size:20px;padding:12px}
+.ringwrap{position:relative;width:220px;height:220px;margin:14px auto 4px}
+.ring{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:7}
+.ring-fg{fill:none;stroke:var(--magenta);stroke-width:7;stroke-linecap:round;
+  transition:stroke-dashoffset .25s linear}
+.ringnum{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ringnum b{display:block;font-family:var(--display);font-size:56px;font-weight:700;line-height:1}
+.ringnum span{font-size:10.5px;letter-spacing:.2em;color:var(--ash);text-transform:uppercase}
+.nextup{margin:18px 0 0;font-size:13px;color:var(--ash)}
+.nextup span{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;margin-bottom:4px}
+.nextup b{color:var(--bone);font-size:15px;font-weight:600}
+.sumgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+  border:1px solid var(--line);margin:18px 0 0;width:100%}
+.sumgrid div{background:var(--void);padding:14px 4px}
+.sumgrid span{display:block;font-size:9.5px;letter-spacing:.16em;color:var(--ash);text-transform:uppercase}
+.sumgrid b{display:block;font-family:var(--display);font-size:26px;font-weight:700;margin-top:3px}
+.run .bodymap{width:100%;margin:4px 0 14px}
+.run .cues{margin-bottom:4px}
+.run .cues li{font-size:15px;padding:11px 0 11px 20px}
+/* quest overview */
+.kitline{font-size:12px;color:var(--ash);margin:12px 0 14px;letter-spacing:.03em}
+.kitline b{color:var(--bone);font-weight:600}
+.linkish{background:none;border:0;color:var(--magenta);font:inherit;font-size:12px;
+  cursor:pointer;text-decoration:underline;padding:4px 6px;min-height:32px}
+.wswap{width:40px;height:40px;flex:0 0 40px;background:none;border:1px solid var(--line);
+  color:var(--ash);font:inherit;font-size:15px;cursor:pointer;align-self:center}
+.work li{display:flex;align-items:stretch;gap:8px}
+
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
   .sigil{animation:none}
   .acore,.aring,#burst{display:none}
   .atext{transition:none;opacity:1 !important}
   .aflash{display:none}
+  .ring-fg{transition:none}
 }
 
 </style>
@@ -1176,7 +1228,7 @@ const fresh=()=>({
  /* Mission 3. perf: last few logged results per movement. prog: how far a
     movement's target has stepped up and how many hits toward the next step.
     outgrown: movements already announced, so we only say it once. */
- perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null
+ perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false
 });
 let S=fresh();
 const need=l=>40+l*30;
@@ -1618,6 +1670,158 @@ function touchStreak(){
   S.best=Math.max(S.best,S.streak);S.last=d;save();
 }
 
+/* ---------------- swapping ----------------
+   A movement that hurts, or that you cannot do today, must never mean failing
+   the quest. Swaps last for the day and cost nothing. */
+const swapMap=()=>{const o=S.swaps;return o&&o.d===today()?o.m:null};
+function swapped(e){
+  const m=swapMap(); if(!m||!m[e.id])return e;
+  return EX.find(x=>x.id===m[e.id])||e;
+}
+/* Three alternatives: same category, same or adjacent rank, doable with what
+   they have today, and not already in the quest. */
+function altsFor(e){
+  const RK=['E','D','C','B','A'], ri=RK.indexOf(e.r);
+  const inQ=new Set(rollQuest().map(x=>swapped(x).id));
+  const ok=x=>x.id!==e.id&&!inQ.has(x.id)&&unlocked(x.r)&&hasEq(x)&&fitsLimits(x)&&!avoided(x);
+  const near=x=>Math.abs(RK.indexOf(x.r)-ri);
+  let pool=EX.filter(x=>ok(x)&&x.c===e.c);
+  pool.sort((a,b)=>near(a)-near(b)||
+    (b.mus.p.filter(m=>e.mus.p.includes(m)).length)-(a.mus.p.filter(m=>e.mus.p.includes(m)).length));
+  if(pool.length<3)pool=pool.concat(EX.filter(x=>ok(x)&&x.c!==e.c&&
+    x.mus.p.some(m=>e.mus.p.includes(m))));
+  return pool.slice(0,3);
+}
+function doSwap(fromId,toId,hurts){
+  if(!S.swaps||S.swaps.d!==today())S.swaps={d:today(),m:{}};
+  S.swaps.m[fromId]=toId;
+  if(hurts){
+    const d=new Date();d.setDate(d.getDate()+14);
+    S.avoid[fromId]=d.toLocaleDateString('en-CA');   // a quiet nudge, not a setting
+  }
+  const o=sess(); if(o){o.set=1;o.st='brief';o.endAt=0}
+  save();closeSheet();render();
+  toast(hurts?'Swapped · stepping around that one for a while':'Swapped for today');
+}
+function viewSwap(e){
+  const alts=altsFor(e);
+  const v=document.createElement('div');v.className='veil';v.dataset.veil='1';
+  v.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-label="Swap ${esc(e.n)}">
+    <h2>Swap ${esc(e.n)}</h2>
+    <div class="sub">Same credit, same reward. Pick whatever works today.</div>
+    ${alts.length?alts.map(a=>`<button class="opt" data-swapto="${e.id}|${a.id}">
+      <span>${esc(a.n)}<small>${esc(scaledDose(a))} · ${a.mus.p.map(musName).join(', ')}</small></span>
+      <span class="tick">✦</span></button>`).join('')
+      :'<p class="note">Nothing else fits your kit right now. Widen your equipment or skip this one.</p>'}
+    <p class="note">Is it bothering you? Swapping for that reason also steps around it for the next two weeks.</p>
+    ${alts.length?`<button class="btn ghost" data-swaphurt="${e.id}|${alts[0].id}">This one hurts — swap and step around it</button>`:''}
+    <button class="btn ghost" data-close>Keep it</button></div>`;
+  document.body.appendChild(v);trapFocus(v);
+}
+
+/* ---------------- guided session ----------------
+   A fullscreen run of today's quest, one movement at a time. Everything about
+   it is designed for a phone propped on a bench: big targets, readable at a
+   metre, and it survives being closed mid-workout. */
+const RESTFOR={push:75,pull:75,legs:90,core:45,cardio:35,full:90};
+const restLen=e=>RESTFOR[e.c]||60;
+const sess=()=>{const o=S.sess;return o&&o.d===today()?o:null};
+
+/* Keep the screen on. Feature-detected; a browser without it just works. */
+let wakeLock=null;
+async function keepAwake(on){
+  try{
+    if(on&&!wakeLock&&navigator.wakeLock){wakeLock=await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener&&wakeLock.addEventListener('release',()=>{wakeLock=null})}
+    else if(!on&&wakeLock){await wakeLock.release();wakeLock=null}
+  }catch(e){wakeLock=null}          // denied or unsupported: not worth telling anyone
+}
+addEventListener('visibilitychange',()=>{if(!document.hidden&&sess()&&tab==='run')keepAwake(true)});
+
+/* A short tone, generated rather than shipped as a file. Off unless asked for. */
+function beep(){
+  if(!S.sound)return;
+  try{
+    const C=window.AudioContext||window.webkitAudioContext; if(!C)return;
+    const a=new C(),o=a.createOscillator(),g=a.createGain();
+    o.type='sine';o.frequency.value=880;o.connect(g);g.connect(a.destination);
+    g.gain.setValueAtTime(0.0001,a.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.25,a.currentTime+0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001,a.currentTime+0.45);
+    o.start();o.stop(a.currentTime+0.5);
+    setTimeout(()=>a.close&&a.close(),800);
+  }catch(e){}
+}
+const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+
+function questToday(){return rollQuest().map(e=>swapped(e))}
+function startSession(){
+  const q=questToday();
+  S.sess={d:today(),i:0,set:1,st:'brief',endAt:0,paused:0,left:0,
+          xp:0,gold:0,cleared:[],began:Date.now()};
+  /* Skip straight past anything already logged from the checklist today. */
+  while(S.sess.i<q.length&&S.questDone.includes(q[S.sess.i].id))S.sess.i++;
+  if(S.sess.i>=q.length)S.sess.st='done';
+  save();keepAwake(true);tab='run';render();
+}
+function endSession(keep){
+  keepAwake(false);
+  if(!keep)S.sess=null;
+  save();tab='quest';render();
+}
+/* Advance past the current movement, logging it unless it was already logged. */
+function clearMovement(e,actual){
+  const o=sess();if(!o)return;
+  const q=questToday(),inQ=q.some(x=>x.id===e.id);
+  if(!S.questDone.includes(e.id)){          // never pay twice for the same movement
+    touchStreak();
+    if(inQ)S.questDone.push(e.id);
+    const xp=inQ?25:15;
+    award(xp,10,e.st);
+    o.xp+=xp;o.gold+=10;
+    if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
+      S.questBonus=true;S.clears++;award(80,50,null);o.xp+=80;o.gold+=50;
+    }
+  }
+  if(actual!=null)recordPerf(e,actual);
+  const nx=checkOutgrown(e);
+  if(nx)toast('You have outgrown '+e.n+' · '+nx.n+' unlocked');
+  if(!o.cleared.includes(e.id))o.cleared.push(e.id);
+  o.i++;o.set=1;o.st='brief';o.endAt=0;
+  while(o.i<q.length&&S.questDone.includes(q[o.i].id))o.i++;
+  if(o.i>=q.length)o.st='done';
+  save();render();
+}
+function beginRest(secs){
+  const o=sess();if(!o)return;
+  o.st='rest';o.endAt=Date.now()+secs*1000;o.paused=0;save();render();
+}
+function restLeft(){
+  const o=sess();if(!o||!o.endAt)return 0;
+  if(o.paused)return Math.max(0,Math.round(o.left));
+  return Math.max(0,Math.round((o.endAt-Date.now())/1000));
+}
+/* One ticker for both the rest countdown and timed holds. */
+let ticker=null,fired=false;
+function runTicker(){
+  clearInterval(ticker);
+  ticker=setInterval(()=>{
+    const o=sess();
+    if(!o||tab!=='run'||(o.st!=='rest'&&o.st!=='hold')){clearInterval(ticker);ticker=null;return}
+    const el=document.querySelector('[data-count]');
+    const left=restLeft();
+    if(el)el.textContent=left;
+    const ring=document.querySelector('[data-ring]');
+    if(ring&&o.total)ring.style.strokeDashoffset=String(2*Math.PI*52*(1-left/o.total));
+    if(left<=0&&!fired){
+      fired=true;buzz([0,60,50,120]);beep();
+      clearInterval(ticker);ticker=null;
+      if(o.st==='rest'){o.st='work';o.endAt=0;save();render()}
+      else render();
+    }
+  },250);
+}
+
 /* ---------------- UI ---------------- */
 let tab='quest',filt={r:'all',c:'all',eq:'mine',m:'all'},open=null,ob;
 ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,limits:[],class:'bladebound',weapon:'longsword',palette:'crimson'};
@@ -1910,17 +2114,12 @@ function statsBlock(){
 }
 
 /* ----- views ----- */
+/* One quiet line, not a panel. The full picker lives in the session's kit check,
+   which asks once a day instead of every time you glance at the screen. */
 function kitBar(){
-  const cur=curPreset(),o=dayEq();
-  const kit=cur==='custom'
-    ? (o.eq.length?o.eq.map(x=>EQNAME[x]).join(', '):'Bodyweight only')
-    : PRESETS[cur].d;
-  return `<div class="kitbar">
-    <div class="kitrow"><span class="kitlab">Today's kit</span><b>${PRESETS[cur].n}</b></div>
-    <div class="filters">${Object.entries(PRESETS).map(([k,v])=>
-      `<button data-kit="${k}" class="${cur===k?'on':''}">${v.n}</button>`).join('')}</div>
-    <p class="note" style="margin-top:9px">${esc(kit)}${cur==='kit'?'':' Today only — tomorrow goes back to your full kit.'}</p>
-  </div>`;
+  const cur=curPreset();
+  return `<p class="kitline">Built for <b>${PRESETS[cur].n}</b>
+    <button class="linkish" data-kitopen>change</button></p>`;
 }
 function viewDayEq(){
   const o=dayEq(),have=o&&o.k==='custom'?o.eq:effEq();
@@ -1940,6 +2139,101 @@ function viewLimits(){
     <p class="note">${pool().length} movements match right now.</p>
     <button class="btn" data-limdone>Save</button></section>`;
 }
+/* Ring used by both timers. 120x120, stroke dashed to the remaining fraction. */
+function ringSVG(left,total){
+  const C=2*Math.PI*52;
+  return `<svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+    <circle cx="60" cy="60" r="52" class="ring-bg"/>
+    <circle cx="60" cy="60" r="52" class="ring-fg" data-ring
+      style="stroke-dasharray:${C};stroke-dashoffset:${C*(1-(total?left/total:0))}"/></svg>
+    <div class="ringnum"><b data-count>${left}</b><span>seconds</span></div>`;
+}
+function viewKitCheck(){
+  const cur=curPreset();
+  return `<div class="runwrap"><div class="run">
+    <p class="runstep">Before you start</p>
+    <h2 class="runh">What do you have today?</h2>
+    <div class="opts">${Object.entries(PRESETS).map(([k,v])=>
+      `<button class="opt ${cur===k?'on':''}" data-kit="${k}">
+        <span>${v.n}<small>${esc(v.d)}</small></span><span class="tick">✦</span></button>`).join('')}</div>
+    <button class="btn big" data-kitdone>Begin</button>
+    <button class="btn ghost" data-runexit>Not now</button>
+  </div></div>`;
+}
+function viewRun(){
+  const o=sess(); if(!o)return viewQuest();
+  const q=questToday();
+  if(o.st==='done'||o.i>=q.length)return viewRunDone(o,q);
+  const e=q[o.i], sets=(doseParts(e)||{}).sets||3, tgt=targetReps(e);
+  const head=`<div class="runtop">
+    <button class="runx" data-runexit aria-label="Leave the session">✕</button>
+    <span class="runpos">${o.i+1} of ${q.length}</span>
+    <button class="runx" data-sound aria-label="${S.sound?'Sound on':'Sound off'}"
+      aria-pressed="${S.sound?'true':'false'}">${S.sound?'♪':'♪̸'}</button>
+  </div>`;
+
+  if(o.st==='brief')return `<div class="runwrap">${head}<div class="run">
+    <p class="runstep">Movement ${o.i+1}</p>
+    <h2 class="runh">${esc(e.n)}</h2>
+    <p class="runsub">${CATS[e.c]} · builds ${e.st} · ${esc(scaledDose(e))}</p>
+    ${bodyMap(e.mus)}
+    <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+    <button class="btn big" data-runstart>Start · ${esc(scaledDose(e))}</button>
+    <button class="btn ghost" data-swap="${e.id}">Swap this movement</button>
+    <button class="btn ghost" data-runskip>Skip it</button>
+  </div></div>`;
+
+  if(o.st==='hold'){
+    const left=restLeft();
+    return `<div class="runwrap">${head}<div class="run center">
+      <p class="runstep">Set ${o.set} of ${sets}</p>
+      <h2 class="runh">${esc(e.n)}</h2>
+      <div class="ringwrap">${ringSVG(left,o.total||tgt)}</div>
+      <button class="btn big" data-holddone>${left>0?'Done early':'Set complete'}</button>
+      <button class="btn ghost" data-holdpause>${o.paused?'Resume':'Pause'}</button>
+    </div></div>`;
+  }
+
+  if(o.st==='work')return `<div class="runwrap">${head}<div class="run center">
+    <p class="runstep">Set ${o.set} of ${sets}</p>
+    <h2 class="runh">${esc(e.n)}</h2>
+    <p class="bignum">${tgt===null?esc(scaledDose(e)):tgt}</p>
+    <p class="runsub">${tgt===null?'':'reps'}</p>
+    <button class="btn big" data-setdone>Set complete</button>
+    ${tgt===null?'':`<div class="logrow">
+      <label for="actual">Got a different number?</label>
+      <input class="prin" id="actual" type="number" inputmode="numeric" min="0" placeholder="${tgt}">
+    </div>`}
+    <button class="btn ghost" data-runskip>Skip the rest of this movement</button>
+  </div></div>`;
+
+  if(o.st==='rest'){
+    const left=restLeft(), nextSet=o.set<=sets;
+    const nxt=nextSet?`Set ${o.set} of ${sets} · ${esc(e.n)}`
+      :(q[o.i+1]?esc(q[o.i+1].n):'Quest complete');
+    return `<div class="runwrap">${head}<div class="run center">
+      <p class="runstep">Rest</p>
+      <div class="ringwrap">${ringSVG(left,o.total||60)}</div>
+      <p class="nextup"><span>Next</span><b>${nxt}</b></p>
+      <button class="btn big" data-restskip>Skip rest</button>
+    </div></div>`;
+  }
+  return '';
+}
+function viewRunDone(o,q){
+  const mins=Math.max(1,Math.round((Date.now()-(o.began||Date.now()))/60000));
+  return `<div class="runwrap"><div class="run center">
+    <p class="runstep">Quest complete</p>
+    <h2 class="runh">${o.cleared.length} cleared</h2>
+    <div class="sumgrid">
+      <div><span>XP</span><b>+${o.xp}</b></div>
+      <div><span>Gold</span><b>+${o.gold}</b></div>
+      <div><span>Time</span><b>${mins}m</b></div>
+    </div>
+    <button class="btn big" data-card>Share your card</button>
+    <button class="btn ghost" data-runfinish>Done</button>
+  </div></div>`;
+}
 function viewQuest(){
   const q=rollQuest(),done=S.questDone,cleared=q.filter(e=>done.includes(e.id)).length;
   const all=q.length&&cleared===q.length;
@@ -1947,6 +2241,8 @@ function viewQuest(){
   return crestBlock()+heroBlock()+statsBlock()+`
   <section class="block">
     <div class="blockhead"><h2>Daily Quest</h2><span class="tally">${cleared} / ${q.length} cleared</span></div>
+    ${(()=>{const o=sess();
+      return `<button class="btn big" data-begin>${o?'Resume Quest':'Begin Quest'}</button>`})()}
     ${kitBar()}
     ${q.length<5?`<p class="note" style="margin-top:0">Only ${q.length} movement${q.length===1?'':'s'} available at this rank with today's kit. Widen the kit or level up for more.</p>`:''}
     <ul class="work">
@@ -1955,7 +2251,8 @@ function viewQuest(){
           aria-label="${esc(e.n)}, ${esc(scaledDose(e))}, works ${e.mus.p.map(musName).join(' and ')}. ${dn?'Logged today':'Not yet logged'}">
         <span class="wmeta"><span class="wtitle">${esc(e.n)}</span><span class="wdose">${esc(scaledDose(e))}</span>
           <span class="wmus">${e.mus.p.map(musName).join(" · ")}</span></span>
-        <span class="wmark" aria-hidden="true">${dn?'✦':''}</span></button></li>`}).join('')}
+        <span class="wmark" aria-hidden="true">${dn?'✦':''}</span></button>
+        <button class="wswap" data-swap="${e.id}" aria-label="Swap ${esc(e.n)}">⇄</button></li>`}).join('')}
     </ul>
     ${all?'<div class="cleared">Quest cleared</div>':''}
     <p class="note">Tap a row for the form cues and to log it. Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn\'t.</p>
@@ -2150,6 +2447,8 @@ function render(){
     const n=document.getElementById('obname');
     if(n)n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');if(b)b.disabled=!ob.name.trim()};
     return}
+  if(tab==='run'){root.innerHTML=viewRun();runTicker();return}
+  if(tab==='kit'){root.innerHTML=viewKitCheck();return}
   const body=tab==='quest'?viewQuest():tab==='lib'?viewLib():tab==='rec'?viewRecords():
              tab==='eqedit'?viewEqEdit():tab==='dayeq'?viewDayEq():tab==='limits'?viewLimits():viewVault();
   root.innerHTML=body+`<nav class="tabs">
@@ -2447,18 +2746,70 @@ document.addEventListener('click',ev=>{
   if(t.closest('[data-cyclegoal]')){const k=Object.keys(GOALS);
     S.goal=k[(k.indexOf(S.goal)+1)%k.length];save();toast('Goal: '+GOALS[S.goal].n);render();return}
   if(t.closest('[data-cycledays]')){S.days=S.days>=6?3:S.days+1;save();render();return}
+  /* ----- guided session ----- */
+  if(t.closest('[data-begin]')){
+    if(S.kitAsked===today()&&sess()){keepAwake(true);tab='run';render();return}
+    if(!sess())startSession();
+    tab=(S.kitAsked===today())?'run':'kit';render();return}
+  if(t.closest('[data-kitopen]')){tab='kit';render();return}
+  if(t.closest('[data-kitdone]')){
+    S.kitAsked=today();
+    if(!sess())startSession(); else {const o=sess();o.i=0;o.set=1;o.st='brief';o.endAt=0}
+    save();keepAwake(true);tab='run';render();return}
+  if(t.closest('[data-runexit]')){endSession(true);return}
+  if(t.closest('[data-runfinish]')){endSession(false);return}
+  if(t.closest('[data-sound]')){S.sound=!S.sound;save();
+    if(S.sound)beep();
+    toast(S.sound?'Sound on':'Sound off');render();return}
+  if(t.closest('[data-runstart]')){
+    const o=sess(),q=questToday(),e=q[o.i];
+    if(isTimed(e)){o.st='hold';o.total=targetReps(e);o.endAt=Date.now()+o.total*1000;o.paused=0;fired=false}
+    else o.st='work';
+    save();render();return}
+  if(t.closest('[data-holdpause]')){
+    const o=sess();
+    if(o.paused){o.endAt=Date.now()+o.left*1000;o.paused=0;fired=false}
+    else{o.left=restLeft();o.paused=1}
+    save();render();return}
+  const hd=t.closest('[data-holddone]');
+  if(hd){const o=sess(),q=questToday(),e=q[o.i],sets=(doseParts(e)||{}).sets||3;
+    buzz([0,40]);
+    if(o.set>=sets){clearMovement(e,null);return}
+    o.set++;o.total=restLen(e);fired=false;beginRest(o.total);return}
+  const sd=t.closest('[data-setdone]');
+  if(sd){const o=sess(),q=questToday(),e=q[o.i],sets=(doseParts(e)||{}).sets||3;
+    const inp=document.getElementById('actual');
+    const got=inp&&inp.value!==''?parseInt(inp.value,10):null;
+    buzz([0,40]);
+    if(o.set>=sets){clearMovement(e,got);return}
+    if(got!=null)recordPerf(e,got);
+    o.set++;o.total=restLen(e);fired=false;beginRest(o.total);return}
+  if(t.closest('[data-restskip]')){const o=sess();o.st='work';o.endAt=0;fired=false;save();render();return}
+  if(t.closest('[data-runskip]')){
+    const o=sess(),q=questToday();o.i++;o.set=1;o.st='brief';o.endAt=0;
+    if(o.i>=q.length)o.st='done';
+    save();render();return}
+  const swp=t.closest('[data-swap]');
+  if(swp){const e=EX.find(x=>x.id===swp.dataset.swap);if(e)viewSwap(e);return}
+  const st2=t.closest('[data-swapto]');
+  if(st2){const [a,b]=st2.dataset.swapto.split('|');doSwap(a,b,false);return}
+  const shr=t.closest('[data-swaphurt]');
+  if(shr){const [a,b]=shr.dataset.swaphurt.split('|');doSwap(a,b,true);return}
+
   const kb=t.closest('[data-kit]');
   if(kb){const k=kb.dataset.kit;
     /* Re-rolls today against the new constraint. Anything already logged stays
        logged — questDone is only cleared when the date rolls over — so nobody
        is punished for switching mid-day, and questBonus stops a second payout. */
     if(k==='custom'){setDayEq('custom',effEq().slice());tab='dayeq';render();return}
-    setDayEq(k);toast('Quest rebuilt · '+PRESETS[k].n);render();return}
+    setDayEq(k);
+    if(sess()){const o=sess();o.i=0;o.set=1;o.st='brief';o.endAt=0;save()}
+    render();return}
   const td=t.closest('[data-toggleday]');
   if(td){const k=td.dataset.toggleday,o=dayEq(),cur=(o&&o.k==='custom'?o.eq:effEq()).slice();
     const i=cur.indexOf(k);i>=0?cur.splice(i,1):cur.push(k);
     setDayEq('custom',cur);render();return}
-  if(t.closest('[data-daydone]')){tab='quest';toast('Quest rebuilt for today');render();return}
+  if(t.closest('[data-daydone]')){tab=sess()?'kit':'quest';toast('Quest rebuilt for today');render();return}
 
   const ol=t.closest('[data-oblim]');
   if(ol){const k=ol.dataset.oblim,i=ob.limits.indexOf(k);
@@ -2487,6 +2838,7 @@ document.addEventListener('click',ev=>{
     const n=daysBetween(S.last,today());
     if(n>gapAllowed()){if(S.potions>0)S.potions--;else S.streak=0;save()}
   }
+  if(S.sess&&S.sess.d!==today())S.sess=null;      // yesterday's run does not resume
   render();
   if(S.refund){const g=S.refund;delete S.refund;save();
     setTimeout(()=>toast('Palettes are free now · '+g+' gold refunded'),700)}
