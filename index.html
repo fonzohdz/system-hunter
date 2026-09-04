@@ -575,13 +575,15 @@ const EX=[
 {id:'birddog',strain:['lower-back','shoulders'],mus:{p:['lower-back','abs'],s:['glutes','rear-delts']},n:'Bird Dog',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['Hands and knees, back flat like a tabletop.','Reach one arm forward and the opposite leg back.','Wobbling? Go shorter, not faster.','Best move going for a cranky lower back.'],
  /* side: supporting hand and knee planted, opposite arm and leg extend level */
- f:[P(26,44,34,46,62,48,30,54,28,66,70,54,78,66,32,55,30,66,68,54,76,66),
-    P(24,42,32,44,62,48,24,40,14,38,70,52,88,42,32,55,30,66,68,54,76,66)]},
+ /* alternating. hands under shoulders and knees under hips at ~90 deg; front arm reaches forward while the opposite rear leg extends back, level with the spine */
+ f:[P(24,60,32,64,62,68,32,76,32,90,61,88,77,90,33,76,33,90,62,88,78,90),
+    P(22,54,32,58,62,66,33,74,33,90,76,70,92,66,20,54,8,50,62,86,78,88)]},
 {id:'deadbug',mus:{p:['abs'],s:['obliques']},n:'Dead Bug',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['On your back, arms up, knees over hips.','Lower one arm and the opposite leg toward the floor.','Keep your lower back pressed flat the whole time.','Stop the moment your back arches.'],
  /* side: opposite arm and leg reach away, back stays flat */
- f:[P(20,60,30,60,58,62,30,50,32,40,60,50,62,40,32,52,34,42,62,52,64,42),
-    P(20,60,30,60,58,62,24,54,14,52,60,50,62,40,32,52,34,42,68,58,82,60)]},
+ /* alternating. lying on the back, hips and knees at 90 in tabletop; one arm reaches back overhead while the opposite leg extends away, the other pair holding tabletop */
+ f:[P(20,80,29,80,56,82,32,69,34,57,57,65,73,63,33,68,35,56,58,64,74,62),
+    P(20,80,29,80,56,82,32,69,34,57,70,74,88,78,24,72,10,70,58,64,74,62)]},
 {id:'kneepush',next:'pushup',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Knee Push-Up',r:'D',c:'push',st:'STR',d:'3 × 8',eq:[],
  cues:['Knees down, hands slightly wider than shoulders.','Straight line head to knees — no piking the hips.','Elbows travel back around 45°, not flared straight out.','The bridge between incline and full push-ups.'],
  /* side: same hinge as a push-up but pivoting from the knee */
@@ -590,11 +592,15 @@ const EX=[
 {id:'squat',next:'split',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','abs']},n:'Bodyweight Squat',r:'D',c:'legs',st:'STR',d:'3 × 12',eq:[],
  cues:['Feet shoulder width, toes turned out slightly.','Sit down and back, chest proud, knees over toes.','Go as deep as you can without the low back rounding.','Arms straight out front work as a counterweight.'],
  /* side: hips back and down, knees forward, torso pitches, arms counterbalance */
- f:[ST,SQ]},
+ /* rep. feet planted, hips travel back and down, knee to ~85 deg, torso pitches forward, arms counterbalance */
+ f:[P(50,14,50,24,50,52,46,38,45,50,49,72,49,92,54,38,55,50,51,72,51,92),
+    P(61,36,57,45,42,68,63,52,73,48,58,74,50,92,64,51,74,47,60,74,52,92)]},
 {id:'lunge',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','calves']},n:'Reverse Lunge',r:'D',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['Step backward — kinder to the knees than stepping forward.','Drop the back knee toward the floor, front shin vertical.','Push through the front heel to stand.','Hold a wall until balance catches up.'],
  /* side: front shin vertical, back knee drops toward the floor */
- f:[ST,P(48,20,48,30,50,58,43,42,42,54,66,66,74,86,54,42,56,54,44,70,42,88)]},
+ /* rep. torso stays vertical, front shin vertical with knee ~95 deg, rear knee drops low and the rear foot is behind it */
+ f:[P(50,14,50,24,50,52,46,38,45,50,49,72,49,92,54,38,55,50,51,72,51,92),
+    P(40,33,40,43,40,70,35,55,34,68,40,86,20,90,45,55,46,68,58,72,58,92)]},
 {id:'plank',next:'sideplank',strain:['shoulders'],mus:{p:['abs'],s:['front-delts','glutes']},n:'Plank',r:'D',c:'core',st:'CORE',d:'3 × 30s hold',eq:[],
  cues:['Forearms and toes, body one hard straight line.','Brace your abs like you\'re about to take a punch.','Look at the floor to keep your neck neutral.','30 solid seconds beats 90 sloppy ones.'],
  /* side: forearms flat on the floor, one line from head to heel */
@@ -603,12 +609,15 @@ const EX=[
 {id:'stepup',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','calves']},p:'box',nf:1,n:'Step-Up',r:'D',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['A stair, a bench, or a low sturdy box.','Plant the whole foot and drive up through that heel.','Lower yourself slowly instead of dropping.','Stairs exist everywhere. No excuse.'],
  /* side: the box leg bends hard, then drives the whole body up onto it */
- f:[P(50,16,50,26,50,54,45,39,44,52,46,72,46,88,58,39,62,50,64,64,70,74),
-    P(48,10,48,20,50,48,43,33,42,46,42,66,40,84,54,33,56,46,62,60,68,72)]},
+ /* rep. lead foot fixed on the box throughout, lead knee deeply bent then straight, trail foot leaves the floor and its knee drives up */
+ f:[P(40,21,40,31,40,58,35,44,34,56,38,74,38,92,45,44,46,56,60,54,58,74),
+    P(56,9,56,19,56,46,50,32,48,44,70,50,76,66,62,32,64,44,58,62,58,74)]},
 {id:'hinge',next:'db_rdl',strain:['lower-back'],mus:{p:['hamstrings','glutes'],s:['lower-back']},n:'Hip Hinge',r:'D',c:'pull',st:'STR',d:'3 × 10',eq:[],
  cues:['Soft knees. Push your hips back like closing a car door with your butt.','Back flat, chest pointing down, not curled over.','Hamstrings should feel it, not your lower back.','Teaches you how to pick things up without wrecking yourself.'],
  /* side: hips travel back, torso to near-parallel, knees soft, arms hang */
- f:[ST,P(30,34,38,36,60,48,36,48,34,60,60,68,58,88,38,49,36,61,62,68,60,88)]},
+ /* rep. hips travel back, torso to near-parallel, knees stay ~165 deg, arms hang straight down */
+ f:[P(50,14,50,24,50,52,46,38,45,50,49,72,49,92,54,38,55,50,51,72,51,92),
+    P(78,48,69,50,42,54,68,63,68,75,47,72,49,92,69,62,69,74,48,72,50,92)]},
 {id:'sideknee',strain:['shoulders'],mus:{p:['obliques'],s:['abs','side-delts']},n:'Side Plank (knees)',r:'D',c:'core',st:'CORE',d:'3 × 20s each side',eq:[],
  cues:['On your side, elbow under shoulder, knees bent and stacked.','Lift hips into one line from head to knees.','Top hand on your hip or reaching up.','Hits what the regular plank misses.'],
  /* same shape as a side plank but folded at the knee */
@@ -622,7 +631,9 @@ const EX=[
 {id:'pushup',next:'diamond',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Full Push-Up',r:'C',c:'push',st:'STR',d:'4 × 6',eq:[],
  cues:['Hands under shoulders, body rigid head to heels.','Lower until your chest is a fist off the floor.','Push the floor away — whole body moves as one plank.','The rep you\'ll measure yourself by for years.'],
  /* side: hands planted, elbows sweep back, whole body one line */
- f:[PLK_UP,PLK_DN]},
+ /* rep. hands and toes fixed, body one rigid line, elbows sweep back to ~85 deg */
+ f:[P(20,54,28,57,56,66,28,73,29,90,73,75,91,85,29,72,30,90,74,74,92,84),
+    P(18,66,26,69,56,76,39,81,29,90,73,83,91,91,40,80,30,90,74,82,92,90)]},
 {id:'split',next:'db_bulg',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},n:'Split Squat',r:'C',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['One foot forward, one back, split stance the whole set.','Drop straight down, back knee toward the floor.','Front heel stays glued down.','Harder than it looks. Respect it.'],
  /* side: stance never changes, the whole body just drops */
@@ -694,8 +705,9 @@ const EX=[
 /* ================= DUMBBELLS ================= */
 {id:'db_curl',strain:['wrists'],sit:1,mus:{p:['biceps'],s:['forearms']},n:'Dumbbell Curl',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['db'],p:'db',
  cues:['Stand tall, dumbbells at your sides, palms forward.','Curl up without swinging your body — elbows pinned to your ribs.','Lower over 3 seconds. The lowering is where arms are built.','Lighter and slower beats heavier and swinging.'],
- f:[m(ST,{6:44,7:38,8:43,9:52,14:56,15:38,16:57,17:52}),
-    m(ST,{6:44,7:38,8:47,9:30,14:56,15:38,16:53,17:30})]},
+ /* rep. upper arms stay beside the torso, only the forearm rotates up to ~45 deg at the elbow — never folded flat */
+ f:[P(50,14,50,24,50,52,48,38,47,52,49,72,49,92,52,38,53,52,51,72,51,92),
+    P(50,14,50,24,50,52,48,38,40,28,49,72,49,92,52,38,60,28,51,72,51,92)]},
 {id:'db_hammer',strain:['wrists'],sit:1,mus:{p:['biceps','forearms'],s:[]},n:'Hammer Curl',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['db'],p:'db',
  cues:['Same as a curl but palms face each other the whole way.','Hits the forearm and the thicker part of the bicep.','No swinging. If your back moves, the weight is too heavy.','Pairs well right after regular curls.'],
  hi:'arms',
@@ -777,16 +789,18 @@ const EX=[
     m(SQ,{0:48,1:28,6:38,7:44,8:36,9:38,14:62,15:44,16:64,17:38})]},
 {id:'bb_dl',strain:['lower-back','shoulders','wrists'],mus:{p:['hamstrings','glutes','lower-back'],s:['traps','forearms','lats']},n:'Barbell Deadlift',r:'B',c:'pull',st:'STR',d:'4 × 5',eq:['bb'],p:'bar2',
  cues:['Bar over mid-foot, shins nearly touching it.','Flat back, chest up, take the slack out before you pull.','Push the floor away and drag the bar up your legs.','If your back rounds, the set is over. No hero reps.'],
- f:[P(34,36,40,40,58,52,40,50,42,68,58,66,56,88,42,51,44,68,60,66,58,88),
-    m(ST,{8:44,9:54,16:56,17:54})]},
+ /* rep. starts at the floor with the knee ~130 deg and the torso inclined, finishes standing tall; the arms stay straight the whole way, the hips and knees do the work */
+ f:[P(75,56,66,60,45,70,65,74,64,88,56,78,54,92,66,74,65,88,58,78,56,92),
+    P(54,14,54,24,54,52,52,38,51,52,53,72,54,92,56,38,57,52,55,72,56,92)]},
 {id:'bb_bench',strain:['shoulders'],mus:{p:['chest'],s:['triceps','front-delts']},n:'Barbell Bench Press',r:'B',c:'push',st:'STR',d:'4 × 6',eq:['bb','bench'],p:'bar',pp:'bench',
  cues:['Feet flat, shoulder blades pinched together and pulled down.','Lower the bar to your lower chest with control.','Elbows around 45° from your body, not flared out wide.','Use a spotter or safety arms. Every single time.'],
  f:[m(LIE,{6:24,7:52,8:24,9:38,14:28,15:52,16:28,17:38}),
     m(LIE,{6:18,7:58,8:24,9:60,14:22,15:60,16:28,17:60})]},
 {id:'bb_ohp',strain:['shoulders'],mus:{p:['front-delts','triceps'],s:['side-delts','traps','abs']},n:'Overhead Press',r:'B',c:'push',st:'STR',d:'4 × 6',eq:['bb'],p:'bar',
  cues:['Bar on your front shoulders, hands just outside them.','Squeeze your glutes, press up, move your head back out of the way.','Finish with the bar over the middle of your feet, not in front.','The most honest lift there is. Nothing to hide behind.'],
- f:[m(ST,{6:40,7:30,8:40,9:32,14:60,15:30,16:60,17:32}),
-    m(ST,{6:42,7:18,8:44,9:6,14:58,15:18,16:56,17:6})]},
+ /* rep. bar racked at the shoulders with elbows ~40 deg, pressed to nearly straight overhead; legs stay locked */
+ f:[P(48,16,48,26,48,54,56,41,58,27,47,74,47,92,58,40,60,26,49,74,49,92),
+    P(46,14,48,24,48,54,50,17,51,3,47,74,47,92,51,17,52,3,49,74,49,92)]},
 {id:'bb_row',strain:['lower-back','shoulders'],mus:{p:['lats','midback'],s:['biceps','rear-delts','lower-back']},n:'Bent-Over Row',r:'B',c:'pull',st:'STR',d:'4 × 8',eq:['bb'],p:'bar2',
  cues:['Hinge until your torso is around 45°, back flat.','Pull the bar to your belly button, elbows driving back.','Lower it under control — no dropping and bouncing.','Balances out all your pressing.'],
  f:[P(30,34,38,38,60,48,38,50,38,62,60,68,58,88,40,51,40,62,62,68,60,88),
