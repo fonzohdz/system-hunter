@@ -36,8 +36,13 @@ with animated figure demos.
   (bird dog, dead bug, mountain climber) suffer worst.
   These poses were tuned by eye against a literal renderer. Change the poses if
   a movement reads wrong; do not add a correctness layer on top of them.
-  Movements with no `f` fall back to a per-category stand-in, which is fine —
-  the bar is "help someone who does not know the movement", not "name it blind".
+  A movement with no `f` of its own carries `ref` naming one whose shape
+  matches, and borrows its poses — a machine chest press is a bench press seen
+  from the side. Every movement must resolve to a real pose that way; there are
+  no generic category placeholders and there should not be.
+  Keep this simple. One painter, one loop, one timing curve. Motion types,
+  per-exercise tempo and frame stepping have all been tried and all been
+  removed again.
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
   those with fixed pixel padding.
