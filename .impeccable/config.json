@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-04T14:47:20.392Z",
+        "reason": "Pre-existing committed art direction: Solo Leveling / RPG aura aesthetic. Colored glow on the blade, level badge and aura canvas IS the product's visual identity per CLAUDE.md; MISSION_customization.md extends it across six classes."
+      }
+    ]
+  }
+}

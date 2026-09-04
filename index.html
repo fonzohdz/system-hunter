@@ -22,6 +22,8 @@
   --ash:#9E8590; --bone:#F6E9EF;
   --crimson:#E8114F; --magenta:#FF3D7F; --core:#FFF0F5; --gold:#E8C583;
   --deepblade:#7A0A2C; --guard:#4A1020; --grip:#2A0A14; --pommel:#5C1226;
+  /* rgb triplets of --crimson / --magenta, so glows and washes follow the palette */
+  --c1:232,17,79; --m1:255,61,127;
   --display:"Cinzel","Bodoni MT","Times New Roman",serif;
   --body:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
 }
@@ -34,7 +36,7 @@ html,body{margin:0;background:var(--void)}
   padding-bottom:calc(84px + env(safe-area-inset-bottom));
   padding-left:env(safe-area-inset-left);
   background:
-    radial-gradient(58% 34% at 50% 18%, rgba(232,17,79,.12) 0%, transparent 70%),
+    radial-gradient(58% 34% at 50% 18%, rgba(var(--c1),.12) 0%, transparent 70%),
     radial-gradient(110% 50% at 50% 100%, #0A0206 0%, transparent 72%),
     var(--void);
 }
@@ -56,7 +58,7 @@ html,body{margin:0;background:var(--void)}
 .lvlbadge::before{content:"";position:absolute;inset:2px;background:linear-gradient(180deg,#0B0409,#030103);
   clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)}
 .lvlbadge span{position:relative;font-family:var(--display);font-size:22px;font-weight:700;
-  color:var(--magenta);text-shadow:0 0 18px rgba(255,61,127,.8)}
+  color:var(--magenta);text-shadow:0 0 18px rgba(var(--m1),.8)}
 .lvlmeta{flex:1;min-width:0}
 .lvlline{display:flex;align-items:baseline;gap:10px;margin-bottom:7px}
 .lvlline b{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
@@ -74,17 +76,17 @@ html,body{margin:0;background:var(--void)}
 #aura{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .sigil{position:absolute;left:50%;top:142px;transform:translate(-50%,-50%);
   width:280px;height:280px;border-radius:50%;pointer-events:none;opacity:var(--sig,.8);
-  background:conic-gradient(from 0deg, transparent 0 12%, rgba(232,17,79,.22) 13%, transparent 14% 24%,
-    rgba(232,17,79,.22) 25%, transparent 26% 49%, rgba(232,17,79,.22) 50%, transparent 51% 74%,
-    rgba(232,17,79,.22) 75%, transparent 76%);
+  background:conic-gradient(from 0deg, transparent 0 12%, rgba(var(--c1),.22) 13%, transparent 14% 24%,
+    rgba(var(--c1),.22) 25%, transparent 26% 49%, rgba(var(--c1),.22) 50%, transparent 51% 74%,
+    rgba(var(--c1),.22) 75%, transparent 76%);
   mask:radial-gradient(circle, transparent 44%, #000 46%, #000 49%, transparent 51%);
   -webkit-mask:radial-gradient(circle, transparent 44%, #000 46%, #000 49%, transparent 51%);
   animation:spin 42s linear infinite;transition:opacity 1.4s}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 .blade{position:relative;height:258px;display:grid;place-items:center;margin-bottom:24px}
 .blade-halo{position:absolute;width:200px;height:200px;border-radius:50%;opacity:var(--glow,1);transition:opacity 1.4s;
-  background:radial-gradient(closest-side, rgba(255,61,127,.5), rgba(232,17,79,.18) 46%, transparent 72%);filter:blur(26px)}
-.blade-svg{position:relative;height:250px;filter:drop-shadow(0 0 24px rgba(232,17,79,.7))}
+  background:radial-gradient(closest-side, rgba(var(--m1),.5), rgba(var(--c1),.18) 46%, transparent 72%);filter:blur(26px)}
+.blade-svg{position:relative;height:250px;filter:drop-shadow(0 0 24px rgba(var(--c1),.7))}
 .name-etch{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
   font-family:var(--display);font-size:12px;letter-spacing:.5em;text-indent:.5em;color:var(--ash)}
 .aurawrap{position:relative;z-index:1}
@@ -119,7 +121,7 @@ html,body{margin:0;background:var(--void)}
 .dgn b{color:var(--magenta);font-weight:600}
 .cleared{margin-top:14px;padding:13px;text-align:center;border:1px solid var(--crimson);
   color:var(--magenta);font-family:var(--display);letter-spacing:.24em;text-transform:uppercase;
-  font-size:14px;background:rgba(232,17,79,.07)}
+  font-size:14px;background:rgba(var(--c1),.07)}
 
 /* work list */
 .work{list-style:none;margin:0;padding:0}
@@ -133,14 +135,14 @@ html,body{margin:0;background:var(--void)}
 .wmark{width:26px;height:26px;flex:0 0 26px;border:1px solid var(--line);display:grid;place-items:center;
   color:var(--magenta);font-size:13px}
 .w.done{opacity:.4}
-.w.done .wmark{border-color:var(--crimson);background:rgba(232,17,79,.1)}
+.w.done .wmark{border-color:var(--crimson);background:rgba(var(--c1),.1)}
 .w.done .wmeta h3{text-decoration:line-through;text-decoration-color:var(--ash)}
 
 /* library */
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
 .filters button{background:none;border:1px solid var(--line);color:var(--ash);
   font:inherit;font-size:12px;padding:6px 11px;cursor:pointer}
-.filters button.on{border-color:var(--crimson);color:var(--magenta);background:rgba(232,17,79,.08)}
+.filters button.on{border-color:var(--crimson);color:var(--magenta);background:rgba(var(--c1),.08)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}
 @media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
 .card{border:1px solid var(--line);background:linear-gradient(180deg,#0A0509,#020102);
@@ -166,8 +168,8 @@ html,body{margin:0;background:var(--void)}
 .prin:focus{outline:none;border-color:var(--crimson)}
 .heat{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:12px}
 .heat i{aspect-ratio:1;display:block;background:#0C060A;border:1px solid var(--line)}
-.heat i.hm1{background:rgba(232,17,79,.3);border-color:rgba(232,17,79,.4)}
-.heat i.hm2{background:rgba(232,17,79,.6);border-color:rgba(232,17,79,.7)}
+.heat i.hm1{background:rgba(var(--c1),.3);border-color:rgba(var(--c1),.4)}
+.heat i.hm2{background:rgba(var(--c1),.6);border-color:rgba(var(--c1),.7)}
 .heat i.hm3{background:var(--magenta);border-color:var(--magenta)}
 .heatkey{display:flex;justify-content:space-between;margin-top:7px;font-size:10.5px;color:var(--ash);letter-spacing:.06em}
 
@@ -232,13 +234,37 @@ html,body{margin:0;background:var(--void)}
 .opts{display:grid;gap:8px;margin-bottom:8px}
 .opt{text-align:left;background:none;border:1px solid var(--line);color:var(--bone);
   padding:14px;font:inherit;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center}
-.opt.on{border-color:var(--crimson);background:rgba(232,17,79,.08)}
+.opt.on{border-color:var(--crimson);background:rgba(var(--c1),.08)}
 .opt small{display:block;color:var(--ash);font-size:12px;margin-top:4px;line-height:1.45}
 .opt .tick{color:var(--magenta);font-size:13px;opacity:0}
 .opt.on .tick{opacity:1}
 .namein{width:100%;background:#060309;border:1px solid var(--line);color:var(--bone);
   padding:15px;font:inherit;font-size:17px;margin-bottom:8px}
 .namein:focus{outline:none;border-color:var(--crimson)}
+
+/* class + palette picker */
+.wprev{position:relative;height:168px;display:grid;place-items:center;margin:0 0 16px;
+  background:radial-gradient(52% 46% at 50% 46%, rgba(var(--c1),.13), transparent 72%)}
+.wprev .blade-svg{height:164px}
+.picklab{font-size:10px;letter-spacing:.26em;color:var(--ash);text-transform:uppercase;margin:0 0 9px}
+.clsgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.clsb{background:none;border:1px solid var(--line);color:var(--ash);font:inherit;font-size:12.5px;
+  padding:10px 4px;cursor:pointer;text-align:center;letter-spacing:.04em;line-height:1.2}
+.clsb.on{border-color:var(--crimson);color:var(--magenta);background:rgba(var(--c1),.08)}
+.clsb small{display:block;font-size:9.5px;color:#6B5561;margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
+.clsb.on small{color:var(--ash)}
+.palrow{display:flex;flex-wrap:wrap;gap:8px}
+.palb{width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line);background:#060309;
+  padding:0;cursor:pointer;position:relative}
+.palb i{position:absolute;inset:3px;display:block;background:linear-gradient(140deg,var(--pa),var(--pb) 58%,var(--pc))}
+.palb.on{border-color:var(--bone)}
+.palb.on::after{content:"";position:absolute;inset:-4px;border:1px solid var(--magenta)}
+.clsline{font-size:12px;color:var(--ash);line-height:1.6;margin:12px 0 0}
+.clsline b{color:var(--bone);font-weight:600}
+
+/* card class line */
+.hc-cls{margin:7px 0 0;font-family:var(--display);font-size:12px;font-weight:700;
+  letter-spacing:.34em;text-indent:.34em;color:var(--magenta);text-transform:uppercase}
 
 /* intro */
 .sysmsg{position:fixed;inset:0;z-index:95;background:rgba(1,0,2,.95);display:grid;place-items:center;
@@ -276,14 +302,14 @@ html,body{margin:0;background:var(--void)}
 .aflash{position:absolute;inset:0;background:var(--core);opacity:0;pointer-events:none}
 .acore{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(0);
   width:120px;height:120px;border-radius:50%;filter:blur(2px);
-  background:radial-gradient(circle,#fff 0%, var(--core) 22%, var(--magenta) 48%, rgba(232,17,79,0) 72%)}
+  background:radial-gradient(circle,#fff 0%, var(--core) 22%, var(--magenta) 48%, rgba(var(--c1),0) 72%)}
 .aring{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(0);
   width:200px;height:200px;border-radius:50%;border:2px solid var(--magenta);opacity:0}
 .atext{position:absolute;left:0;right:0;top:62%;display:grid;justify-items:center;gap:9px;
   text-align:center;opacity:0;padding:0 20px;transition:opacity .85s ease-out}
 .asmall{font-size:11px;letter-spacing:.4em;color:var(--ash);text-transform:uppercase}
 .abig{font-family:var(--display);font-size:min(54px,13vw);font-weight:700;letter-spacing:.11em;
-  line-height:1;text-shadow:0 0 40px rgba(255,61,127,.6)}
+  line-height:1;text-shadow:0 0 40px rgba(var(--m1),.6)}
 .asub{font-size:13.5px;color:var(--ash)}
 .asub b{color:var(--magenta);font-weight:700;letter-spacing:.09em}
 .aloot{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
@@ -296,7 +322,7 @@ html,body{margin:0;background:var(--void)}
 .cardwrap{max-width:420px;margin:0 auto}
 .hcard{border:1px solid var(--crimson);padding:22px 20px 18px;position:relative;overflow:hidden;
   background:
-    radial-gradient(60% 40% at 50% 12%, rgba(232,17,79,.16), transparent 70%),
+    radial-gradient(60% 40% at 50% 12%, rgba(var(--c1),.16), transparent 70%),
     linear-gradient(180deg,#0A0409,#020102);
   box-shadow:0 0 60px -20px var(--crimson)}
 .hcard::before,.hcard::after{content:"";position:absolute;width:16px;height:16px;border:1px solid var(--crimson)}
@@ -307,7 +333,7 @@ html,body{margin:0;background:var(--void)}
 .hc-brand{font-family:var(--display);font-size:13px;letter-spacing:.34em;text-indent:.34em;font-weight:700}
 .hc-rank{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:.14em;color:var(--magenta)}
 .hc-blade{display:grid;place-items:center;padding:14px 0 6px}
-.hc-blade .blade-svg{height:150px;filter:drop-shadow(0 0 22px rgba(232,17,79,.75))}
+.hc-blade .blade-svg{height:150px;filter:drop-shadow(0 0 22px rgba(var(--c1),.75))}
 .hc-id{text-align:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .hc-id h3{font-family:var(--display);font-size:29px;margin:0;letter-spacing:.16em;text-indent:.16em;font-weight:700}
 .hc-id p{margin:6px 0 0;font-size:12px;color:var(--ash);letter-spacing:.14em;text-transform:uppercase}
@@ -665,26 +691,112 @@ const RANK_LV={E:1,D:4,C:9,B:16,A:26,S:40};
 const RANK_TITLE={E:'Novice',D:'Adept',C:'Expert',B:'Master',A:'Grandmaster',S:'Sword Saint'};
 const CATS={push:'Push',pull:'Pull',legs:'Legs',core:'Core',cardio:'Cardio',full:'Full body'};
 const EQNAME={db:'Dumbbells',kb:'Kettlebell',bb:'Barbell',bar:'Pull-up bar',bench:'Bench',band:'Bands',machine:'Machines'};
-const AURA=[
- {n:'Dormant',min:0},{n:'Stirring',min:1},{n:'Kindled',min:3},{n:'Surging',min:7},{n:'Ascendant',min:21}
-];
+/* Aura thresholds. Shared by every class — only the tier NAMES change. */
+const AURA=[{min:0},{min:1},{min:3},{min:7},{min:21}];
 
-const SHOP=[
- {id:'t_awake',k:'title',n:'The Awakened',p:60,ico:'✦',d:'First title. You showed up.'},
- {id:'t_iron',k:'title',n:'Iron Willed',p:220,ico:'⚔',d:'For clearing quests you didn\'t feel like starting.'},
- {id:'t_shadow',k:'title',n:'Shadow of the Gym',p:500,ico:'☾',d:'They stopped noticing you leave. You never stopped going.'},
- {id:'t_bloodsworn',k:'title',n:'Bloodsworn',p:900,ico:'⛧',d:'Thirty days without letting the aura die.'},
- {id:'t_monarch',k:'title',n:'Monarch in Training',p:1400,ico:'♛',d:'Reserved for the delusional and the consistent.'},
- {id:'p_rest',k:'potion',n:'Elixir of Rest',p:150,ico:'⌛',d:'Protects your streak through one extra idle day. Consumed on use.'},
- {id:'bl_ember',k:'blade',n:'Ember Edge',p:400,ico:'◆',d:'Recolors your blade and aura to molten orange.'},
- {id:'bl_frost',k:'blade',n:'Frostfang',p:400,ico:'◆',d:'Recolors your blade and aura to pale glacial blue.'},
- {id:'bl_void',k:'blade',n:'Voidbrand',p:700,ico:'◆',d:'Recolors your blade and aura to violet abyss.'}
-];
-const BLADES={
- bl_ember:{crimson:'#FF6A1A',magenta:'#FFA23D',core:'#FFF3DF',line:'#2A150A'},
- bl_frost:{crimson:'#2FA8E8',magenta:'#7FD8FF',core:'#EAF8FF',line:'#0C2230'},
- bl_void :{crimson:'#8B2BE8',magenta:'#C77BFF',core:'#F4EAFF',line:'#1C0C2A'}
+/* ---------------- cosmetics ----------------
+   Nothing below this line may touch stats, XP, gold, ranks or quest generation.
+   A class changes what things are called and what they look like. Nothing else. */
+
+const PALETTES={
+ crimson :{n:'Crimson', d:'The colour the System issues by default.',
+   crimson:'#E8114F',magenta:'#FF3D7F',core:'#FFF0F5',line:'#2A0C1A',
+   deepblade:'#7A0A2C',guard:'#4A1020',grip:'#2A0A14',pommel:'#5C1226'},
+ ember   :{n:'Ember',   d:'Molten orange. Looks like it just came off the forge.',
+   crimson:'#FF6A1A',magenta:'#FFA23D',core:'#FFF3DF',line:'#2A150A',
+   deepblade:'#8A3406',guard:'#4E2408',grip:'#2C1406',pommel:'#6B2E08'},
+ frost   :{n:'Frost',   d:'Pale glacial blue over cold steel.',
+   crimson:'#2FA8E8',magenta:'#7FD8FF',core:'#EAF8FF',line:'#0C2230',
+   deepblade:'#0E5A86',guard:'#123A52',grip:'#0B2233',pommel:'#16496B'},
+ void    :{n:'Void',    d:'Violet abyss. Reads as expensive.',
+   crimson:'#8B2BE8',magenta:'#C77BFF',core:'#F4EAFF',line:'#1C0C2A',
+   deepblade:'#4A1180',guard:'#2E1046',grip:'#1A0A28',pommel:'#3C1466'},
+ verdant :{n:'Verdant', d:'Venom green. Nothing else in the vault looks like it.',
+   crimson:'#2FB863',magenta:'#79EFA2',core:'#EBFFF2',line:'#0C2415',
+   deepblade:'#116A38',guard:'#143E28',grip:'#0B2317',pommel:'#175A36'},
+ radiant :{n:'Radiant', d:'Earthen gold. Heavy, old, and lit from inside.',
+   crimson:'#E0A017',magenta:'#FFD46B',core:'#FFF7E4',line:'#2A1F08',
+   deepblade:'#8A5C08',guard:'#4E3A0C',grip:'#2C2008',pommel:'#6B4A0C'},
+ ashen   :{n:'Ashen',   d:'Near-monochrome. For people who find colour loud.',
+   crimson:'#98A0A8',magenta:'#D7DCE2',core:'#F7F9FB',line:'#23262A',
+   deepblade:'#4C5158',guard:'#34383D',grip:'#202326',pommel:'#41464C'},
+ abyssal :{n:'Abyssal', d:'Deep teal, lit from far below the surface.',
+   crimson:'#12A0A6',magenta:'#4FE3DF',core:'#E6FEFD',line:'#06262A',
+   deepblade:'#0A5F64',guard:'#0D3B40',grip:'#07262A',pommel:'#0D4F54'}
 };
+/* Free at creation. A class's own default palette is always free on top of these. */
+const FREEPAL=['crimson','ember','frost'];
+const PALPRICE={void:400,verdant:400,radiant:600,ashen:600,abyssal:800};
+
+const CLASSES={
+ bladebound:{n:'Bladebound',w:'longsword',wn:'Longsword',pal:'crimson',aura:'tendrils',
+   d:'A straight blade and an aura that reaches for things.',
+   tiers:['Dormant','Stirring','Kindled','Surging','Ascendant']},
+ ronin:{n:'Ronin',w:'katana',wn:'Katana',pal:'ember',aura:'embers',
+   d:'One curved edge. Ash falls off it when you are training.',
+   tiers:['Cold','Smouldering','Lit','Blazing','Infernal']},
+ warden:{n:'Warden',w:'hammer',wn:'Greathammer',pal:'radiant',aura:'pulse',
+   d:'Something enormous and slow. It arrives when it arrives.',
+   tiers:['Still','Rousing','Grounded','Thundering','Immovable']},
+ arcanist:{n:'Arcanist',w:'staff',wn:'Staff & Orb',pal:'void',aura:'motes',
+   d:'A staff, an orb, and a glyph that keeps turning over.',
+   tiers:['Unwritten','Traced','Inscribed','Resonant','Transcendent']},
+ stalker:{n:'Stalker',w:'daggers',wn:'Twin Daggers',pal:'verdant',aura:'shards',
+   d:'Two short blades. The aura moves in quick flat lines.',
+   tiers:['Unseen','Prowling','Marked','Lethal','Apex']},
+ ironclad:{n:'Ironclad',w:'gauntlets',wn:'Gauntlets',pal:'frost',aura:'shimmer',
+   d:'No weapon. The aura sits tight against you instead.',
+   tiers:['Cold Iron','Warming','Tempered','Forged','Unbreakable']}
+};
+const CLSKEYS=Object.keys(CLASSES);
+
+/* Titles are per class. Ids never repeat, so a title you bought stays bought
+   and stays wearable even after you switch classes. */
+const TITLES={
+ bladebound:[
+  {id:'t_awake',n:'The Awakened',p:60,ico:'✦',d:'First title. You showed up.'},
+  {id:'t_iron',n:'Iron Willed',p:220,ico:'⚔',d:'For clearing quests you didn\'t feel like starting.'},
+  {id:'t_shadow',n:'Shadow of the Gym',p:500,ico:'☾',d:'They stopped noticing you leave. You never stopped going.'},
+  {id:'t_bloodsworn',n:'Bloodsworn',p:900,ico:'⛧',d:'Thirty days without letting the aura die.'},
+  {id:'t_monarch',n:'Monarch in Training',p:1400,ico:'♛',d:'Reserved for the delusional and the consistent.'}],
+ ronin:[
+  {id:'t_masterless',n:'Masterless',p:60,ico:'✦',d:'Nobody assigned you this. That is the point.'},
+  {id:'t_ashwalk',n:'Ash Walker',p:220,ico:'≋',d:'You keep going back to the fire.'},
+  {id:'t_dawn',n:'Edge of Dawn',p:500,ico:'☀',d:'For the ones who train before anyone is awake.'},
+  {id:'t_thousand',n:'Thousand Cuts',p:900,ico:'⚔',d:'No single session did this. All of them did.'},
+  {id:'t_saint',n:'Blade Saint',p:1400,ico:'✧',d:'The last title on the road. There is no school above it.'}],
+ warden:[
+  {id:'t_stonefast',n:'Stonefast',p:60,ico:'✦',d:'You did not move. That was the whole test.'},
+  {id:'t_bulwark',n:'Bulwark',p:220,ico:'▲',d:'Something is standing between you and the couch. It is you.'},
+  {id:'t_hold',n:'Hold the Line',p:500,ico:'⛨',d:'For streaks defended on bad days.'},
+  {id:'t_mountain',n:'Mountainbound',p:900,ico:'⛰',d:'Slow, heavy, and no longer optional.'},
+  {id:'t_unmoved',n:'The Unmoved',p:1400,ico:'♦',d:'Weather happens to other people.'}],
+ arcanist:[
+  {id:'t_apprentice',n:'Apprentice',p:60,ico:'✦',d:'You opened the book. Most never do.'},
+  {id:'t_rune',n:'Rune Carver',p:220,ico:'⌘',d:'Repetition is just a spell said slowly.'},
+  {id:'t_ward',n:'Ward Weaver',p:500,ico:'◈',d:'For habits strong enough to keep things out.'},
+  {id:'t_astral',n:'Astral Adept',p:900,ico:'✺',d:'The work happens whether you feel like it or not.'},
+  {id:'t_archmagus',n:'Archmagus',p:1400,ico:'♛',d:'You wrote the routine everyone else copies.'}],
+ stalker:[
+  {id:'t_nightborn',n:'Nightborn',p:60,ico:'✦',d:'Late sessions count the same as early ones.'},
+  {id:'t_quiet',n:'Quiet Steps',p:220,ico:'☾',d:'No announcements. Just attendance.'},
+  {id:'t_venom',n:'Venomsworn',p:500,ico:'☣',d:'Slow damage, applied daily.'},
+  {id:'t_ghost',n:'Ghost of the Rack',p:900,ico:'⌬',d:'Nobody sees you arrive. The numbers see you leave.'},
+  {id:'t_apex',n:'Apex',p:1400,ico:'▲',d:'Top of the food chain in a very specific gym.'}],
+ ironclad:[
+  {id:'t_bare',n:'Bare Knuckles',p:60,ico:'✦',d:'No equipment, no excuses, first title.'},
+  {id:'t_ironbound',n:'Ironbound',p:220,ico:'⛓',d:'The habit has your wrists now.'},
+  {id:'t_unyield',n:'Unyielding',p:500,ico:'⛨',d:'For refusing to skip when skipping was easy.'},
+  {id:'t_anvil',n:'Anvil Born',p:900,ico:'▬',d:'You take the hits and stay flat.'},
+  {id:'t_fortress',n:'Living Fortress',p:1400,ico:'♜',d:'Built, not born. Took a while.'}]
+};
+const ALLTITLES={};for(const k in TITLES)for(const t of TITLES[k])ALLTITLES[t.id]=t;
+
+const POTION={id:'p_rest',k:'potion',n:'Elixir of Rest',p:150,ico:'⌛',
+  d:'Protects your streak through one extra idle day. Consumed on use.'};
+
+/* v3 blades map straight onto v4 palettes so nobody's colour changes under them. */
+const BLADEPAL={bl_ember:'ember',bl_frost:'frost',bl_void:'void'};
 const GOALS={
  muscle:{n:'Build muscle',w:{push:3,pull:3,legs:3,core:1,cardio:1,full:1}},
  strong:{n:'Get stronger',w:{push:3,pull:3,legs:4,core:2,cardio:1,full:2}},
@@ -701,37 +813,57 @@ const DB=(()=>{
     async set(k,v){localStorage.setItem(k,v);return{key:k,value:v}}
   };
 })();
-const KEY='asc:hunter:v3';
-const OLDKEY='sh:hunter:v2';
+const KEY='asc:hunter:v4';
+const KEY3='asc:hunter:v3';
+const KEY2='sh:hunter:v2';
 
-let S={
+const fresh=()=>({
  setup:false,name:'',goal:'consist',exp:'new',eq:[],days:4,
  lvl:1,xp:0,gold:0,streak:0,best:0,last:null,
  stats:{STR:5,END:5,VIT:5,AGI:5,CORE:5},
  prs:{pushup:0,squat:0,plank:0},
  logs:0,questDate:null,questDone:[],questBonus:false,
  owned:[],title:null,blade:null,potions:0,tourSeen:false,
- history:{}, clears:0
-};
+ history:{}, clears:0,
+ class:'bladebound', palette:'crimson'
+});
+let S=fresh();
 const need=l=>40+l*30;
 const rankOf=l=>l>=40?'S':l>=26?'A':l>=16?'B':l>=9?'C':l>=4?'D':'E';
 const unlocked=r=>S.lvl>=(RANK_LV[r]||1);
 const hasEq=e=>(e.eq||[]).every(x=>S.eq.includes(x));
 const today=()=>new Date().toLocaleDateString('en-CA');
-const auraTier=()=>{let t=AURA[0];for(const a of AURA)if(S.streak>=a.min)t=a;return t};
-const auraIdx=()=>AURA.indexOf(auraTier());
+const auraIdx=()=>{let i=0;for(let k=0;k<AURA.length;k++)if(S.streak>=AURA[k].min)i=k;return i};
+const cls=()=>CLASSES[S.class]||CLASSES.bladebound;
+const pal=()=>PALETTES[S.palette]||PALETTES.crimson;
+const tierName=i=>cls().tiers[i];
+const auraTier=()=>({n:tierName(auraIdx())});
 
+/* Reads a pre-v4 save and gives it a class and a palette without touching
+   anything else. Everyone lands on Bladebound; the old blade recolour carries
+   over as the matching palette so the app looks exactly as it did yesterday. */
+function upgradeToV4(o){
+  const s=Object.assign(fresh(),o);
+  s.class='bladebound';
+  s.palette=BLADEPAL[o.blade]||'crimson';
+  s.owned=Array.isArray(o.owned)?o.owned.slice():[];
+  for(const id in BLADEPAL){
+    const pid='pal_'+BLADEPAL[id];
+    if(s.owned.includes(id)&&!s.owned.includes(pid))s.owned.push(pid);
+  }
+  delete s.theme;
+  return s;
+}
 async function load(){
-  try{const r=await DB.get(KEY);if(r&&r.value)S=Object.assign(S,JSON.parse(r.value));return}
-  catch(e){}
-  try{ // migrate an old System Hunter save so nobody loses progress
-    const r=await DB.get(OLDKEY);
-    if(r&&r.value){
-      const o=JSON.parse(r.value);
-      S=Object.assign(S,o,{theme:undefined,blade:null});
-      save();
-    }
-  }catch(e){}
+  try{const r=await DB.get(KEY);if(r&&r.value){S=Object.assign(fresh(),JSON.parse(r.value));
+    if(!CLASSES[S.class])S.class='bladebound';
+    if(!PALETTES[S.palette])S.palette='crimson';
+    return}}catch(e){}
+  for(const k of [KEY3,KEY2]){            // migrate forward so nobody loses progress
+    try{const r=await DB.get(k);
+      if(r&&r.value){S=upgradeToV4(JSON.parse(r.value));save();return}
+    }catch(e){}
+  }
 }
 let sT;function save(){clearTimeout(sT);sT=setTimeout(async()=>{
   try{await DB.set(KEY,JSON.stringify(S))}catch(e){console.error('save failed',e)}},250)}
@@ -800,11 +932,160 @@ function mountFig(svg,frames,phase,prop){const r={svg,frames,phase:phase||0,prop
   requestAnimationFrame(figLoop);
 })(0);
 
-/* ---------------- aura canvas ---------------- */
-let ac,ax,AW=0,AH=0,tendrils=[],motes=[],auraRunning=false;
-for(let i=0;i<7;i++)tendrils.push({a:Math.random()*6.3,sp:(.0016+Math.random()*.0028)*(Math.random()<.5?-1:1),
-  rad:110+Math.random()*130,wob:.5+Math.random()*1.6,ph:Math.random()*6.3,len:.7+Math.random()*1.5,w:1.3+Math.random()*2.4});
-for(let i=0;i<24;i++)motes.push({x:Math.random(),y:Math.random(),v:.0006+Math.random()*.0018,r:.6+Math.random()*1.6,a:.2+Math.random()*.6});
+/* ---------------- aura canvas ----------------
+   Every class draws differently, but all six read the same intensity from
+   auraIdx(). A dead streak looks dead no matter what you picked. */
+let ac,ax,AW=0,AH=0,auraRunning=false;
+const rnd=n=>Math.random()*n, coin=()=>Math.random()<.5?-1:1;
+const tendrils=[],motes=[],embers=[],slashes=[],orbits=[],flecks=[];
+for(let i=0;i<7;i++)tendrils.push({a:rnd(6.3),sp:(.0016+rnd(.0028))*coin(),
+  rad:110+rnd(130),wob:.5+rnd(1.6),ph:rnd(6.3),len:.7+rnd(1.5),w:1.3+rnd(2.4)});
+for(let i=0;i<24;i++)motes.push({x:Math.random(),y:Math.random(),v:.0006+rnd(.0018),r:.6+rnd(1.6),a:.2+rnd(.6)});
+for(let i=0;i<48;i++)embers.push({x:Math.random(),y:Math.random(),v:.0010+rnd(.0028),
+  sw:rnd(6.3),sa:.4+rnd(1.3),r:.5+rnd(1.7),a:.25+rnd(.7),hot:Math.random()<.34});
+for(let i=0;i<22;i++)slashes.push({p:Math.random(),sp:.007+rnd(.016),y:.44+rnd(.5),
+  dir:coin(),len:.05+rnd(.12),w:.7+rnd(1.5),a:.3+rnd(.7)});
+for(let i=0;i<16;i++)orbits.push({a:rnd(6.3),sp:(.004+rnd(.009))*coin(),
+  rad:.15+rnd(.30),tilt:.45+rnd(.45),r:.7+rnd(1.9),al:.3+rnd(.6)});
+for(let i=0;i<30;i++)flecks.push({a:rnd(6.3),ph:rnd(6.3),sp:(.4+rnd(1.5))*coin(),
+  rad:.72+rnd(.4),r:.5+rnd(1.2),al:.25+rnd(.6)});
+
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#FF3D7F';
+const rgbOf=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+const rgba=(hex,a)=>{const c=rgbOf(hex);return `rgba(${c[0]},${c[1]},${c[2]},${a})`};
+
+const AURASTYLE={
+  /* Bladebound — curling tendrils reaching outward, plus rising motes. */
+  tendrils(C){
+    for(const t of tendrils){
+      t.a+=t.sp;ax.beginPath();
+      for(let s=0;s<=38;s++){
+        const f=s/38,ang=t.a+f*t.len*2.6;
+        const wob=Math.sin(C.now/700+t.ph+f*7)*t.wob*24*C.I;
+        const rr=(t.rad+wob)*(.5+f*.62)*C.I;
+        const x=C.cx+Math.cos(ang)*rr,y=C.cy+Math.sin(ang)*rr*.78;
+        s?ax.lineTo(x,y):ax.moveTo(x,y);
+      }
+      const g=ax.createLinearGradient(C.cx-t.rad,C.cy,C.cx+t.rad,C.cy);
+      g.addColorStop(0,'rgba(0,0,0,0)');
+      g.addColorStop(.5,rgba(C.mag,C.I*.5));
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ax.strokeStyle=g;ax.lineWidth=t.w*2;ax.lineCap='round';ax.stroke();
+    }
+    for(const m of motes){
+      m.y-=m.v;if(m.y<0){m.y=1;m.x=Math.random()}
+      ax.globalAlpha=m.a*C.I*(m.y<.3?m.y/.3:1);
+      ax.fillStyle=m.a>.55?C.core:C.mag;
+      ax.beginPath();ax.arc(m.x*C.W,m.y*C.H,m.r*2,0,6.3);ax.fill();
+    }
+  },
+  /* Ronin — embers falling and ash drifting, with a few hot sparks off the edge. */
+  embers(C){
+    for(const e of embers){
+      e.y+=e.v*(.45+C.I);
+      if(e.y>1.04){e.y=-.05;e.x=Math.random()}
+      const x=(e.x+Math.sin(C.now/900*e.sa+e.sw)*.055)*C.W, y=e.y*C.H;
+      const fade=e.y<.1?Math.max(0,e.y)/.1:e.y>.82?(1.04-e.y)/.22:1;
+      ax.globalAlpha=Math.max(0,e.a*C.I*fade);
+      ax.fillStyle=e.hot?C.core:C.mag;
+      ax.beginPath();ax.arc(x,y,e.r*2*(e.hot?1.3:1),0,6.3);ax.fill();
+    }
+    for(const m of motes){                       // sparks lifting off the blade
+      m.y-=m.v*1.7;if(m.y<0){m.y=1;m.x=.5+(Math.random()-.5)*.34}
+      const d=Math.abs(m.x-.5);
+      ax.globalAlpha=m.a*C.I*(m.y<.35?m.y/.35:1)*Math.max(0,1-d*3.6);
+      ax.fillStyle=C.core;
+      ax.beginPath();ax.arc(m.x*C.W,m.y*C.H,m.r*1.5,0,6.3);ax.fill();
+    }
+  },
+  /* Warden — slow heavy pulse rings, few and thick. */
+  pulse(C){
+    const maxR=Math.min(C.W,C.H)*.78;
+    ax.lineCap='butt';
+    for(let k=0;k<4;k++){
+      const t=((C.now/3600)+k/4)%1;
+      const r=maxR*(.14+t*.86)*(.5+C.I*.5);
+      const a=(1-t)*(1-t)*C.I*.6;
+      if(a<.004)continue;
+      ax.beginPath();ax.ellipse(C.cx,C.cy,r,r*.58,0,0,6.3);
+      ax.strokeStyle=rgba(k?C.mag:C.core,a);
+      ax.lineWidth=(10-k*1.8)*(.45+C.I*.55);ax.stroke();
+    }
+    for(const m of motes){                       // dust shaken loose, drifting up slowly
+      m.y-=m.v*.45;if(m.y<0){m.y=1;m.x=Math.random()}
+      ax.globalAlpha=m.a*C.I*.55*(m.y<.3?m.y/.3:1);
+      ax.fillStyle=C.mag;
+      ax.beginPath();ax.arc(m.x*C.W,m.y*C.H,m.r*1.8,0,6.3);ax.fill();
+    }
+  },
+  /* Arcanist — orbiting motes around a slowly rotating glyph. */
+  motes(C){
+    const gr=Math.min(C.W,C.H)*.34*(.55+C.I*.45);
+    ax.save();ax.translate(C.cx,C.cy);ax.scale(1,.62);
+    ax.rotate(C.now/9000);
+    ax.strokeStyle=rgba(C.mag,C.I*.34);ax.lineWidth=2.4;
+    ax.beginPath();ax.arc(0,0,gr,0,6.3);ax.stroke();
+    for(let k=0;k<12;k++){                       // tick marks on the outer ring
+      const a=k/12*6.3,s=k%3?1.06:1.16;
+      ax.beginPath();ax.moveTo(Math.cos(a)*gr,Math.sin(a)*gr);
+      ax.lineTo(Math.cos(a)*gr*s,Math.sin(a)*gr*s);ax.stroke();
+    }
+    ax.restore();
+    ax.save();ax.translate(C.cx,C.cy);ax.scale(1,.62);
+    ax.rotate(-C.now/5200);
+    ax.strokeStyle=rgba(C.core,C.I*.26);ax.lineWidth=1.8;
+    ax.beginPath();
+    for(let k=0;k<6;k++){                        // inner hexagram
+      const a=k*2*Math.PI/3, r2=gr*.66;
+      k?ax.lineTo(Math.cos(a)*r2,Math.sin(a)*r2):ax.moveTo(Math.cos(a)*r2,Math.sin(a)*r2);
+    }
+    ax.closePath();ax.stroke();ax.restore();
+    for(const o of orbits){
+      o.a+=o.sp*(.35+C.I);
+      const rr=Math.min(C.W,C.H)*o.rad*(.4+C.I*.75);
+      const x=C.cx+Math.cos(o.a)*rr,y=C.cy+Math.sin(o.a)*rr*o.tilt;
+      ax.globalAlpha=o.al*C.I;
+      ax.fillStyle=o.al>.7?C.core:C.mag;
+      ax.beginPath();ax.arc(x,y,o.r*2,0,6.3);ax.fill();
+    }
+  },
+  /* Stalker — fast flat shards, low in the frame, gone before you track them. */
+  shards(C){
+    ax.lineCap='butt';
+    for(const s of slashes){
+      s.p+=s.sp*(.5+C.I*1.8);
+      if(s.p>1){s.p=0;s.y=.44+rnd(.5);s.dir=coin();s.len=.05+rnd(.12);s.a=.3+rnd(.7)}
+      const life=s.p<.14?s.p/.14:(1-s.p)/.86;
+      const x=C.cx+s.dir*(.03+s.p*.64)*C.W, y=s.y*C.H;
+      ax.globalAlpha=s.a*C.I*life;
+      ax.strokeStyle=s.a>.78?C.core:C.mag;
+      ax.lineWidth=s.w*2;
+      ax.beginPath();ax.moveTo(x,y);ax.lineTo(x-s.dir*s.len*C.W,y);ax.stroke();
+    }
+  },
+  /* Ironclad — a tight shimmer worn close to the body. No reaching, no drift. */
+  shimmer(C){
+    const rw=C.W*.17*(.72+C.I*.38), rh=C.H*.40*(.74+C.I*.3);
+    for(let k=0;k<3;k++){
+      const o=1+k*.11;
+      ax.beginPath();ax.ellipse(C.cx,C.cy,rw*o,rh*(1+k*.05),0,0,6.3);
+      ax.strokeStyle=rgba(C.mag,C.I*(.22-k*.06));ax.lineWidth=2.2-k*.5;ax.stroke();
+    }
+    for(let k=0;k<4;k++){                        // highlights running around the shell
+      const t=((C.now/1600)+k/4)%1,a0=t*6.3;
+      ax.beginPath();ax.ellipse(C.cx,C.cy,rw*1.07,rh*1.03,0,a0,a0+.55);
+      ax.strokeStyle=rgba(C.core,C.I*.45*Math.sin(t*Math.PI));
+      ax.lineWidth=2.8;ax.lineCap='round';ax.stroke();
+    }
+    for(const f of flecks){
+      const a=f.a+C.now/2600*f.sp;
+      const x=C.cx+Math.cos(a)*rw*f.rad*1.2, y=C.cy+Math.sin(a)*rh*f.rad;
+      ax.globalAlpha=f.al*C.I*(.45+.55*Math.sin(C.now/420+f.ph));
+      ax.fillStyle=C.core;
+      ax.beginPath();ax.arc(x,y,f.r*1.7,0,6.3);ax.fill();
+    }
+  }
+};
 function bindAura(){
   ac=document.getElementById('aura');if(!ac){auraRunning=false;return}
   ax=ac.getContext('2d');sizeAura();
@@ -815,37 +1096,15 @@ addEventListener('resize',()=>{sizeAura()});
 function auraLoop(now){
   if(!ac||!ac.isConnected){auraRunning=false;return}
   ax.clearRect(0,0,AW,AH);
-  const I=Math.min(1,auraIdx()/3.2),cx=AW/2,cy=AH*.46;
+  const I=Math.min(1,auraIdx()/3.2);
   if(I>0&&!REDUCED){
-    for(const t of tendrils){
-      t.a+=t.sp;ax.beginPath();
-      for(let s=0;s<=38;s++){
-        const f=s/38,ang=t.a+f*t.len*2.6;
-        const wob=Math.sin(now/700+t.ph+f*7)*t.wob*24*I;
-        const rr=(t.rad+wob)*(.5+f*.62)*I;
-        const x=cx+Math.cos(ang)*rr,y=cy+Math.sin(ang)*rr*.78;
-        s?ax.lineTo(x,y):ax.moveTo(x,y);
-      }
-      const g=ax.createLinearGradient(cx-t.rad,cy,cx+t.rad,cy);
-      g.addColorStop(0,'rgba(0,0,0,0)');
-      g.addColorStop(.5,CSSVAR('--magenta-rgba',I*.5));
-      g.addColorStop(1,'rgba(0,0,0,0)');
-      ax.strokeStyle=g;ax.lineWidth=t.w*2;ax.lineCap='round';ax.stroke();
-    }
-    for(const m of motes){
-      m.y-=m.v;if(m.y<0){m.y=1;m.x=Math.random()}
-      ax.globalAlpha=m.a*I*(m.y<.3?m.y/.3:1);
-      ax.fillStyle=m.a>.55?cssv('--core'):cssv('--magenta');
-      ax.beginPath();ax.arc(m.x*AW,m.y*AH,m.r*2,0,6.3);ax.fill();
-    }
+    const draw=AURASTYLE[cls().aura]||AURASTYLE.tendrils;
+    draw({now,I,cx:AW/2,cy:AH*.46,W:AW,H:AH,
+          mag:cssv('--magenta'),core:cssv('--core'),crim:cssv('--crimson')});
     ax.globalAlpha=1;
   }
   requestAnimationFrame(auraLoop);
 }
-const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#FF3D7F';
-function CSSVAR(_,a){const c=cssv('--magenta');
-  const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);
-  return `rgba(${r},${g},${b},${a})`}
 
 /* ---------------- quest ---------------- */
 function seeded(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
@@ -893,23 +1152,39 @@ function touchStreak(){
 }
 
 /* ---------------- UI ---------------- */
-let tab='quest',filt={r:'all',c:'all',eq:'mine'},open=null,
-    ob={step:0,name:'',exp:null,goal:null,eq:[],days:null};
+let tab='quest',filt={r:'all',c:'all',eq:'mine'},open=null,ob;
+ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,class:'bladebound',palette:'crimson'};
 const root=document.getElementById('root');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;
   document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
-function applyBlade(){
-  const b=BLADES[S.blade],r=document.documentElement.style;
-  if(!b){['--crimson','--magenta','--core','--line'].forEach(v=>r.removeProperty(v));return}
-  for(const k in b)r.setProperty('--'+k,b[k]);
+const PALVARS=['crimson','magenta','core','line','deepblade','guard','grip','pommel'];
+function applyLook(id){
+  const p=PALETTES[id]||pal(),r=document.documentElement.style;
+  PALVARS.forEach(k=>r.setProperty('--'+k,p[k]));
+  r.setProperty('--c1',rgbOf(p.crimson).join(','));
+  r.setProperty('--m1',rgbOf(p.magenta).join(','));
+}
+/* A palette is usable if it's one of the free three, your class's own colour,
+   or something you bought. Cosmetic only — none of this touches progression. */
+const palFree=id=>FREEPAL.includes(id)||id===cls().pal;
+const palOwned=id=>palFree(id)||S.owned.includes('pal_'+id);
+const palList=()=>Object.keys(PALETTES);
+function palSwatch(id,on,attr){
+  const p=PALETTES[id];
+  return `<button class="palb ${on?'on':''}" ${attr} title="${esc(p.n)}"
+    style="--pa:${p.core};--pb:${p.magenta};--pc:${p.deepblade}"><i></i></button>`;
+}
+function titleName(){
+  const t=ALLTITLES[S.title];
+  return t?t.n:RANK_TITLE[rankOf(S.lvl)];
 }
 
 /* ----- onboarding ----- */
 function viewOB(){
   const s=ob.step;
   const wrap=(n,title,lead,body,btn,ok)=>`<div class="ob">
-    <div class="obstep">${n} of 5</div><h2>${title}</h2><p class="oblead">${lead}</p>${body}
+    <div class="obstep">${n} of 6</div><h2>${title}</h2><p class="oblead">${lead}</p>${body}
     <button class="btn" data-obnext ${ok?'':'disabled'}>${btn}</button>
     ${s>0?'<button class="btn ghost" data-obback>Back</button>':''}</div>`;
   const opt=(v,k,label,sub,multi)=>{
@@ -920,7 +1195,21 @@ function viewOB(){
     'Every ascendant needs a name. Yours gets etched into the steel.',
     `<input class="namein" id="obname" maxlength="18" placeholder="Enter your name" value="${esc(ob.name)}" autocomplete="off">`,
     'Begin',ob.name.trim().length>0);
-  if(s===1)return wrap(2,'How much have you trained?',
+  if(s===1){
+    const c=CLASSES[ob.class],free=palList().filter(p=>FREEPAL.includes(p)||p===c.pal);
+    return wrap(2,'Choose your class.',
+      'Cosmetic only. Class changes your weapon, your aura and what your tiers are called. Every class earns XP, gold and ranks at exactly the same rate — nobody gets an easier curve.',
+      `<div class="wprev">${bladeSVG(c.w)}</div>
+       <p class="picklab">Class</p>
+       <div class="clsgrid">${CLSKEYS.map(k=>`<button class="clsb ${ob.class===k?'on':''}" data-obcls="${k}">
+         ${CLASSES[k].n}<small>${CLASSES[k].wn}</small></button>`).join('')}</div>
+       <p class="clsline"><b>${esc(c.n)}.</b> ${esc(c.d)} Aura tiers run ${esc(c.tiers[0])} to ${esc(c.tiers[4])}.</p>
+       <p class="picklab" style="margin-top:20px">Palette</p>
+       <div class="palrow">${free.map(p=>palSwatch(p,ob.palette===p,`data-obpal="${p}"`)).join('')}</div>
+       <p class="clsline"><b>${esc(PALETTES[ob.palette].n)}.</b> ${esc(PALETTES[ob.palette].d)} More unlock in the vault.</p>`,
+      'Continue',true);
+  }
+  if(s===2)return wrap(3,'How much have you trained?',
     'Sets your starting level and which skills unlock now. Be honest, nobody is watching.',
     `<div class="opts">
       ${opt('new','exp','Brand new','Never really trained, or years off')}
@@ -928,7 +1217,7 @@ function viewOB(){
       ${opt('trained','exp','Trained','Consistent for a while, comfortable in a gym')}
       ${opt('adv','exp','Advanced','Years in. You have numbers you care about')}
     </div>`,'Continue',!!ob.exp);
-  if(s===2)return wrap(3,'What are you chasing?',
+  if(s===3)return wrap(4,'What are you chasing?',
     'Your daily quests get built around this. Changeable any time.',
     `<div class="opts">
       ${opt('muscle','goal','Build muscle','More pressing and pulling volume')}
@@ -936,11 +1225,11 @@ function viewOB(){
       ${opt('cond','goal','Conditioning','More cardio and full-body work')}
       ${opt('consist','goal','Just move more','Balanced and forgiving. Habit first')}
     </div>`,'Continue',!!ob.goal);
-  if(s===3)return wrap(4,'What can you get to?',
+  if(s===4)return wrap(5,'What can you get to?',
     'Pick everything you have access to. Nothing selected is fine — the bodyweight library is huge.',
     `<div class="opts">${Object.entries(EQNAME).map(([k,v])=>opt(k,'eq',v,'',1)).join('')}</div>`,
     ob.eq.length?'Continue':'I train with nothing but my body',true);
-  return wrap(5,'How many days a week?',
+  return wrap(6,'How many days a week?',
     'Decides how forgiving your streak is. Rest days are part of the plan, not a failure.',
     `<div class="opts">
       ${opt(3,'days','3 days','Aura survives up to 4 idle days')}
@@ -952,33 +1241,139 @@ function viewOB(){
 function finishOB(){
   S.setup=true;S.name=ob.name.trim().slice(0,18);S.exp=ob.exp;S.goal=ob.goal;
   S.eq=ob.eq.slice();S.days=ob.days;S.lvl=XPLEVEL[ob.exp]||1;
+  S.class=ob.class;S.palette=ob.palette;
   const bump={new:0,some:2,trained:5,adv:9}[ob.exp]||0;
   for(const k in S.stats)S.stats[k]+=bump;
   save();tab='quest';render();showIntro();
 }
 
-/* ----- shared pieces ----- */
-function bladeSVG(){
-  return `<svg class="blade-svg" viewBox="0 0 120 300" aria-hidden="true">
-    <defs>
-      <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="var(--core)"/>
-        <stop offset="38%" stop-color="var(--magenta)"/>
-        <stop offset="100%" stop-color="var(--deepblade)"/></linearGradient>
-      <linearGradient id="fuller" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="rgba(255,240,245,0)"/>
-        <stop offset="50%" stop-color="rgba(255,240,245,.85)"/>
-        <stop offset="100%" stop-color="rgba(255,240,245,0)"/></linearGradient>
-    </defs>
-    <path d="M60 8 L82 74 L82 214 L60 244 L38 214 L38 74 Z" fill="url(#edge)"/>
-    <rect x="57" y="70" width="6" height="146" fill="url(#fuller)"/>
-    <path d="M26 216 L94 216 L88 230 L32 230 Z" fill="var(--guard)"/>
-    <rect x="53" y="230" width="14" height="48" rx="3" fill="var(--grip)"/>
-    <circle cx="60" cy="284" r="9" fill="var(--pommel)"/>
-    <circle cx="60" cy="284" r="4" fill="var(--magenta)"/></svg>`;
+/* ----- weapons -----
+   Every weapon lives in the same 120x300 box, so the hero, the preview and the
+   shareable card all take one without any layout change. Fills come from the
+   palette custom properties only — never a literal hex — so recolouring is free. */
+const WEAPONDEFS=`<defs>
+  <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="var(--core)"/>
+    <stop offset="38%" stop-color="var(--magenta)"/>
+    <stop offset="100%" stop-color="var(--deepblade)"/></linearGradient>
+  <linearGradient id="edgeX" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="var(--core)"/>
+    <stop offset="42%" stop-color="var(--magenta)"/>
+    <stop offset="100%" stop-color="var(--deepblade)"/></linearGradient>
+  <linearGradient id="fuller" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="rgba(255,255,255,0)"/>
+    <stop offset="50%" stop-color="rgba(255,255,255,.8)"/>
+    <stop offset="100%" stop-color="rgba(255,255,255,0)"/></linearGradient>
+  <radialGradient id="orb" cx="38%" cy="32%" r="72%">
+    <stop offset="0%" stop-color="var(--core)"/>
+    <stop offset="34%" stop-color="var(--magenta)"/>
+    <stop offset="76%" stop-color="var(--crimson)"/>
+    <stop offset="100%" stop-color="var(--deepblade)"/></radialGradient>
+</defs>`;
+
+const WEAPONS={
+ /* straight double-edged blade with a fuller and a crossguard */
+ longsword:`
+  <path d="M60 8 L82 74 L82 214 L60 244 L38 214 L38 74 Z" fill="url(#edge)"/>
+  <rect x="57" y="70" width="6" height="146" fill="url(#fuller)"/>
+  <path d="M26 216 L94 216 L88 230 L32 230 Z" fill="var(--guard)"/>
+  <rect x="53" y="230" width="14" height="48" rx="3" fill="var(--grip)"/>
+  <circle cx="60" cy="284" r="9" fill="var(--pommel)"/>
+  <circle cx="60" cy="284" r="4" fill="var(--magenta)"/>`,
+
+ /* single curved edge, disc tsuba, wrapped tsuka */
+ katana:`
+  <path d="M84 14 C79 72 72 142 68 202 L53 202 C57 142 65 72 74 16 Z" fill="url(#edgeX)"/>
+  <path d="M56 198 C60 140 68 70 77 20" fill="none" stroke="var(--core)"
+        stroke-width="1.6" opacity=".45" stroke-dasharray="7 5"/>
+  <path d="M84 14 L74 16 L78 30 Z" fill="var(--core)" opacity=".9"/>
+  <rect x="51" y="200" width="19" height="11" rx="1.5" fill="var(--pommel)"/>
+  <ellipse cx="60" cy="216" rx="27" ry="7" fill="var(--guard)"/>
+  <ellipse cx="60" cy="214" rx="27" ry="7" fill="var(--pommel)"/>
+  <ellipse cx="60" cy="214" rx="8" ry="3" fill="var(--grip)"/>
+  <rect x="52" y="221" width="16" height="58" rx="2" fill="var(--grip)"/>
+  <g stroke="var(--guard)" stroke-width="3.4" stroke-linecap="round">
+    <path d="M52 231 L68 239"/><path d="M68 231 L52 239"/>
+    <path d="M52 249 L68 257"/><path d="M68 249 L52 257"/>
+    <path d="M52 267 L68 275"/><path d="M68 267 L52 275"/></g>
+  <rect x="50" y="277" width="20" height="9" rx="2" fill="var(--pommel)"/>`,
+
+ /* blunt mass on a long haft — the heaviest silhouette of the six */
+ hammer:`
+  <rect x="53" y="60" width="14" height="212" rx="2" fill="var(--grip)"/>
+  <path d="M20 40 L30 28 L90 28 L100 40 L100 84 L90 96 L30 96 L20 84 Z" fill="url(#edge)"/>
+  <path d="M20 40 L30 28 L90 28 L100 40 Z" fill="var(--core)" opacity=".28"/>
+  <rect x="26" y="44" width="13" height="36" rx="2" fill="var(--guard)"/>
+  <rect x="81" y="44" width="13" height="36" rx="2" fill="var(--guard)"/>
+  <rect x="51" y="24" width="18" height="76" rx="2" fill="var(--pommel)"/>
+  <path d="M60 50 L67 62 L60 74 L53 62 Z" fill="var(--core)"/>
+  <rect x="47" y="98" width="26" height="8" rx="2" fill="var(--guard)"/>
+  <rect x="47" y="244" width="26" height="8" rx="2" fill="var(--guard)"/>
+  <circle cx="60" cy="278" r="10" fill="var(--pommel)"/>
+  <circle cx="60" cy="278" r="4.5" fill="var(--magenta)"/>`,
+
+ /* orb held in a claw at the head of a long shaft */
+ staff:`
+  <rect x="55" y="70" width="10" height="204" rx="3" fill="var(--guard)"/>
+  <rect x="58" y="70" width="2.5" height="204" fill="url(#fuller)" opacity=".5"/>
+  <g fill="none" stroke="var(--pommel)" stroke-width="8" stroke-linecap="round">
+    <path d="M42 78 C30 58 34 28 50 16"/>
+    <path d="M78 78 C90 58 86 28 70 16"/></g>
+  <circle cx="60" cy="46" r="27" fill="url(#orb)"/>
+  <circle cx="60" cy="46" r="27" fill="none" stroke="var(--core)" stroke-width="1" opacity=".5"/>
+  <ellipse cx="51" cy="36" rx="8" ry="5" fill="var(--core)" opacity=".55" transform="rotate(-28 51 36)"/>
+  <ellipse cx="60" cy="46" rx="34" ry="9" fill="none" stroke="var(--magenta)"
+           stroke-width="1.6" opacity=".55" transform="rotate(-18 60 46)"/>
+  <circle cx="92" cy="38" r="3" fill="var(--core)" opacity=".8"/>
+  <circle cx="28" cy="56" r="2.4" fill="var(--magenta)" opacity=".8"/>
+  <rect x="48" y="96" width="24" height="9" rx="2" fill="var(--pommel)"/>
+  <rect x="48" y="208" width="24" height="9" rx="2" fill="var(--pommel)"/>
+  <path d="M52 274 L68 274 L60 294 Z" fill="var(--pommel)"/>`,
+
+ /* two short blades crossed */
+ daggers:(()=>{
+   const d=`
+     <path d="M60 44 L71 100 L71 176 L60 190 L49 176 L49 100 Z" fill="url(#edge)"/>
+     <rect x="58" y="98" width="4" height="76" fill="url(#fuller)"/>
+     <path d="M38 178 L82 178 L77 189 L43 189 Z" fill="var(--guard)"/>
+     <rect x="53" y="189" width="14" height="42" rx="3" fill="var(--grip)"/>
+     <rect x="53" y="199" width="14" height="3" fill="var(--guard)"/>
+     <rect x="53" y="213" width="14" height="3" fill="var(--guard)"/>
+     <circle cx="60" cy="238" r="8" fill="var(--pommel)"/>
+     <circle cx="60" cy="238" r="3.5" fill="var(--magenta)"/>`;
+   return `<g transform="translate(60 152) scale(.92) translate(-60 -152)">
+     <g transform="translate(-19 6) rotate(-19 60 152)" opacity=".92">${d}</g>
+     <g transform="translate(19 -6) rotate(19 60 152)">${d}</g></g>`;
+ })(),
+
+ /* no weapon — armoured fists, crossed */
+ gauntlets:(()=>{
+   const g=`
+     <path d="M45 118 L75 118 L79 208 L41 208 Z" fill="url(#edge)"/>
+     <path d="M52 122 L54 204 M68 122 L66 204" stroke="var(--core)" stroke-width="1.4" opacity=".35"/>
+     <rect x="40" y="150" width="40" height="8" rx="2" fill="var(--guard)"/>
+     <rect x="41" y="178" width="38" height="8" rx="2" fill="var(--guard)"/>
+     <rect x="41" y="106" width="38" height="13" rx="3" fill="var(--pommel)"/>
+     <path d="M42 74 Q42 60 56 58 L66 58 Q80 60 80 74 L80 96 Q80 106 68 106 L54 106 Q42 106 42 96 Z"
+           fill="var(--guard)"/>
+     <path d="M42 74 Q42 60 56 58 L66 58 Q80 60 80 74 L80 80 L42 80 Z" fill="var(--deepblade)"/>
+     <g fill="var(--magenta)">
+       <circle cx="49" cy="70" r="4"/><circle cx="58" cy="67" r="4.4"/>
+       <circle cx="67" cy="67" r="4.4"/><circle cx="76" cy="70" r="4"/></g>
+     <path d="M38 86 Q32 90 34 100 Q36 108 44 106" fill="none"
+           stroke="var(--guard)" stroke-width="7" stroke-linecap="round"/>
+     <rect x="48" y="212" width="24" height="10" rx="3" fill="var(--pommel)"/>`;
+   return `<g transform="translate(60 150) scale(.88) translate(-60 -150)">
+     <g transform="translate(-20 14) rotate(-16 60 150)" opacity=".9">${g}</g>
+     <g transform="translate(20 -14) rotate(16 60 150)">${g}</g></g>`;
+ })()
+};
+function bladeSVG(w){
+  const k=w||cls().w;
+  return `<svg class="blade-svg" viewBox="0 0 120 300" aria-hidden="true">${WEAPONDEFS}${WEAPONS[k]||WEAPONS.longsword}</svg>`;
 }
 function heroBlock(){
-  const t=auraTier(),i=auraIdx(),pct=Math.min(100,(i/(AURA.length-1))*100);
+  const i=auraIdx(),pct=Math.min(100,(i/(AURA.length-1))*100);
   const dead=S.streak===0;
   return `<section class="hero">
     <canvas id="aura"></canvas>
@@ -990,7 +1385,7 @@ function heroBlock(){
     </div>
     <div class="aurawrap">
       <div class="aurascale">
-        ${AURA.map((a,k)=>`<span class="as ${k<=i?'on':''} ${k===i?'cur':''}">${a.n}</span>`).join('')}
+        ${AURA.map((a,k)=>`<span class="as ${k<=i?'on':''} ${k===i?'cur':''}">${esc(tierName(k))}</span>`).join('')}
       </div>
       <div class="aurabar"><i style="width:${pct}%"></i></div>
       <p class="auranote">${dead
@@ -1001,10 +1396,9 @@ function heroBlock(){
 }
 function crestBlock(){
   const r=rankOf(S.lvl),n=need(S.lvl);
-  const title=S.title?(SHOP.find(x=>x.id===S.title)||{}).n:RANK_TITLE[r];
   return `<header class="mast">
     <div class="brandrow"><span class="brand">ASCENDANT</span>
-      <span class="matline">${r}-Rank · ${esc(title)}</span></div>
+      <span class="matline">${r}-Rank · ${esc(titleName())}</span></div>
   </header>
   <div class="lvlrow">
     <div class="lvlbadge"><span>${S.lvl}</span></div>
@@ -1102,19 +1496,45 @@ function heatmap(){
   return `<div class="heat">${cells.join('')}</div>
     <div class="heatkey"><span>10 weeks ago</span><span>today</span></div>`;
 }
+/* The vault shows your class's titles plus anything you already own from a class
+   you used to be. Palettes you haven't unlocked show up as buyable. */
+function shopItems(){
+  const out=[];
+  const mine=TITLES[S.class]||TITLES.bladebound;
+  for(const t of mine)out.push(Object.assign({k:'title'},t));
+  for(const k in TITLES)if(k!==S.class)for(const t of TITLES[k])
+    if(S.owned.includes(t.id))out.push(Object.assign({k:'title',old:CLASSES[k].n},t));
+  out.push(POTION);
+  for(const id of palList())if(!palOwned(id))
+    out.push({id:'pal_'+id,k:'pal',pal:id,n:PALETTES[id].n+' palette',p:PALPRICE[id],ico:'◆',d:PALETTES[id].d});
+  return out;
+}
 function viewVault(){
+  const owned=palList().filter(palOwned);
   return `<section class="block top">
+    <div class="blockhead"><h2>Appearance</h2></div>
+    <div class="wprev">${bladeSVG()}</div>
+    <p class="picklab">Class</p>
+    <div class="clsgrid">${CLSKEYS.map(k=>`<button class="clsb ${S.class===k?'on':''}" data-setcls="${k}">
+      ${CLASSES[k].n}<small>${CLASSES[k].wn}</small></button>`).join('')}</div>
+    <p class="clsline"><b>${esc(cls().n)}.</b> ${esc(cls().d)} Aura tiers run ${esc(cls().tiers[0])} to ${esc(cls().tiers[4])}.</p>
+    <p class="picklab" style="margin-top:20px">Palette</p>
+    <div class="palrow">${owned.map(p=>palSwatch(p,S.palette===p,`data-setpal="${p}"`)).join('')}</div>
+    <p class="clsline"><b>${esc(pal().n)}.</b> ${esc(pal().d)}</p>
+    <p class="note">Switching class or palette changes nothing but the look. Your level, gold, streak and records stay exactly where they are.</p>
+  </section>
+  <section class="block">
     <div class="blockhead"><h2>The Vault</h2><span class="tally"><span class="coin"></span> ${S.gold.toLocaleString()}</span></div>
-    ${SHOP.map(it=>{
-      const owned=S.owned.includes(it.id);
-      const eqd=(it.k==='title'&&S.title===it.id)||(it.k==='blade'&&S.blade===it.id);
+    ${shopItems().map(it=>{
+      const own=S.owned.includes(it.id);
+      const eqd=it.k==='title'&&S.title===it.id;
       let label='Buy · '+it.p,dis=S.gold<it.p;
-      if(it.k!=='potion'&&owned){label=eqd?'Equipped':'Equip';dis=false}
+      if(it.k==='title'&&own){label=eqd?'Equipped':'Equip';dis=false}
+      if(it.k==='pal'&&own){label='Unlocked';dis=true}
       return `<div class="item"><div class="ico">${it.ico}</div>
-        <div class="itxt"><h4>${esc(it.n)}</h4><p>${esc(it.d)}</p></div>
+        <div class="itxt"><h4>${esc(it.n)}</h4><p>${esc(it.d)}${it.old?' · '+esc(it.old)+' title':''}</p></div>
         <button class="mini ${eqd?'on':''}" data-shop="${it.id}" ${dis?'disabled':''}>${label}</button></div>`}).join('')}
     ${S.title?'<div class="item"><div class="ico">✕</div><div class="itxt"><h4>Remove title</h4><p>Back to your rank name.</p></div><button class="mini" data-shop="clear_title">Remove</button></div>':''}
-    ${S.blade?'<div class="item"><div class="ico">✕</div><div class="itxt"><h4>Default blade</h4><p>Back to crimson.</p></div><button class="mini" data-shop="clear_blade">Reset</button></div>':''}
   </section>
   <section class="block">
     <div class="blockhead"><h2>Your Profile</h2></div>
@@ -1141,7 +1561,7 @@ function viewEqEdit(){
 /* ----- shareable card ----- */
 function showCard(){
   const r=rankOf(S.lvl),t=auraTier();
-  const title=S.title?(SHOP.find(x=>x.id===S.title)||{}).n:RANK_TITLE[r];
+  const title=titleName();
   const top=Object.entries(S.stats).sort((a,b)=>b[1]-a[1])[0];
   const v=document.createElement('div');v.className='cardveil';v.dataset.veil='1';
   v.innerHTML=`<div class="cardwrap">
@@ -1153,6 +1573,7 @@ function showCard(){
       <div class="hc-blade">${bladeSVG()}</div>
       <div class="hc-id">
         <h3>${esc(S.name||'HUNTER')}</h3>
+        <p class="hc-cls">${esc(cls().n)}</p>
         <p>${esc(title)} · Level ${S.lvl}</p>
       </div>
       <div class="hc-stats">
@@ -1180,7 +1601,7 @@ function showCard(){
 
 /* ----- render ----- */
 function render(){
-  applyBlade();
+  applyLook(S.setup?S.palette:ob.palette);   // onboarding previews the pick, not the save
   if(!S.setup){root.innerHTML=viewOB();
     const n=document.getElementById('obname');
     if(n)n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');if(b)b.disabled=!ob.name.trim()};
@@ -1311,7 +1732,7 @@ function showIntro(){
   document.body.appendChild(d);
 }
 const TOUR=[
- {sel:'.blade',t:'This is your blade',x:'It burns as long as you keep training. Let the streak die and it goes dark and dull.'},
+ {sel:'.blade',t:'This is your weapon',x:'It burns as long as you keep training. Let the streak die and it goes dark and dull.'},
  {sel:'.lvlrow',t:'Level, XP and gold',x:'Every skill you log pays both. Fill the bar and you level up, which unlocks harder skills.'},
  {sel:'.props',t:'Your stats',x:'STR, END, VIT, AGI and CORE grow from the kind of work you actually do. Level ups raise all five.'},
  {sel:'.work',t:'The daily quest',x:'Five skills picked for your goal and your equipment. Rebuilt every morning at midnight.'},
@@ -1319,7 +1740,7 @@ const TOUR=[
  {sel:'[data-dungeon]',t:'Instant dungeon',x:'Optional six-minute bonus on days you have extra in the tank.'},
  {sel:'[data-tab="lib"]',t:'The library',x:'73 skills from wall push-ups to power cleans, ranked E through A.'},
  {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Also where you generate a card to screenshot and send to the group chat.'},
- {sel:'[data-tab="vault"]',t:'The vault',x:'Spend gold on titles and blade colors. Change your goal, kit or rest days here too.'}
+ {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — it costs nothing and resets nothing. Spend gold on titles and new palettes. Goal, kit and rest days live here too.'}
 ];
 let tour={on:false,i:0,els:null};
 function startTour(){
@@ -1372,6 +1793,19 @@ document.addEventListener('click',ev=>{
   if(t.closest('[data-replaytour]')){tab='quest';render();startTour();return}
   if(tour.on)return;
 
+  const oc=t.closest('[data-obcls]');
+  if(oc){ob.class=oc.dataset.obcls;
+    if(!FREEPAL.includes(ob.palette))ob.palette=CLASSES[ob.class].pal;
+    render();return}
+  const op=t.closest('[data-obpal]');
+  if(op){ob.palette=op.dataset.obpal;render();return}
+  const sc=t.closest('[data-setcls]');
+  if(sc){S.class=sc.dataset.setcls;                 // cosmetic swap: progression untouched
+    if(!palOwned(S.palette))S.palette=cls().pal;
+    save();render();return}
+  const sp=t.closest('[data-setpal]');
+  if(sp){if(palOwned(sp.dataset.setpal)){S.palette=sp.dataset.setpal;save();render()}return}
+
   const o=t.closest('[data-ob]');
   if(o){const [k,v]=o.dataset.ob.split(':');
     if(k==='eq'){const i=ob.eq.indexOf(v);i>=0?ob.eq.splice(i,1):ob.eq.push(v)}
@@ -1379,7 +1813,7 @@ document.addEventListener('click',ev=>{
     render();return}
   if(t.closest('[data-obnext]')){
     if(ob.step===0){const n=document.getElementById('obname');if(n)ob.name=n.value}
-    if(ob.step===4){finishOB();return}
+    if(ob.step===5){finishOB();return}
     ob.step++;render();return}
   if(t.closest('[data-obback]')){ob.step=Math.max(0,ob.step-1);render();return}
 
@@ -1416,14 +1850,14 @@ document.addEventListener('click',ev=>{
   const sh=t.closest('[data-shop]');
   if(sh){const id=sh.dataset.shop;
     if(id==='clear_title'){S.title=null;save();render();return}
-    if(id==='clear_blade'){S.blade=null;save();render();return}
-    const it=SHOP.find(x=>x.id===id),owned=S.owned.includes(id);
+    const it=shopItems().find(x=>x.id===id);if(!it)return;
+    const owned=S.owned.includes(id);
     if(it.k==='potion'){if(S.gold<it.p){toast('Not enough gold');return}
       S.gold-=it.p;S.potions++;toast('Elixir acquired');save();render();return}
     if(!owned){if(S.gold<it.p){toast('Not enough gold');return}
       S.gold-=it.p;S.owned.push(id);toast(it.n+' acquired')}
     if(it.k==='title')S.title=S.title===id?null:id;
-    if(it.k==='blade')S.blade=S.blade===id?null:id;
+    if(it.k==='pal')S.palette=it.pal;
     save();render();return}
 
   if(t.closest('[data-cyclegoal]')){const k=Object.keys(GOALS);
@@ -1436,11 +1870,9 @@ document.addEventListener('click',ev=>{
   if(t.closest('[data-eqdone]')){tab='vault';save();toast('Kit updated');render();return}
   if(t.closest('[data-reset]')){
     if(!confirm('Wipe your hunter and start over? This cannot be undone.'))return;
-    S={setup:false,name:'',goal:'consist',exp:'new',eq:[],days:4,lvl:1,xp:0,gold:0,streak:0,best:0,last:null,
-      stats:{STR:5,END:5,VIT:5,AGI:5,CORE:5},prs:{pushup:0,squat:0,plank:0},logs:0,questDate:null,
-      questDone:[],questBonus:false,owned:[],title:null,blade:null,potions:0,tourSeen:false,history:{},clears:0};
-    ob={step:0,name:'',exp:null,goal:null,eq:[],days:null};
-    save();applyBlade();render();return}
+    S=fresh();
+    ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,class:'bladebound',palette:'crimson'};
+    save();applyLook();render();return}
 });
 
 /* ---------------- boot ---------------- */
