@@ -13,11 +13,15 @@ const AUTHORED=new Set(('squat lunge hinge pushup birddog deadbug stepup bb_ohp 
 'bear climber jack handstand diamond bb_ohp_push burpee_s burpee_f bb_clean kb_tgu kb_cp '+
 'mch_chest mch_shoulder mch_pecdeck mch_row mch_hack bb_sumo tb_dl bb_goodmorning '+
 'bb_pendlay bb_incline bb_frontlunge db_gobletlunge db_arnold lm_press db_farmerwalk '+
-'wallpush bb_squat calf cable_row db_row db_tri db_bench bb_bench db_floor march pike kb_halo'
+'wallpush bb_squat calf cable_row db_row db_tri db_bench bb_bench db_floor march pike kb_halo '+
+'ghr handstand cbl_kick cbl_pullthrough ttb mch_incline rowerg trx_row db_walklunge '+
+'plank kneeplank sideplank sideknee'
 ).split(/\s+/).filter(Boolean));
 
 /* Behaviour, stated per movement rather than inferred from the category. */
-const HOLD=new Set('plank kneeplank sideplank sideknee hollow wallsit bear hang handstand superman db_wrist'.split(' '));
+const HOLD=new Set('plank kneeplank sideplank sideknee hollow wallsit bear hang handstand superman'.split(' '));
+/* Known limits of an 11-joint rig, stated rather than hidden. */
+const LIMIT={db_wrist:'no wrist joint in the rig — the setup pose carries the identification, the motion is necessarily small'};
 const ALT =new Set('birddog deadbug climber march db_walklunge'.split(' '));
 const LOCO=new Set('db_carry db_farmerwalk kb_carry_rack treadmill sled_push rowerg'.split(' '));
 const kind=e=>{const f=M.framesFor(e);
@@ -26,7 +30,16 @@ const kind=e=>{const f=M.framesFor(e);
   if(ALT.has(e.id))return 'alternating';
   if(f.length>2)return 'multi-phase';
   return 'rep'};
+/* What the painter can actually draw, so "has context" is a fact about the
+   rendered picture rather than about the data. */
+const SETKEYS=new Set([...M.src.slice(M.src.indexOf('const SET={'),
+  M.src.indexOf('function paintFig')).matchAll(/^\s{2}([a-z0-9]+):/gm)].map(m=>m[1]));
+const HELD=new Set([...M.src.matchAll(/prop==='([a-z0-9]+)'/g)].map(m=>m[1]));
+const draws=p=>!!p&&p.split('+').some(q=>SETKEYS.has(q)||HELD.has(q));
 const status=e=>{
+  /* a movement that needs kit but draws none is a bare figure, whatever I did to it */
+  if(e.eq.length&&!draws(e.p))return ['NEEDS REVIEW','need'];
+  if(!e.f&&draws(by[e.ref].p)&&!draws(e.p))return ['NEEDS REVIEW','need'];
   if(!e.f)return ['VERIFIED SHARED','shared'];
   if(AUTHORED.has(e.id))return ['RE-AUTHORED','re'];
   return ['VERIFIED UNIQUE','uniq'];
@@ -59,6 +72,12 @@ function held(p,prop){
   if(prop==='cablemid')return `<rect x="93" y="44" width="7" height="12" class="eqs"/><line x1="94" y1="50" x2="${fH.x}" y2="${fH.y}" class="eqc"/>`+db(fH);
   if(prop==='strap')return `<line x1="${bH.x}" y1="4" x2="${bH.x}" y2="${bH.y}" class="eqc"/><line x1="${fH.x}" y1="4" x2="${fH.x}" y2="${fH.y}" class="eqc"/>`;
   if(prop==='plate')return `<circle cx="${(bH.x+fH.x)/2}" cy="${(bH.y+fH.y)/2}" r="6" class="eqo"/>`;
+  if(prop==='tbar')return `<line x1="${fH.x-9}" y1="${fH.y}" x2="${fH.x+9}" y2="${fH.y}" class="eqf2"/>`+
+    `<circle cx="${fH.x}" cy="83" r="10.5" class="eqo"/>`;
+  if(prop==='cableank')return `<rect x="93" y="78" width="7" height="12" class="eqs"/>`+
+    `<line x1="94" y1="84" x2="${p[6].x}" y2="${p[6].y}" class="eqc"/>`;
+  if(prop==='cablelob')return `<rect x="0" y="78" width="7" height="12" class="eqs"/>`+
+    `<line x1="6" y1="84" x2="${fH.x}" y2="${fH.y}" class="eqc"/>`;
   return '';
 }
 function still(pose,prop){
@@ -95,7 +114,8 @@ for(const g of Object.keys(groups).sort()){
       `<b>${e.n}</b><code>${e.id}</code></div>`+
       `<div class="meta"><span class="tag ${cls}">${st}</span>`+
       `<span class="tag k">${k}</span> ${e.c} · ${e.d} · ${f.length} frame${f.length>2?'s':'s'}`+
-      (e.f?'':` · <i>shares <code>${e.ref}</code> (${by[e.ref].n})</i>`)+`</div>`+
+      (e.f?'':` · <i>shares <code>${e.ref}</code> (${by[e.ref].n})</i>`)+
+      (LIMIT[e.id]?`<div class="lim">rig limit: ${LIMIT[e.id]}</div>`:'')+`</div>`+
       `<div class="strip">`+
         `<div><span>start</span>${still(f[0],e.p)}</div>`+
         `<div><span>mid</span>${still(mid(f),e.p)}</div>`+
@@ -132,6 +152,9 @@ button[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var
 .c.re{border-left:3px solid var(--re)}
 .c.uniq{border-left:3px solid var(--uniq)}
 .c.shared{border-left:3px solid var(--shared)}
+.c.need{border-left:3px solid #ff5c5c}
+.tag.need{color:#ff5c5c}
+.lim{margin-top:4px;font-size:10px;color:#c9a227}
 .hh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .hh b{font-size:13px}
 code{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim)}
@@ -161,6 +184,12 @@ animation at the 52&nbsp;px size it actually appears on a quest card. The suppor
 surfaces are drawn: bar, bench, box, wall, dip bars, machine seat, cable anchor,
 straps, sled. Review by asking one question per movement — <b>with the name covered,
 would a gym-goer recognise this exercise?</b></p>
+<p class="lead"><b>What the statuses mean.</b> They are machine-checked against
+per-exercise expectations — that the right joints move, that supports do not
+drift, and that the drawn illustration carries the equipment its name implies.
+That last check is new: the earlier audit computed status from what I had edited,
+which was circular and could only ever report zero. It still is not the same as
+a human looking at the 52&nbsp;px column, which is the real acceptance test.</p>
 <div class="sum">
 <div><b>${tally['RE-AUTHORED']}</b>re-authored</div>
 <div><b>${tally['VERIFIED UNIQUE']}</b>verified unique</div>
@@ -173,6 +202,7 @@ ${Object.entries(kinds).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div><b>${v}</b>${k
 <button data-f="RE-AUTHORED">re-authored</button>
 <button data-f="VERIFIED UNIQUE">verified unique</button>
 <button data-f="VERIFIED SHARED">verified shared</button>
+<button data-f="NEEDS REVIEW">needs review</button>
 <button data-f="hold">holds</button>
 <button data-f="alternating">alternating</button>
 <button data-f="multi-phase">multi-phase</button>
