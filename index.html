@@ -139,19 +139,7 @@ html,body{margin:0;background:var(--void)}
 .kitbar .note{font-size:11.5px;line-height:1.5}
 
 /* work list */
-.work{list-style:none;margin:0;padding:0}
-.work li{list-style:none}
-.w{display:flex;align-items:center;gap:15px;padding:14px 0;width:100%;text-align:left;
-  background:none;border:0;border-bottom:1px solid var(--line);color:inherit;font:inherit;cursor:pointer}
-.work li:first-child .w{border-top:1px solid var(--line)}
-.wtitle{display:block;font-size:15.5px}
-.wdose{display:block;margin:3px 0 0;font-size:11.5px;color:var(--ash);letter-spacing:.09em;text-transform:uppercase}
 .wmeta{flex:1;min-width:0}
-.wmark{width:26px;height:26px;flex:0 0 26px;border:1px solid var(--line);display:grid;place-items:center;
-  color:var(--magenta);font-size:13px}
-.w.done{opacity:.4}
-.w.done .wmark{border-color:var(--crimson);background:rgba(var(--c1),.1)}
-.w.done .wtitle{text-decoration:line-through;text-decoration-color:var(--ash)}
 
 /* library */
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
@@ -377,6 +365,40 @@ html,body{margin:0;background:var(--void)}
 .hc-prs b{display:block;font-family:var(--display);font-size:22px;color:var(--gold);font-weight:700;margin-top:3px}
 .hc-foot{text-align:center;font-size:10.5px;color:var(--ash);letter-spacing:.09em;padding-top:14px}
 
+/* milestones */
+.achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px}
+.ach{border:1px solid var(--line);padding:10px;background:linear-gradient(180deg,#0A0509,#020102);opacity:.5}
+.ach.on{opacity:1;border-color:var(--crimson)}
+.ach b{display:block;font-size:13px;font-weight:600}
+.ach span{display:block;font-size:11px;color:var(--ash);margin-top:3px;line-height:1.4}
+.ach i{display:block;font-style:normal;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);margin-top:7px}
+.ach.on i{color:var(--magenta)}
+.earned{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--magenta);
+  border:1px solid var(--line);padding:1px 5px;margin-left:5px;font-weight:400}
+
+.atap{position:absolute;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom));
+  text-align:center;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ash);opacity:0;animation:lineIn .5s 1.2s forwards}
+.questteaser{font-size:13.5px;color:var(--ash);line-height:1.6;margin:12px 0 0}
+.lastlog{font-size:12px;color:var(--ash);margin:-8px 0 14px;letter-spacing:.04em}
+.lastlog span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-right:8px}
+.loglist{width:100%;margin-top:6px}
+.logline{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.logline span{color:var(--ash)}
+.logline b{font-family:var(--display);font-size:17px}
+
+/* weekly recap */
+.wk-bars{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;padding:16px 0 12px;
+  border-bottom:1px solid var(--line);align-items:end;height:96px}
+.wk-day{display:flex;flex-direction:column;justify-content:flex-end;height:100%;gap:5px}
+.wk-day i{display:block;width:100%;min-height:3px;
+  background:linear-gradient(180deg,var(--magenta),var(--deepblade));border:1px solid var(--crimson)}
+.wk-day u{display:block;text-align:center;font-size:9px;color:var(--ash);
+  text-decoration:none;letter-spacing:.08em}
+.wk-recent{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding-top:12px}
+
 /* toast */
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:82px;z-index:80;
   background:#0A0509;border:1px solid var(--crimson);color:var(--magenta);
@@ -400,7 +422,6 @@ html,body{margin:0;background:var(--void)}
 .doseup{font-size:9px;letter-spacing:.14em;color:var(--magenta);border:1px solid var(--line);
   padding:1px 5px;margin-left:6px;text-transform:uppercase;font-family:var(--body)}
 .mustag{font-size:11px;color:var(--magenta);letter-spacing:.06em}
-.wmus{margin:3px 0 0;font-size:11px;color:var(--magenta);letter-spacing:.05em}
 .cardmus{margin:3px 0 0;font-size:10.5px;color:var(--magenta);letter-spacing:.04em;line-height:1.3}
 
 /* A visible focus ring that is ours, not the browser default, and only for
@@ -457,9 +478,6 @@ html,body{margin:0;background:var(--void)}
 .kitline b{color:var(--bone);font-weight:600}
 .linkish{background:none;border:0;color:var(--magenta);font:inherit;font-size:12px;
   cursor:pointer;text-decoration:underline;padding:4px 6px;min-height:32px}
-.wswap{width:40px;height:40px;flex:0 0 40px;background:none;border:1px solid var(--line);
-  color:var(--ash);font:inherit;font-size:15px;cursor:pointer;align-self:center}
-.work li{display:flex;align-items:stretch;gap:8px}
 
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
@@ -1195,6 +1213,64 @@ const POTION={id:'p_rest',k:'potion',n:'Elixir of Rest',p:150,ico:'⌛',
 
 /* v3 blades map straight onto v4 palettes so nobody's colour changes under them. */
 const BLADEPAL={bl_ember:'ember',bl_frost:'frost',bl_void:'void'};
+/* Milestones. `t` reads state and returns true once earned. Some unlock a title
+   rather than selling one — a title you earned is worth more than one you bought. */
+const ACH=[
+ {id:'a_first',n:'First Blood',d:'Cleared your first daily quest.',xp:40,g:30,
+  t:()=>S.clears>=1},
+ {id:'a_s7',n:'Seven Days',d:'A seven day streak.',xp:60,g:50,t:()=>S.best>=7},
+ {id:'a_s30',n:'Thirty Days',d:'A thirty day streak.',xp:150,g:150,t:()=>S.best>=30,
+  title:'t_earned30'},
+ {id:'a_s100',n:'The Hundred',d:'A hundred day streak.',xp:400,g:500,t:()=>S.best>=100,
+  title:'t_earned100'},
+ {id:'a_l50',n:'Fifty Logged',d:'Fifty movements logged.',xp:50,g:40,t:()=>S.logs>=50},
+ {id:'a_l250',n:'Two Fifty',d:'Two hundred and fifty movements logged.',xp:120,g:120,
+  t:()=>S.logs>=250},
+ {id:'a_l1000',n:'The Thousand',d:'A thousand movements logged.',xp:350,g:400,
+  t:()=>S.logs>=1000,title:'t_earned1k'},
+ {id:'a_push',n:'First Full Push-Up',d:'Logged a full push-up.',xp:60,g:50,
+  t:()=>(S.perf.pushup||[]).length>0},
+ {id:'a_chin',n:'First Chin-Up',d:'Logged a chin-up.',xp:80,g:70,
+  t:()=>(S.perf.chinup||[]).length>0},
+ {id:'a_double',n:'Twice What You Were',d:'Doubled any personal record.',xp:150,g:150,
+  t:()=>{for(const k in S.prFirst){const f=S.prFirst[k];if(f&&S.prs[k]>=f*2)return true}return false},
+  title:'t_earneddbl'},
+ {id:'a_cats',n:'Well Rounded',d:'Logged a movement in every category.',xp:100,g:80,
+  t:()=>Object.keys(CATS).every(c=>(S.catsLogged||[]).includes(c))},
+ {id:'a_travel',n:'Roadworn',d:'Cleared a quest away from your full kit.',xp:80,g:70,
+  t:()=>!!S.travelClear},
+ {id:'a_outgrow',n:'Outgrown',d:'Outgrew a movement and moved up its chain.',xp:100,g:90,
+  t:()=>S.outgrown.length>=1},
+ {id:'a_rD',n:'D-Rank',d:'Reached D-Rank.',xp:0,g:60,t:()=>S.lvl>=RANK_LV.D},
+ {id:'a_rC',n:'C-Rank',d:'Reached C-Rank.',xp:0,g:120,t:()=>S.lvl>=RANK_LV.C},
+ {id:'a_rB',n:'B-Rank',d:'Reached B-Rank.',xp:0,g:250,t:()=>S.lvl>=RANK_LV.B,title:'t_earnedB'},
+ {id:'a_rA',n:'A-Rank',d:'Reached A-Rank.',xp:0,g:500,t:()=>S.lvl>=RANK_LV.A,title:'t_earnedA'}
+];
+/* Titles that can only be earned, never bought. */
+const EARNED={
+ t_earned30:{id:'t_earned30',n:'Unbroken',p:0,ico:'✦',d:'Thirty days without letting the aura die.'},
+ t_earned100:{id:'t_earned100',n:'The Hundred',p:0,ico:'♛',d:'A hundred days. Earned, not bought.'},
+ t_earned1k:{id:'t_earned1k',n:'Thousandfold',p:0,ico:'⛬',d:'A thousand movements logged.'},
+ t_earneddbl:{id:'t_earneddbl',n:'Twice the Hunter',p:0,ico:'⇈',d:'You doubled a record you set yourself.'},
+ t_earnedB:{id:'t_earnedB',n:'Master',p:0,ico:'⚔',d:'Reached B-Rank.'},
+ t_earnedA:{id:'t_earnedA',n:'Grandmaster',p:0,ico:'☗',d:'Reached A-Rank.'}
+};
+/* Checked after anything that could move the needle. Modest moment: a toast and
+   a badge, never the full level-up sequence. */
+function checkAch(){
+  let got=null;
+  for(const a of ACH){
+    if(S.ach.includes(a.id))continue;
+    let ok=false; try{ok=!!a.t()}catch(e){ok=false}
+    if(!ok)continue;
+    S.ach.push(a.id);
+    if(a.xp||a.g)award(a.xp||0,a.g||0,null);
+    if(a.title&&!S.owned.includes(a.title))S.owned.push(a.title);
+    got=a;
+  }
+  if(got){save();toast('Milestone · '+got.n);buzz&&buzz([0,30,40,60])}
+  return got;
+}
 const GOALS={
  muscle:{n:'Build muscle',w:{push:3,pull:3,legs:3,core:1,cardio:1,full:1}},
  strong:{n:'Get stronger',w:{push:3,pull:3,legs:4,core:2,cardio:1,full:2}},
@@ -1228,7 +1304,10 @@ const fresh=()=>({
  /* Mission 3. perf: last few logged results per movement. prog: how far a
     movement's target has stepped up and how many hits toward the next step.
     outgrown: movements already announced, so we only say it once. */
- perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false
+ perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
+ /* Milestones earned, the first value of each PR so doubling can be detected,
+    which categories have been logged, and whether a travel quest was cleared. */
+ ach:[], prFirst:{}, catsLogged:[], travelClear:false
 });
 let S=fresh();
 const need=l=>40+l*30;
@@ -1374,6 +1453,9 @@ function heal(){
   if(!Array.isArray(S.questDone))S.questDone=[];
   if(!Array.isArray(S.limits))S.limits=[];
   if(!Array.isArray(S.outgrown))S.outgrown=[];
+  if(!Array.isArray(S.ach))S.ach=[];
+  if(!Array.isArray(S.catsLogged))S.catsLogged=[];
+  if(!S.prFirst||typeof S.prFirst!=='object')S.prFirst={};
   for(const k of ['perf','prog','avoid'])if(!S[k]||typeof S[k]!=='object')S[k]={};
   if(!S.stats||typeof S.stats!=='object')S.stats=f.stats;
   if(!S.prs||typeof S.prs!=='object')S.prs=f.prs;
@@ -1648,6 +1730,11 @@ function rollQuest(){const d=today();
 
 /* ---------------- progression ---------------- */
 let pendingLevel=null;
+/* Called wherever a movement is logged, so milestones see everything. */
+function noteLogged(e){
+  if(e&&!S.catsLogged.includes(e.c))S.catsLogged.push(e.c);
+  if(curPreset()!=='kit')S.travelClear=true;
+}
 function award(xp,gold,stat){
   S.xp+=xp;S.gold+=gold;S.logs++;
   if(stat&&S.stats[stat]!==undefined)S.stats[stat]+=1;
@@ -1784,8 +1871,10 @@ function clearMovement(e,actual){
     }
   }
   if(actual!=null)recordPerf(e,actual);
+  noteLogged(e);
   const nx=checkOutgrown(e);
   if(nx)toast('You have outgrown '+e.n+' · '+nx.n+' unlocked');
+  checkAch();
   if(!o.cleared.includes(e.id))o.cleared.push(e.id);
   o.i++;o.set=1;o.st='brief';o.endAt=0;
   while(o.i<q.length&&S.questDone.includes(q[o.i].id))o.i++;
@@ -1860,7 +1949,7 @@ const wepGrid=(sel,attr,buy)=>`<div class="clsgrid">${WEPKEYS.map(k=>{
     own?'':`<small><span class="coin" aria-hidden="true"></span>${p}</small>`}</button>`}).join('')}</div>`;
 
 function titleName(){
-  const t=ALLTITLES[S.title];
+  const t=ALLTITLES[S.title]||EARNED[S.title];
   return t?t.n:RANK_TITLE[rankOf(S.lvl)];
 }
 
@@ -2176,6 +2265,8 @@ function viewRun(){
     <p class="runstep">Movement ${o.i+1}</p>
     <h2 class="runh">${esc(e.n)}</h2>
     <p class="runsub">${CATS[e.c]} · builds ${e.st} · ${esc(scaledDose(e))}</p>
+    ${(S.perf[e.id]||[]).length?`<p class="lastlog"><span>Last time</span>
+      ${S.perf[e.id].slice(-3).join(' · ')}${isTimed(e)?'s':' reps'}</p>`:''}
     ${bodyMap(e.mus)}
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
     <button class="btn big" data-runstart>Start · ${esc(scaledDose(e))}</button>
@@ -2230,6 +2321,10 @@ function viewRunDone(o,q){
       <div><span>Gold</span><b>+${o.gold}</b></div>
       <div><span>Time</span><b>${mins}m</b></div>
     </div>
+    ${(o.log||[]).length?`<div class="loglist">
+      <p class="runstep" style="margin:14px 0 6px">What you logged</p>
+      ${o.log.map(l=>`<div class="logline"><span>${esc(l.n)} · set ${l.set}</span><b>${l.reps}</b></div>`).join('')}
+    </div>`:''}
     <button class="btn big" data-card>Share your card</button>
     <button class="btn ghost" data-runfinish>Done</button>
   </div></div>`;
@@ -2241,21 +2336,13 @@ function viewQuest(){
   return crestBlock()+heroBlock()+statsBlock()+`
   <section class="block">
     <div class="blockhead"><h2>Daily Quest</h2><span class="tally">${cleared} / ${q.length} cleared</span></div>
+    ${all?'<div class="cleared">Quest cleared</div>':`
+    <p class="questteaser">${q.length} movements are waiting. You will see them one at a time.</p>
     ${(()=>{const o=sess();
-      return `<button class="btn big" data-begin>${o?'Resume Quest':'Begin Quest'}</button>`})()}
+      return `<button class="btn big" data-begin>${o?'Resume Quest':'Begin Quest'}</button>`})()}`}
     ${kitBar()}
     ${q.length<5?`<p class="note" style="margin-top:0">Only ${q.length} movement${q.length===1?'':'s'} available at this rank with today's kit. Widen the kit or level up for more.</p>`:''}
-    <ul class="work">
-      ${q.map((e,i)=>{const dn=done.includes(e.id);return `<li>
-        <button class="w ${dn?'done':''}" data-q="${e.id}"
-          aria-label="${esc(e.n)}, ${esc(scaledDose(e))}, works ${e.mus.p.map(musName).join(' and ')}. ${dn?'Logged today':'Not yet logged'}">
-        <span class="wmeta"><span class="wtitle">${esc(e.n)}</span><span class="wdose">${esc(scaledDose(e))}</span>
-          <span class="wmus">${e.mus.p.map(musName).join(" · ")}</span></span>
-        <span class="wmark" aria-hidden="true">${dn?'✦':''}</span></button>
-        <button class="wswap" data-swap="${e.id}" aria-label="Swap ${esc(e.n)}">⇄</button></li>`}).join('')}
-    </ul>
-    ${all?'<div class="cleared">Quest cleared</div>':''}
-    <p class="note">Tap a row for the form cues and to log it. Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn\'t.</p>
+    <p class="note">Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn\'t.</p>
   </section>
   <section class="block">
     <div class="blockhead"><h2>Instant Dungeon</h2></div>
@@ -2316,8 +2403,18 @@ function viewRecords(){
     ${heatmap()}
   </section>
   <section class="block">
+    <div class="blockhead"><h2>Milestones</h2><span class="tally">${S.ach.length} of ${ACH.length}</span></div>
+    <div class="achgrid">${ACH.map(a=>{const on=S.ach.includes(a.id);
+      return `<div class="ach ${on?'on':''}">
+        <b>${esc(a.n)}</b><span>${esc(a.d)}</span>
+        <i>${on?'Earned':(a.xp?a.xp+' XP · ':'')+a.g+' gold'}${a.title&&!on?' · title':''}</i>
+      </div>`}).join('')}</div>
+    <p class="note">Locked ones stay visible. A goal you can see is worth more than a surprise.</p>
+  </section>
+  <section class="block">
     <button class="btn" data-card>Generate shareable card</button>
-    <p class="note">Makes a clean card of your stats to screenshot and send.</p>
+    <button class="btn ghost" data-week>Your week</button>
+    <p class="note">The hunter card says who you are. The week card says what you did.</p>
   </section>`;
 }
 function heatmap(){
@@ -2340,6 +2437,8 @@ function shopItems(){
   for(const t of mine)out.push(Object.assign({k:'title'},t));
   for(const k in TITLES)if(k!==S.class)for(const t of TITLES[k])
     if(S.owned.includes(t.id))out.push(Object.assign({k:'title',old:CLASSES[k].n},t));
+  /* Earned titles sit alongside the bought ones, marked and priceless. */
+  for(const id of S.owned)if(EARNED[id])out.push(Object.assign({k:'title',earned:1},EARNED[id]));
   out.push(POTION);
   return out;
 }
@@ -2367,10 +2466,12 @@ function viewVault(){
       const own=S.owned.includes(it.id);
       const eqd=it.k==='title'&&S.title===it.id;
       let label='Buy · '+it.p,dis=S.gold<it.p;
-      if(it.k==='title'&&own){label=eqd?'Equipped':'Equip';dis=false}
+      if(it.earned){label=eqd?'Equipped':'Equip';dis=false}
+      else if(it.k==='title'&&own){label=eqd?'Equipped':'Equip';dis=false}
       if(it.k==='pal'&&own){label='Unlocked';dis=true}
       return `<div class="item"><div class="ico">${it.ico}</div>
-        <div class="itxt"><h4>${esc(it.n)}</h4><p>${esc(it.d)}${it.old?' · '+esc(it.old)+' title':''}</p></div>
+        <div class="itxt"><h4>${esc(it.n)}${it.earned?' <span class="earned">earned</span>':''}</h4>
+          <p>${esc(it.d)}${it.old?' · '+esc(it.old)+' title':''}</p></div>
         <button class="mini ${eqd?'on':''}" data-shop="${it.id}" ${dis?'disabled':''}>${label}</button></div>`}).join('')}
     ${S.title?'<div class="item"><div class="ico">✕</div><div class="itxt"><h4>Remove title</h4><p>Back to your rank name.</p></div><button class="mini" data-shop="clear_title">Remove</button></div>':''}
   </section>
@@ -2399,6 +2500,54 @@ function viewEqEdit(){
 }
 
 /* ----- shareable card ----- */
+/* The Sunday-night card. The hunter card says who you are; this one says what
+   you did this week, which is a different flex. */
+function weekStats(){
+  const days=[],now=new Date();
+  for(let i=6;i>=0;i--){
+    const d=new Date(now.getTime()-i*864e5).toLocaleDateString('en-CA');
+    days.push({d,n:S.history[d]||0});
+  }
+  const logged=days.reduce((a,b)=>a+b.n,0);
+  const active=days.filter(x=>x.n>0).length;
+  const best=days.reduce((a,b)=>b.n>a.n?b:a,days[0]);
+  const WD=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  return {days,logged,active,best,wd:WD[new Date(best.d+'T12:00').getDay()]};
+}
+function showWeek(){
+  const w=weekStats(), r=rankOf(S.lvl);
+  const max=Math.max(1,...w.days.map(d=>d.n));
+  const recent=ACH.filter(a=>S.ach.includes(a.id)).slice(-2);
+  const DL=['S','M','T','W','T','F','S'];
+  const v=document.createElement('div');v.className='cardveil';v.dataset.veil='1';
+  v.innerHTML=`<div class="cardwrap" role="dialog" aria-modal="true" aria-label="Your week">
+    <div class="hcard">
+      <div class="hc-top"><span class="hc-brand">THIS WEEK</span>
+        <span class="hc-rank">${esc(S.name||'HUNTER')}</span></div>
+      <div class="wk-bars">${w.days.map(d=>`<div class="wk-day">
+        <i style="height:${Math.max(3,Math.round(d.n/max*100))}%"></i>
+        <u>${DL[new Date(d.d+'T12:00').getDay()]}</u></div>`).join('')}</div>
+      <div class="hc-stats">
+        <div><u>DAYS</u><b>${w.active}/7</b></div>
+        <div><u>LOGGED</u><b>${w.logged}</b></div>
+        <div><u>STREAK</u><b>${S.streak}d</b></div>
+        <div><u>LEVEL</u><b>${S.lvl}</b></div>
+        <div><u>RANK</u><b>${r}</b></div>
+      </div>
+      <div class="hc-rows">
+        <div><span>Heaviest day</span><b>${w.best.n?esc(w.wd):'—'}</b></div>
+        <div><span>Best streak</span><b>${S.best}d</b></div>
+        <div><span>Quests cleared</span><b>${S.clears}</b></div>
+        <div><span>Milestones</span><b>${S.ach.length}</b></div>
+      </div>
+      ${recent.length?`<div class="wk-recent">${recent.map(a=>
+        `<span class="aloot-i">${esc(a.n)}</span>`).join('')}</div>`:''}
+      <div class="hc-foot">${w.active>=4?'A good week. Send it.':'Screenshot it. Next week beats it.'}</div>
+    </div>
+    <button class="btn ghost" data-close>Close</button>
+  </div>`;
+  document.body.appendChild(v);trapFocus(v);
+}
 function showCard(){
   const r=rankOf(S.lvl),t=auraTier();
   const title=titleName();
@@ -2447,8 +2596,13 @@ function render(){
     const n=document.getElementById('obname');
     if(n)n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');if(b)b.disabled=!ob.name.trim()};
     return}
-  if(tab==='run'){root.innerHTML=viewRun();runTicker();return}
-  if(tab==='kit'){root.innerHTML=viewKitCheck();return}
+  if(tab==='run'||tab==='kit'){
+    root.innerHTML=tab==='run'?viewRun():viewKitCheck();
+    if(tab==='run')runTicker();
+    /* Fires here too. A level earned mid-session belongs to the movement that
+       earned it, not to whenever you happen to leave. */
+    if(pendingLevel!==null)showLevelUp();
+    return}
   const body=tab==='quest'?viewQuest():tab==='lib'?viewLib():tab==='rec'?viewRecords():
              tab==='eqedit'?viewEqEdit():tab==='dayeq'?viewDayEq():tab==='limits'?viewLimits():viewVault();
   root.innerHTML=body+`<nav class="tabs">
@@ -2459,6 +2613,7 @@ function render(){
   bindAura();
   if(open)renderSheet();
   if(pendingLevel!==null)showLevelUp();
+  else document.querySelectorAll('.awaken').forEach(x=>{if(!x.dataset.live)x.remove()});
 }
 function renderSheet(){
   const e=EX.find(x=>x.id===open);if(!e)return;
@@ -2547,14 +2702,29 @@ function showLevelUp(){
         <span class="aloot-i">All stats +1</span>
         ${ranked?'<span class="aloot-i">New skills unlocked</span>':''}
       </div>
-    </div>`;
+    </div>
+    <p class="atap">Tap anywhere to continue</p>`;
   el.setAttribute('role','status');
   el.setAttribute('aria-live','polite');
+  /* Any earlier one is gone before this one goes up: two stacked overlays was
+     the other way to end up staring at black. */
+  document.querySelectorAll('.awaken').forEach(x=>x.remove());
+  el.dataset.live='1';
   document.body.appendChild(el);
-  const bye=()=>{burstOn=false;el.remove();if(ranked)render()};
+  let done=false;
+  const bye=()=>{if(done)return;done=true;burstOn=false;
+    clearTimeout(hardStop);removeEventListener('keydown',esc);
+    el.remove();if(ranked)render()};
+  /* Dismissible from the first frame, by tap or by key, and always announced
+     with a visible way out rather than a mystery black screen. */
+  el.addEventListener('click',bye);
+  el.addEventListener('keydown',bye);
+  const esc=ev=>{if(ev.key==='Escape'||ev.key===' '||ev.key==='Enter')bye()};
+  addEventListener('keydown',esc);
+  const hardStop=setTimeout(bye,7000);          // nothing survives this
+  const cleanup=()=>{clearTimeout(hardStop);removeEventListener('keydown',esc)};
   if(REDUCED){                       // a fade and the text, nothing else
     el.querySelector('.atext').style.opacity=1;
-    el.addEventListener('click',bye);
     setTimeout(()=>{if(el.isConnected)bye()},4200);
     return;
   }
@@ -2580,7 +2750,6 @@ function showLevelUp(){
   setTimeout(()=>{core.style.transition='transform 1.2s ease-out, opacity 1.2s';
     core.style.transform='translate(-50%,-50%) scale(1.5)';core.style.opacity=.3},1960);
   setTimeout(()=>{txt.style.opacity=1},2120);
-  el.addEventListener('click',bye);
   setTimeout(()=>{if(el.isConnected)bye()},5400);
 }
 
@@ -2603,11 +2772,11 @@ const TOUR=[
  {sel:'.blade',t:'This is your weapon',x:'It burns as long as you keep training. Let the streak die and it goes dark and dull.'},
  {sel:'.lvlrow',t:'Level, XP and gold',x:'Every skill you log pays both. Fill the bar and you level up, which unlocks harder skills.'},
  {sel:'.props',t:'Your stats',x:'STR, END, VIT, AGI and CORE grow from the kind of work you actually do. Level ups raise all five.'},
- {sel:'.work',t:'The daily quest',x:'Five skills picked for your goal and your equipment. Rebuilt every morning at midnight.'},
- {sel:'.w',t:'Tap any row',x:'Opens the demo with an animated figure and form cues. That is where you log it.'},
+ {sel:'[data-begin]',t:'Begin Quest',x:'Five movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests.'},
+ {sel:'.kitline',t:'What you have today',x:'Travelling, or stuck in a hotel room? Change it here and the quest rebuilds around what you actually have.'},
  {sel:'[data-dungeon]',t:'Instant dungeon',x:'Optional six-minute bonus on days you have extra in the tank.'},
- {sel:'[data-tab="lib"]',t:'The library',x:'73 skills from wall push-ups to power cleans, ranked E through A.'},
- {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Also where you generate a card to screenshot and send to the group chat.'},
+ {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Filter by muscle to find what you want.'},
+ {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Milestones live here, and the two cards worth sending to the group chat.'},
  {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — it costs nothing and resets nothing. Spend gold on titles and new palettes. Goal, kit and rest days live here too.'}
 ];
 let tour={on:false,i:0,els:null};
@@ -2703,8 +2872,8 @@ document.addEventListener('click',ev=>{
   const tb=t.closest('[data-tab]');if(tb){tab=tb.dataset.tab;closeSheet();render();scrollTo(0,0);return}
   const f=t.closest('[data-f]');if(f){const [k,v]=f.dataset.f.split(':');filt[k]=v;render();return}
   const ex=t.closest('[data-ex]');if(ex){open=ex.dataset.ex;renderSheet();return}
-  const qr=t.closest('[data-q]');if(qr){open=qr.dataset.q;renderSheet();return}
   if(t.closest('[data-card]')){showCard();return}
+  if(t.closest('[data-week]')){showWeek();return}
   if(t.closest('[data-close]')||t.dataset.veil==='1'){closeSheet();
     document.querySelectorAll('.cardveil').forEach(v=>v.remove());return}
 
@@ -2717,16 +2886,19 @@ document.addEventListener('click',ev=>{
     if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
       S.questBonus=true;S.clears++;award(80,50,null);toast('Daily quest cleared · +80 XP · +50 gold')}
     else toast(e.n+' · +'+(inQ?25:15)+' XP · +10 gold');
+    noteLogged(e);checkAch();
     closeSheet();render();return}
 
   if(t.closest('[data-dungeon]')){touchStreak();award(60,40,'END');
-    toast('Dungeon cleared · +60 XP · +40 gold');render();return}
+    toast('Dungeon cleared · +60 XP · +40 gold');checkAch();render();return}
 
   const ps=t.closest('[data-prsave]');
   if(ps){const k=ps.dataset.prsave,inp=document.querySelector(`[data-pr="${k}"]`),v=parseInt(inp.value,10);
     if(!v||v<0){toast('Enter a number first');return}
     const old=S.prs[k]||0;
-    if(v>old){const g=(v-old)*3;S.prs[k]=v;award(30,g,k==='plank'?'CORE':'STR');toast('New record · +'+g+' gold')}
+    if(v>old){const g=(v-old)*3;
+      if(!S.prFirst[k])S.prFirst[k]=old||v;      // the baseline a doubling is measured from
+      S.prs[k]=v;award(30,g,k==='plank'?'CORE':'STR');toast('New record · +'+g+' gold');checkAch()}
     else{toast('Logged. Record still '+old+'.');save()}
     render();return}
 
@@ -2734,6 +2906,7 @@ document.addEventListener('click',ev=>{
   if(sh){const id=sh.dataset.shop;
     if(id==='clear_title'){S.title=null;save();render();return}
     const it=shopItems().find(x=>x.id===id);if(!it)return;
+    if(it.earned){S.title=S.title===id?null:id;save();render();return}
     const owned=S.owned.includes(id);
     if(it.k==='potion'){if(S.gold<it.p){toast('Not enough gold');return}
       S.gold-=it.p;S.potions++;toast('Elixir acquired');save();render();return}
@@ -2781,6 +2954,12 @@ document.addEventListener('click',ev=>{
     const inp=document.getElementById('actual');
     const got=inp&&inp.value!==''?parseInt(inp.value,10):null;
     buzz([0,40]);
+    /* Say it back. Typing a number into a box that then vanishes gives you no
+       reason to believe it was recorded. */
+    if(got!=null&&Number.isFinite(got)&&got>0){
+      o.log=o.log||[];o.log.push({n:e.n,set:o.set,reps:got});
+      toast('Set '+o.set+' · '+got+' reps logged');
+    }
     if(o.set>=sets){clearMovement(e,got);return}
     if(got!=null)recordPerf(e,got);
     o.set++;o.total=restLen(e);fired=false;beginRest(o.total);return}
@@ -2839,6 +3018,7 @@ document.addEventListener('click',ev=>{
     if(n>gapAllowed()){if(S.potions>0)S.potions--;else S.streak=0;save()}
   }
   if(S.sess&&S.sess.d!==today())S.sess=null;      // yesterday's run does not resume
+  checkAch();
   render();
   if(S.refund){const g=S.refund;delete S.refund;save();
     setTimeout(()=>toast('Palettes are free now · '+g+' gold refunded'),700)}
