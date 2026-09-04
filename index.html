@@ -373,6 +373,23 @@ html,body{margin:0;background:var(--void)}
   pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
 @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 
+/* muscle map */
+.bodymap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.bodyfig{margin:0;border:1px solid var(--line);padding:10px 6px 6px;
+  background:linear-gradient(180deg,#0A0509,#020102)}
+.bodyfig svg{width:100%;height:auto;max-height:190px;display:block}
+.bodyfig figcaption{text-align:center;font-size:9.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ash);margin-top:6px}
+.bshell{fill:rgba(var(--m1),.05);stroke:var(--line);stroke-width:1.2}
+.mo{fill:var(--line)}
+.ms{fill:var(--magenta);opacity:.4}
+.mp{fill:var(--magenta)}
+.muslist{margin:0 0 14px;font-size:12px;color:var(--ash);line-height:1.7}
+.muslist b{color:var(--bone);font-weight:600}
+.mustag{font-size:11px;color:var(--magenta);letter-spacing:.06em}
+.wmus{margin:3px 0 0;font-size:11px;color:var(--magenta);letter-spacing:.05em}
+.cardmus{margin:3px 0 0;font-size:10.5px;color:var(--magenta);letter-spacing:.04em;line-height:1.3}
+
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
 
 </style>
@@ -966,6 +983,31 @@ async function load(){
 let sT;function save(){clearTimeout(sT);sT=setTimeout(async()=>{
   try{await DB.set(KEY,JSON.stringify(S))}catch(e){console.error('save failed',e)}},250)}
 
+/* Muscle map. Two silhouettes in a 120x260 box; every group is its own path so
+   it can be lit independently. Each shape is authored once on the right and
+   mirrored about x=60, so the halves cannot drift. A group appears on whichever
+   view actually shows it — chest and quads only on the front, lats and glutes
+   only on the back — which is why both views are always drawn together. */
+const BODY={
+ front:'<path class="bshell" d="M60 44L72 50L87 57Q86 72 84 84Q81 102 78 124Q76 138 81 153Q83 165 76 171L60 173ZM60 44L48 50L33 57Q34 72 36 84Q39 102 42 124Q44 138 39 153Q37 165 44 171L60 173Z"/><path class="bshell" d="M87 57Q98 62 99 80Q101 106 99 130Q98 152 96 166L88 168Q88 150 88 128Q87 102 85 80Q84 66 87 57ZM33 57Q22 62 21 80Q19 106 21 130Q22 152 24 166L32 168Q32 150 32 128Q33 102 35 80Q36 66 33 57Z"/><path class="bshell" d="M62 171L82 169Q87 191 84 213Q81 235 79 255L66 255Q64 233 63 213Q62 191 62 171ZM58 171L38 169Q33 191 36 213Q39 235 41 255L54 255Q56 233 57 213Q58 191 58 171Z"/><ellipse class="bshell" cx="60" cy="23" rx="13.5" ry="16.5"/><path class="bshell" d="M53 36h14v13H53z"/><path data-m="traps" d="M62 45L75 51L85 56Q76 53 66 51L62 49ZM58 45L45 51L35 56Q44 53 54 51L58 49Z"/><path data-m="front-delts" d="M78 52Q90 50 96 61Q98 73 92 81Q82 77 78 65ZM42 52Q30 50 24 61Q22 73 28 81Q38 77 42 65Z"/><path data-m="side-delts" d="M94 59Q101 65 100 81Q99 91 94 91Q90 81 92 67ZM26 59Q19 65 20 81Q21 91 26 91Q30 81 28 67Z"/><path data-m="chest" d="M60 60L82 58Q90 67 88 81Q80 93 66 93L60 92ZM60 60L38 58Q30 67 32 81Q40 93 54 93L60 92Z"/><path data-m="biceps" d="M88 87Q97 91 97 107Q96 119 90 121Q86 113 86 99ZM32 87Q23 91 23 107Q24 119 30 121Q34 113 34 99Z"/><path data-m="forearms" d="M90 125Q98 129 97 147Q95 161 90 163Q86 157 87 141ZM30 125Q22 129 23 147Q25 161 30 163Q34 157 33 141Z"/><path data-m="abs" d="M60 97L74 99Q78 119 76 139Q72 155 60 157ZM60 97L46 99Q42 119 44 139Q48 155 60 157Z"/><path data-m="obliques" d="M76 101Q84 111 84 127Q83 143 77 151Q74 135 75 117ZM44 101Q36 111 36 127Q37 143 43 151Q46 135 45 117Z"/><path data-m="quads" d="M63 173L80 171Q85 191 82 209Q73 215 66 210Q63 191 63 177ZM57 173L40 171Q35 191 38 209Q47 215 54 210Q57 191 57 177Z"/><path data-m="calves" d="M67 219Q79 217 81 233Q79 247 74 251Q68 246 66 234ZM53 219Q41 217 39 233Q41 247 46 251Q52 246 54 234Z"/>',
+ back:'<path class="bshell" d="M60 44L72 50L87 57Q86 72 84 84Q81 102 78 124Q76 138 81 153Q83 165 76 171L60 173ZM60 44L48 50L33 57Q34 72 36 84Q39 102 42 124Q44 138 39 153Q37 165 44 171L60 173Z"/><path class="bshell" d="M87 57Q98 62 99 80Q101 106 99 130Q98 152 96 166L88 168Q88 150 88 128Q87 102 85 80Q84 66 87 57ZM33 57Q22 62 21 80Q19 106 21 130Q22 152 24 166L32 168Q32 150 32 128Q33 102 35 80Q36 66 33 57Z"/><path class="bshell" d="M62 171L82 169Q87 191 84 213Q81 235 79 255L66 255Q64 233 63 213Q62 191 62 171ZM58 171L38 169Q33 191 36 213Q39 235 41 255L54 255Q56 233 57 213Q58 191 58 171Z"/><ellipse class="bshell" cx="60" cy="23" rx="13.5" ry="16.5"/><path class="bshell" d="M53 36h14v13H53z"/><path data-m="traps" d="M60 46L82 57Q78 73 70 85L60 91ZM60 46L38 57Q42 73 50 85L60 91Z"/><path data-m="rear-delts" d="M83 55Q95 59 97 71Q95 83 89 85Q83 75 81 63ZM37 55Q25 59 23 71Q25 83 31 85Q37 75 39 63Z"/><path data-m="side-delts" d="M94 59Q101 65 100 81Q99 91 94 91Q90 81 92 67ZM26 59Q19 65 20 81Q21 91 26 91Q30 81 28 67Z"/><path data-m="midback" d="M60 93L74 85Q80 93 78 105L60 109ZM60 93L46 85Q40 93 42 105L60 109Z"/><path data-m="lats" d="M78 83Q88 97 86 119Q80 135 68 133L62 127L74 105ZM42 83Q32 97 34 119Q40 135 52 133L58 127L46 105Z"/><path data-m="triceps" d="M87 87Q97 91 97 107Q96 119 90 121Q85 113 85 99ZM33 87Q23 91 23 107Q24 119 30 121Q35 113 35 99Z"/><path data-m="forearms" d="M90 125Q98 129 97 147Q95 161 90 163Q86 157 87 141ZM30 125Q22 129 23 147Q25 161 30 163Q34 157 33 141Z"/><path data-m="lower-back" d="M60 129L76 133Q80 145 76 157L60 159ZM60 129L44 133Q40 145 44 157L60 159Z"/><path data-m="glutes" d="M60 159L80 157Q86 169 82 181Q70 187 60 183ZM60 159L40 157Q34 169 38 181Q50 187 60 183Z"/><path data-m="hamstrings" d="M62 185L82 183Q86 199 82 213Q72 219 65 213Q62 199 62 191ZM58 185L38 183Q34 199 38 213Q48 219 55 213Q58 199 58 191Z"/><path data-m="calves" d="M66 217Q79 215 81 233Q79 249 73 252Q67 247 65 233ZM54 217Q41 215 39 233Q41 249 47 252Q53 247 55 233Z"/>'
+};
+const BODYVIEW={front:["traps","front-delts","side-delts","chest","biceps","forearms","abs","obliques","quads","calves"],back:["traps","rear-delts","side-delts","midback","lats","triceps","forearms","lower-back","glutes","hamstrings","calves"]};
+const MUSNAME={'front-delts':'front delts','side-delts':'side delts','rear-delts':'rear delts',
+  'lower-back':'lower back',midback:'mid back'};
+const musName=g=>MUSNAME[g]||g;
+/* One view. Primary lights up, secondary sits at 40%, everything else stays in
+   the dim line colour so the body still reads as a body. */
+function bodyView(v,mus){
+  const cls=g=>mus.p.indexOf(g)>=0?'mp':mus.s.indexOf(g)>=0?'ms':'mo';
+  const svg=BODY[v].replace(/<path data-m="([a-z-]+)"/g,(m,g)=>`<path class="${cls(g)}" data-m="${g}"`);
+  return `<figure class="bodyfig"><svg viewBox="0 0 120 260" aria-hidden="true">${svg}</svg>`+
+    `<figcaption>${v}</figcaption></figure>`;
+}
+function bodyMap(mus){
+  return `<div class="bodymap">${bodyView('front',mus)}${bodyView('back',mus)}</div>`;
+}
+
 /* ---------------- aura canvas ----------------
    Every class draws differently, but all six read the same intensity from
    auraIdx(). A dead streak looks dead no matter what you picked. */
@@ -1500,7 +1542,8 @@ function viewQuest(){
     ${q.length<5?`<p class="note" style="margin-top:0">Only ${q.length} movement${q.length===1?'':'s'} available at this rank with today's kit. Widen the kit or level up for more.</p>`:''}
     <ul class="work">
       ${q.map((e,i)=>`<li class="w ${done.includes(e.id)?'done':''}" data-q="${e.id}">
-        <div class="wmeta"><h3>${esc(e.n)}</h3><p>${esc(e.d)} · ${CATS[e.c]}</p></div>
+        <div class="wmeta"><h3>${esc(e.n)}</h3><p>${esc(e.d)}</p>
+          <p class="wmus">${e.mus.p.map(musName).join(" · ")}</p></div>
         <div class="wmark">${done.includes(e.id)?'✦':''}</div></li>`).join('')}
     </ul>
     ${all?'<div class="cleared">Quest cleared</div>':''}
@@ -1533,7 +1576,8 @@ function viewLib(){
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
         ${e.eq.length?`<span class="gearlab">${e.eq.map(x=>EQNAME[x].split(' ')[0]).join('+')}</span>`:''}
-        <h4>${esc(e.n)}</h4><p>${esc(e.d)}</p></button>`).join('')}
+        <h4>${esc(e.n)}</h4><p>${esc(e.d)}</p>
+        <p class="cardmus">${e.mus.p.map(musName).join(" · ")}</p></button>`).join('')}
     </div>
     ${list.length?'':'<p class="note">Nothing matches those filters. Try "Everything".</p>'}
   </section>`;
@@ -1702,6 +1746,9 @@ function renderSheet(){
     <div class="sheet-rank rk-${e.r}">${e.r}</div>
     <h2>${esc(e.n)}</h2>
     <div class="sub">${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
+    ${bodyMap(e.mus)}
+    <p class="muslist"><b>Works</b> ${e.mus.p.map(musName).join(', ')}${
+      e.mus.s.length?`<br><b>Also</b> ${e.mus.s.map(musName).join(', ')}`:''}</p>
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
     <div class="dose">Target for now <b>${esc(e.d)}</b></div>
     ${lockedRank?`<button class="btn" disabled>Unlocks at level ${RANK_LV[e.r]}</button>`
