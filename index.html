@@ -66,8 +66,11 @@ html,body{margin:0;background:var(--void)}
 .lvlline b{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
 .xpnum{margin-left:auto;font-size:11px;color:var(--ash);letter-spacing:.07em}
 .xpbar{height:5px;background:var(--line);overflow:hidden}
-.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--deepblade),var(--crimson),var(--magenta));
-  transition:width .6s cubic-bezier(.3,.9,.3,1)}
+/* Fills are full-width and revealed by clip-path rather than animating width:
+   no layout on every render, and unlike scaleX it leaves the gradient stops
+   where they are instead of compressing them into the filled portion. */
+.xpbar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--deepblade),var(--crimson),var(--magenta));
+  transition:clip-path .6s cubic-bezier(.3,.9,.3,1)}
 .goldchip{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--gold);white-space:nowrap}
 .coin{width:12px;height:12px;border-radius:50%;display:inline-block;
   background:radial-gradient(circle at 34% 30%,#FFE29A,#C9902F 62%,#7d5416);
@@ -98,8 +101,8 @@ html,body{margin:0;background:var(--void)}
 .as.cur{color:var(--magenta)}
 .as b{font-weight:400;margin-right:3px;font-size:8px;vertical-align:1px}
 .aurabar{height:3px;background:var(--line);overflow:hidden}
-.aurabar i{display:block;height:100%;background:linear-gradient(90deg,var(--deepblade),var(--crimson) 55%,var(--core));
-  transition:width 1s cubic-bezier(.3,.9,.3,1)}
+.aurabar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--deepblade),var(--crimson) 55%,var(--core));
+  transition:clip-path 1s cubic-bezier(.3,.9,.3,1)}
 .auranote{font-size:12px;color:var(--ash);margin:9px 0 0}
 .auranote b{color:var(--bone);font-weight:600}
 
@@ -1806,7 +1809,7 @@ function heroBlock(){
       </div>
       <div class="aurabar" role="progressbar" aria-valuenow="${i}" aria-valuemin="0"
            aria-valuemax="${AURA.length-1}" aria-valuetext="${esc(tierName(i))}"
-           aria-label="Aura tier"><i style="width:${pct}%"></i></div>
+           aria-label="Aura tier"><i style="clip-path:inset(0 ${100-pct}% 0 0)"></i></div>
       <p class="auranote">${dead
         ? 'Your aura has gone out. Clear anything today to relight it.'
         : `<b>${S.streak}</b> day streak · fades after ${gapAllowed()} idle day${gapAllowed()>1?'s':''}`}</p>
@@ -1824,7 +1827,7 @@ function crestBlock(){
     <div class="lvlmeta">
       <div class="lvlline"><b>Level ${S.lvl}</b><span class="xpnum">${S.xp} / ${n} XP</span></div>
       <div class="xpbar" role="progressbar" aria-valuenow="${S.xp}" aria-valuemin="0"
-           aria-valuemax="${n}" aria-label="Experience toward level ${S.lvl+1}"><i style="width:${Math.min(100,S.xp/n*100)}%"></i></div>
+           aria-valuemax="${n}" aria-label="Experience toward level ${S.lvl+1}"><i style="clip-path:inset(0 ${100-Math.min(100,S.xp/n*100)}% 0 0)"></i></div>
     </div>
     <div class="goldchip"><span class="coin" aria-hidden="true"></span>${S.gold.toLocaleString()}</div>
   </div>`;
