@@ -993,6 +993,10 @@ const BODY={
  back:'<path class="bshell" d="M60 44L72 50L87 57Q86 72 84 84Q81 102 78 124Q76 138 81 153Q83 165 76 171L60 173ZM60 44L48 50L33 57Q34 72 36 84Q39 102 42 124Q44 138 39 153Q37 165 44 171L60 173Z"/><path class="bshell" d="M87 57Q98 62 99 80Q101 106 99 130Q98 152 96 166L88 168Q88 150 88 128Q87 102 85 80Q84 66 87 57ZM33 57Q22 62 21 80Q19 106 21 130Q22 152 24 166L32 168Q32 150 32 128Q33 102 35 80Q36 66 33 57Z"/><path class="bshell" d="M62 171L82 169Q87 191 84 213Q81 235 79 255L66 255Q64 233 63 213Q62 191 62 171ZM58 171L38 169Q33 191 36 213Q39 235 41 255L54 255Q56 233 57 213Q58 191 58 171Z"/><ellipse class="bshell" cx="60" cy="23" rx="13.5" ry="16.5"/><path class="bshell" d="M53 36h14v13H53z"/><path data-m="traps" d="M60 46L82 57Q78 73 70 85L60 91ZM60 46L38 57Q42 73 50 85L60 91Z"/><path data-m="rear-delts" d="M83 55Q95 59 97 71Q95 83 89 85Q83 75 81 63ZM37 55Q25 59 23 71Q25 83 31 85Q37 75 39 63Z"/><path data-m="side-delts" d="M94 59Q101 65 100 81Q99 91 94 91Q90 81 92 67ZM26 59Q19 65 20 81Q21 91 26 91Q30 81 28 67Z"/><path data-m="midback" d="M60 93L74 85Q80 93 78 105L60 109ZM60 93L46 85Q40 93 42 105L60 109Z"/><path data-m="lats" d="M78 83Q88 97 86 119Q80 135 68 133L62 127L74 105ZM42 83Q32 97 34 119Q40 135 52 133L58 127L46 105Z"/><path data-m="triceps" d="M87 87Q97 91 97 107Q96 119 90 121Q85 113 85 99ZM33 87Q23 91 23 107Q24 119 30 121Q35 113 35 99Z"/><path data-m="forearms" d="M90 125Q98 129 97 147Q95 161 90 163Q86 157 87 141ZM30 125Q22 129 23 147Q25 161 30 163Q34 157 33 141Z"/><path data-m="lower-back" d="M60 129L76 133Q80 145 76 157L60 159ZM60 129L44 133Q40 145 44 157L60 159Z"/><path data-m="glutes" d="M60 159L80 157Q86 169 82 181Q70 187 60 183ZM60 159L40 157Q34 169 38 181Q50 187 60 183Z"/><path data-m="hamstrings" d="M62 185L82 183Q86 199 82 213Q72 219 65 213Q62 199 62 191ZM58 185L38 183Q34 199 38 213Q48 219 55 213Q58 199 58 191Z"/><path data-m="calves" d="M66 217Q79 215 81 233Q79 249 73 252Q67 247 65 233ZM54 217Q41 215 39 233Q41 249 47 252Q53 247 55 233Z"/>'
 };
 const BODYVIEW={front:["traps","front-delts","side-delts","chest","biceps","forearms","abs","obliques","quads","calves"],back:["traps","rear-delts","side-delts","midback","lats","triceps","forearms","lower-back","glutes","hamstrings","calves"]};
+/* The filter vocabulary, in head-to-toe order so the row reads like a body. */
+const MUSCLES=['traps','chest','front-delts','side-delts','rear-delts','lats',
+  'midback','biceps','triceps','forearms','abs','obliques','lower-back',
+  'glutes','quads','hamstrings','calves'];
 const MUSNAME={'front-delts':'front delts','side-delts':'side delts','rear-delts':'rear delts',
   'lower-back':'lower back',midback:'mid back'};
 const musName=g=>MUSNAME[g]||g;
@@ -1231,7 +1235,7 @@ function touchStreak(){
 }
 
 /* ---------------- UI ---------------- */
-let tab='quest',filt={r:'all',c:'all',eq:'mine'},open=null,ob;
+let tab='quest',filt={r:'all',c:'all',eq:'mine',m:'all'},open=null,ob;
 ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,class:'bladebound',weapon:'longsword',palette:'crimson'};
 const root=document.getElementById('root');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -1558,6 +1562,10 @@ function viewQuest(){
 function viewLib(){
   let list=EX.filter(e=>(filt.r==='all'||e.r===filt.r)&&(filt.c==='all'||e.c===filt.c));
   if(filt.eq==='mine')list=list.filter(hasEq);
+  /* Muscle beats the coarse push/pull/legs split for browsing — "show me
+     everything that hits lats" is how people actually look for work. Primary
+     and secondary both count as a hit. */
+  if(filt.m!=='all')list=list.filter(e=>e.mus.p.includes(filt.m)||e.mus.s.includes(filt.m));
   return `<section class="block top">
     <div class="blockhead"><h2>Skill Library</h2><span class="tally">${list.length} of ${EX.length}</span></div>
     <div class="filters">
@@ -1572,6 +1580,10 @@ function viewLib(){
       <button data-f="c:all" class="${filt.c==='all'?'on':''}">All types</button>
       ${Object.entries(CATS).map(([k,v])=>`<button data-f="c:${k}" class="${filt.c===k?'on':''}">${v}</button>`).join('')}
     </div>
+    <div class="filters">
+      <button data-f="m:all" class="${filt.m==='all'?'on':''}">All muscles</button>
+      ${MUSCLES.map(k=>`<button data-f="m:${k}" class="${filt.m===k?'on':''}">${musName(k)}</button>`).join('')}
+    </div>
     <div class="grid">
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
@@ -1579,7 +1591,7 @@ function viewLib(){
         <h4>${esc(e.n)}</h4><p>${esc(e.d)}</p>
         <p class="cardmus">${e.mus.p.map(musName).join(" · ")}</p></button>`).join('')}
     </div>
-    ${list.length?'':'<p class="note">Nothing matches those filters. Try "Everything".</p>'}
+    ${list.length?'':'<p class="note">Nothing matches those filters. Widen the muscle or rank filter, or try "Everything".</p>'}
   </section>`;
 }
 function viewRecords(){
