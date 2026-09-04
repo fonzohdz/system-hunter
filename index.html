@@ -369,10 +369,11 @@ html,body{margin:0;background:var(--void)}
   pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
 @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 
-/* figure strokes */
+/* figure strokes — widths live on each path so depth is baked into the markup */
 .gnd{stroke:var(--line);stroke-width:1}
-.back polyline{stroke:var(--deepblade);stroke-width:5}
-.front polyline{stroke-width:6}
+.back path{stroke:var(--deepblade);fill:none;stroke-linecap:round;stroke-linejoin:round}
+.back ellipse{fill:var(--deepblade)}
+.front path{fill:none;stroke-linecap:round;stroke-linejoin:round}
 .eqf{fill:#D8C2CC}
 .eqo{fill:none;stroke:#D8C2CC;stroke-width:1.6}
 .eqb{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 2.5}
@@ -427,6 +428,7 @@ const EX=[
     m(ST,{6:56,8:58,10:56,11:60,12:56,13:72,14:44,16:42})]},
 {id:'calf',n:'Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:[],
  cues:['Near a wall for balance, feet hip width.','Rise onto the balls of your feet as high as possible.','Lower over 3 seconds — that\'s where the work is.','Do them while brushing your teeth. Free reps.'],
+ t:{down:1,hold:.3,up:3,rest:.4},
  f:[ST,m(ST,{1:10,3:20,5:48,7:33,9:46,11:66,13:84,15:33,17:46,19:66,21:84})]},
 {id:'birddog',n:'Bird Dog',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['Hands and knees, back flat like a tabletop.','Reach one arm forward and the opposite leg back.','Wobbling? Go shorter, not faster.','Best move going for a cranky lower back.'],
@@ -463,10 +465,13 @@ const EX=[
     P(24,42,32,46,58,56,28,56,24,68,70,62,80,72,34,38,36,28,72,62,82,72)]},
 {id:'climber',n:'Slow Mountain Climber',r:'D',c:'cardio',st:'AGI',d:'3 × 30s',eq:[],
  cues:['Top of a push-up, hands under shoulders.','Draw one knee to your chest, then switch. Controlled.','Hips stay level — no butt popping up.','Speed it up once form is automatic.'],
+ t:{down:.7,hold:0,up:.7,rest:0},
  f:[P(22,40,30,43,58,50,28,54,26,70,70,56,84,70,30,55,27,70,52,58,44,62),
+    P(22,40,30,43,58,50,28,54,26,70,70,56,84,70,30,55,27,70,68,58,82,72),
     P(22,40,30,43,58,50,28,54,26,70,52,56,44,60,30,55,27,70,70,58,84,70)]},
 {id:'pushup',n:'Full Push-Up',r:'C',c:'push',st:'STR',d:'4 × 6',eq:[],
  cues:['Hands under shoulders, body rigid head to heels.','Lower until your chest is a fist off the floor.','Push the floor away — whole body moves as one plank.','The rep you\'ll measure yourself by for years.'],
+ t:{down:3,hold:.4,up:1.1,rest:.5},
  f:[PLK_UP,PLK_DN]},
 {id:'split',n:'Split Squat',r:'C',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['One foot forward, one back, split stance the whole set.','Drop straight down, back knee toward the floor.','Front heel stays glued down.','Harder than it looks. Respect it.'],
@@ -482,6 +487,7 @@ const EX=[
     P(22,50,30,53,56,62,22,44,12,40,68,57,84,48,24,46,14,42,70,57,86,50)]},
 {id:'jack',n:'Jumping Jack',r:'C',c:'cardio',st:'AGI',d:'4 × 40s',eq:[],
  cues:['Arms and legs out, then back in.','Bad knees? Step one foot out at a time instead.','Land soft, toes then heel.','Best 40-second heart-rate spike in the game.'],
+ t:{down:.8,hold:0,up:.8,rest:.1},
  f:[m(ST,{1:16,3:25,7:38,9:50,15:38,17:50}),
     P(50,14,50,23,50,50,36,32,30,18,38,68,32,86,64,32,70,18,62,68,68,86)]},
 {id:'row_table',n:'Table Row',r:'C',c:'pull',st:'STR',d:'3 × 8',eq:[],
@@ -504,7 +510,10 @@ const EX=[
     P(24,54,30,52,56,28,32,60,24,66,70,48,84,66,34,61,25,66,68,48,82,66)]},
 {id:'burpee_s',n:'Step-Back Burpee',r:'B',c:'cardio',st:'AGI',d:'4 × 8',eq:[],
  cues:['Squat down, hands on the floor, step the feet back one at a time.','Step them in, then stand tall.','No jumping needed — stepping keeps joints happy, heart rate high.','Add the jump only when stepping feels easy.'],
- f:[ST,PLK_UP]},
+ t:{down:1.4,hold:.15,up:1.1,rest:.35},
+ f:[ST,
+    P(38,30,42,38,52,60,44,52,46,72,46,70,46,88,46,53,48,72,56,70,50,88),
+    PLK_UP]},
 {id:'slbridge',n:'Single-Leg Glute Bridge',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['Bridge position, then extend one leg straight out.','Push the planted heel down and lift the hips level.','Don\'t let the free hip drop.','Fixes the strength gap between your left and right side.'],
  f:[m(LIE,{18:76,19:62,20:90,21:60}),m(LIE,{3:60,5:50,7:66,11:52,15:67,18:80,19:46,20:96,21:40})]},
@@ -521,7 +530,9 @@ const EX=[
     P(50,82,50,72,50,44,50,60,50,88,50,28,50,12,52,60,52,88,54,28,54,12)]},
 {id:'burpee_f',n:'Full Burpee',r:'A',c:'cardio',st:'AGI',d:'5 × 10',eq:[],
  cues:['Floor, chest down, jump the feet in, jump up, hands overhead.','Every rep is a full sentence — don\'t half-rep the top.','Pace yourself. Round four is where people fold.','The universal "am I actually in shape" test.'],
- f:[m(ST,{1:20,3:30,5:56,7:42,9:54,15:42,17:54}),
+ t:{down:1.2,hold:.1,up:1,rest:.3},
+ f:[PLK_DN,
+    m(ST,{1:20,3:30,5:56,7:42,9:54,15:42,17:54}),
     P(50,8,50,18,50,44,44,8,42,-2,46,60,46,76,56,8,58,-2,54,60,54,76)]},
 
 /* ================= DUMBBELLS ================= */
@@ -578,7 +589,9 @@ const EX=[
     m(ST,{8:44,9:54,10:56,11:60,12:56,13:72,16:56,17:54})]},
 {id:'db_thruster',n:'Dumbbell Thruster',r:'B',c:'full',st:'END',d:'4 × 10',eq:['db'],p:'db',
  cues:['Dumbbells at your shoulders. Squat down.','Drive up out of the squat and press overhead in one motion.','Legs do the work, arms just finish it.','Fastest way to make yourself hate a 10-rep set.'],
+ t:{down:2.4,hold:.3,up:1,rest:.5},
  f:[m(SQ,{6:42,7:44,8:44,9:40,14:58,15:44,16:56,17:40}),
+    m(ST,{6:42,7:36,8:44,9:32,14:58,15:36,16:56,17:32}),
     m(ST,{6:42,7:20,8:44,9:6,14:58,15:20,16:56,17:6})]},
 {id:'db_bulg',n:'Bulgarian Split Squat',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:['db','bench'],p:'db',
  cues:['Back foot up on a bench, front foot two feet out.','Drop straight down, torso slightly forward.','Front heel stays down the entire rep.','One of the hardest things you can do with two dumbbells.'],
@@ -592,14 +605,18 @@ const EX=[
     m(ST,{6:42,7:22,8:38,9:16,14:58,15:22,16:62,17:16})]},
 {id:'kb_swing',n:'Kettlebell Swing',r:'C',c:'full',st:'END',d:'5 × 15',eq:['kb'],p:'kb2',
  cues:['This is a hip snap, not a squat and not a front raise.','Hike the bell back between your legs, then snap your hips forward.','The bell floats to chest height on its own. Arms are ropes.','Squeeze your glutes hard at the top and stand fully upright.'],
+ t:{down:1.6,hold:.1,up:.7,rest:.25},
  f:[P(34,34,40,38,58,50,40,48,42,62,60,66,58,88,42,49,44,62,62,66,60,88),
+    P(42,26,46,32,54,48,46,42,48,54,56,66,54,88,48,43,50,54,58,66,56,88),
     m(ST,{6:44,7:36,8:42,9:34,14:56,15:36,16:58,17:34})]},
 {id:'kb_cp',n:'Kettlebell Clean & Press',r:'B',c:'full',st:'STR',d:'4 × 6 each arm',eq:['kb'],p:'kb1',
  cues:['Swing the bell up and catch it in the rack position at your shoulder.','Catch it soft — it shouldn\'t bang your forearm.','From the rack, press it straight overhead.','Learn the clean before you add the press.'],
  f:[m(ST,{14:58,15:32,16:54,17:34}),m(ST,{14:56,15:20,16:54,17:6})]},
 {id:'kb_tgu',n:'Turkish Get-Up',r:'A',c:'full',st:'CORE',d:'3 × 3 each side',eq:['kb'],p:'kb1',
  cues:['Start lying down with the bell locked out over your shoulder.','Stand up one deliberate step at a time, eyes on the bell.','Then reverse it back down the exact same way.','Practice with a shoe on your fist before you use weight.'],
+ t:{down:5,hold:.8,up:4,rest:1},
  f:[m(LIE,{14:34,15:52,16:36,17:38}),
+    P(44,30,46,38,50,60,42,50,38,64,44,76,40,88,50,26,52,10,60,64,62,88),
     P(50,16,50,26,50,54,45,39,44,52,46,72,46,88,54,26,54,8,54,70,54,88)]},
 
 /* ================= BARBELL ================= */
@@ -632,7 +649,9 @@ const EX=[
     m(SQ,{0:50,1:28,6:42,7:42,8:44,9:42,14:58,15:42,16:56,17:42})]},
 {id:'bb_clean',n:'Power Clean',r:'A',c:'full',st:'AGI',d:'5 × 3',eq:['bb'],p:'bar2',
  cues:['Deadlift speed off the floor, then explode with the hips.','Shrug hard and pull yourself under the bar.','Catch it on your front shoulders in a quarter squat.','Get coached on this one. Video yourself at minimum.'],
+ t:{down:2.2,hold:.2,up:.5,rest:.9},
  f:[P(34,36,40,40,58,52,40,50,42,68,58,66,56,88,42,51,44,68,60,66,58,88),
+    P(48,14,48,24,50,50,44,38,44,54,48,68,46,88,54,38,54,54,52,68,52,88),
     m(SQ,{0:48,1:24,2:49,3:34,4:50,5:58,6:42,7:38,8:44,9:38,14:58,15:38,16:56,17:38})]},
 
 /* ================= PULL-UP BAR ================= */
@@ -913,26 +932,83 @@ function figSVG(prop,pprop){
   if(prop==='plate')stat+='<rect x="84" y="30" width="14" height="40" rx="2" class="eqs"/>';
   if(prop==='db'||prop==='band')dyn+='<g data-p="h0"></g><g data-p="h1"></g>';
   if(prop==='db1'||prop==='kb'||prop==='kb1'||prop==='kb2')dyn+='<g data-p="h1"></g>';
+  /* A body, not a stick. Limb segments are stroked paths whose width is baked
+     into the markup — upper thicker than lower, far side thinner than near —
+     so the per-frame work stays down to setting `d`. Draw order is far limbs,
+     torso, near limbs, head, which is what gives the depth. */
+  const seg=(k,w)=>`<path data-s="${k}" stroke-width="${w}"/>`;
+  const cap=(k)=>`<ellipse data-c="${k}"/>`;
   return `<svg viewBox="0 0 100 100" aria-hidden="true">
     <defs><linearGradient id="mn${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--crimson)"/>
     </linearGradient></defs>
     <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
     ${stat}
-    <g class="back" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <polyline data-l="1,3,4"/><polyline data-l="2,5,6"/></g>
-    <g class="front" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      <polyline data-l="1,2" stroke="url(#mn${id})"/>
-      <polyline data-l="1,7,8" stroke="url(#mn${id})"/>
-      <polyline data-l="2,9,10" stroke="url(#mn${id})"/></g>
-    <circle data-head r="7.5" fill="url(#mn${id})"/>
+    <g class="back">
+      ${seg('bau',4.7)}${seg('bal',3.5)}${seg('blu',5.8)}${seg('bll',4.4)}
+      ${cap('bh')}${cap('bf')}</g>
+    <path data-torso fill="url(#mn${id})"/>
+    <g class="front" stroke="url(#mn${id})">
+      ${seg('nk',4.4)}${seg('fau',5.7)}${seg('fal',4.3)}${seg('flu',7)}${seg('fll',5.3)}</g>
+    <g class="front" fill="url(#mn${id})" stroke="none">${cap('fh')}${cap('ff')}</g>
+    <g fill="url(#mn${id})"><ellipse data-head/><circle data-face r="2.9"/></g>
     <g class="eq">${dyn}</g></svg>`;
 }
+const DEG=57.2957795;
 function paintFig(svg,pose,prop){
   const p=pts(pose);
-  svg.querySelectorAll('polyline').forEach(pl=>pl.setAttribute('points',
-    pl.dataset.l.split(',').map(i=>p[+i].x+','+p[+i].y).join(' ')));
-  const h=svg.querySelector('[data-head]');h.setAttribute('cx',p[0].x);h.setAttribute('cy',p[0].y);
+  const A=svg.__fig||(svg.__fig={});                    // cache lookups; this runs every frame
+  const q=k=>A[k]||(A[k]=svg.querySelector(`[data-${k}]`));
+  const qs=k=>A['s'+k]||(A['s'+k]=svg.querySelector(`[data-s="${k}"]`));
+  const qc=k=>A['c'+k]||(A['c'+k]=svg.querySelector(`[data-c="${k}"]`));
+  const line=(k,a,b)=>{const e=qs(k);if(e)e.setAttribute('d',`M${a.x} ${a.y}L${b.x} ${b.y}`)};
+  const N=p[1],H=p[2],HD=p[0];
+
+  /* Facing: perpendicular to the spine, flipped toward wherever the author put
+     the head relative to the neck. When the head sits straight up the spine
+     that tells us nothing, so fall back to where the hands are. */
+  let sx=N.x-H.x, sy=N.y-H.y; const sl=Math.hypot(sx,sy)||1; sx/=sl; sy/=sl;
+  let fx=sy, fy=-sx;
+  let tx=HD.x-N.x, ty=HD.y-N.y, d=fx*tx+fy*ty;
+  if(Math.abs(d)<.8){tx=(p[4].x+p[8].x)/2-N.x; ty=(p[4].y+p[8].y)/2-N.y; d=fx*tx+fy*ty}
+  /* A dead-symmetric standing pose gives us nothing to go on either way. Face
+     right rather than leaving it to float on rounding noise. */
+  if(Math.abs(d)<.05)d=fx;
+  if(d<0){fx=-fx;fy=-fy}
+  const fang=Math.atan2(fy,fx)*DEG;
+
+  /* Torso: a filled shape with shoulder, ribcage and waist widths rather than
+     a line from neck to hip. */
+  const ux=H.x-N.x, uy=H.y-N.y, tl=Math.hypot(ux,uy)||1;
+  const nx=-uy/tl, ny=ux/tl;
+  const T=(t,w)=>`${(N.x+ux*t+nx*w).toFixed(1)} ${(N.y+uy*t+ny*w).toFixed(1)}`;
+  const to=q('torso');
+  if(to)to.setAttribute('d',
+    `M${T(0,7.2)}Q${T(.42,8.3)} ${T(1,5.4)}L${T(1,-5.4)}Q${T(.42,-8.3)} ${T(0,-7.2)}Z`);
+
+  line('nk',N,HD);
+  line('bau',N,p[3]); line('bal',p[3],p[4]);          // far arm
+  line('blu',H,p[5]); line('bll',p[5],p[6]);          // far leg
+  line('fau',N,p[7]); line('fal',p[7],p[8]);          // near arm
+  line('flu',H,p[9]); line('fll',p[9],p[10]);         // near leg
+
+  /* Hands lie along the forearm, feet along the facing direction — a foot
+     pointing down the shin is the thing that reads as a stick. */
+  const cap=(k,at,ang,rx,ry)=>{const e=qc(k);if(!e)return;
+    e.setAttribute('cx',at.x);e.setAttribute('cy',at.y);
+    e.setAttribute('rx',rx);e.setAttribute('ry',ry);
+    e.setAttribute('transform',`rotate(${ang.toFixed(1)} ${at.x} ${at.y})`)};
+  const ang=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x)*DEG;
+  cap('fh',p[8],ang(p[7],p[8]),3.1,2.4); cap('bh',p[4],ang(p[3],p[4]),2.6,2);
+  cap('ff',p[10],fang,4.2,2.4);          cap('bf',p[6],fang,3.5,2.1);
+
+  const hd=q('head');
+  if(hd){hd.setAttribute('cx',HD.x);hd.setAttribute('cy',HD.y);
+    hd.setAttribute('rx',6.1);hd.setAttribute('ry',7);
+    hd.setAttribute('transform',`rotate(${(ang(N,HD)+90).toFixed(1)} ${HD.x} ${HD.y})`)}
+  const fc=q('face');
+  if(fc){fc.setAttribute('cx',HD.x+fx*3.7);fc.setAttribute('cy',HD.y+fy*3.7)}
+
   if(!prop)return;
   const bH=p[4],fH=p[8];
   const set=(s,html)=>{const g=svg.querySelector(s);if(g)g.innerHTML=html};
@@ -956,11 +1032,45 @@ function paintFig(svg,pose,prop){
 const lerp=(a,b,t)=>a+(b-a)*t;
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let rigs=[];
-function mountFig(svg,frames,phase,prop){const r={svg,frames,phase:phase||0,prop};rigs.push(r);paintFig(svg,frames[0],prop);return r}
+
+/* Tempo. Real lifting is asymmetric — slow down, brief pause, faster drive up,
+   short reset — and a hold should barely move at all. Units are relative; the
+   cycle length falls out of their sum, so a slow lift is also a long one.
+   Per-category defaults mean all 73 improve without per-exercise authoring;
+   an exercise can override with its own `t`. */
+const TEMPO={
+  push  :{down:3,   hold:.35, up:1.2, rest:.5},
+  pull  :{down:2.8, hold:.4,  up:1.3, rest:.5},
+  legs  :{down:3,   hold:.5,  up:1.3, rest:.6},
+  core  :{down:2.2, hold:.6,  up:1.8, rest:.5},
+  cardio:{down:1,   hold:0,   up:1,   rest:.15},
+  full  :{down:2,   hold:.3,  up:1.4, rest:.5}
+};
+const HOLD={down:4.5,hold:1.5,up:4.5,rest:1.5};   // a hold reads as breathing, not a rep
+const isHold=e=>/hold/i.test(e.d||'');
+const tempoOf=e=>e.t||(isHold(e)?HOLD:TEMPO[e.c])||TEMPO.full;
+const tempoTotal=T=>T.down+T.hold+T.up+T.rest;
+/* 0 at the start pose, 1 at the end pose, with the four phases laid end to end. */
+function tempoK(t,T){
+  const tot=tempoTotal(T);
+  let x=(t-Math.floor(t))*tot;
+  if(x<T.down){const u=x/T.down;return u*u*(3-2*u)}
+  x-=T.down; if(x<T.hold)return 1;
+  x-=T.hold; if(x<T.up){const u=x/T.up;return 1-u*u*(3-2*u)}
+  return 0;
+}
+function mountFig(svg,frames,phase,prop,tempo){
+  const r={svg,frames,phase:phase||0,prop,t:tempo||TEMPO.full};
+  r.dur=tempoTotal(r.t)*300;
+  rigs.push(r);paintFig(svg,frames[0],prop);return r;
+}
 (function figLoop(now){
   if(!REDUCED)for(const r of rigs){
-    const t=((now/1400)+r.phase)%2,k=t<1?t:2-t,e=k*k*(3-2*k),o=[];
-    for(let i=0;i<22;i++)o.push(lerp(r.frames[0][i],r.frames[1][i],e));
+    const k=tempoK(now/r.dur+r.phase,r.t),f=r.frames,n=f.length;
+    /* Walk through every frame in order, not just the two endpoints, so a
+       three-pose movement bends the way the movement actually bends. */
+    const s=(n-1)*k, i=Math.min(n-2,Math.floor(s)), u=s-i, a=f[i], b=f[i+1], o=[];
+    for(let j=0;j<22;j++)o.push(lerp(a[j],b[j],u));
     paintFig(r.svg,o,r.prop);
   }
   requestAnimationFrame(figLoop);
@@ -1669,7 +1779,7 @@ function render(){
   });
   root.querySelectorAll('svg[data-fig]').forEach(svg=>{
     const e=EX.find(x=>x.id===svg.dataset.fig);if(!e)return;
-    mountFig(svg,e.f,parseFloat(svg.dataset.phase||0),e.p);
+    mountFig(svg,e.f,parseFloat(svg.dataset.phase||0),e.p,tempoOf(e));
   });
   bindAura();
   if(open)renderSheet();
@@ -1694,7 +1804,7 @@ function renderSheet(){
     <button class="btn ghost" data-close>Close</button></div>`;
   document.body.appendChild(v);
   const svg=v.querySelector('[data-sheetfig]');
-  mountFig(svg,e.f,0,e.p);
+  mountFig(svg,e.f,0,e.p,tempoOf(e));
 }
 function closeSheet(){
   document.querySelectorAll('[data-veil]').forEach(v=>{
