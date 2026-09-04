@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>System Hunter — RPG Workout</title>
+<meta name="description" content="A gamer's workout app. Daily quests, levels, ranks, and 73 movements from wall push-ups to power cleans.">
+<meta name="theme-color" content="#0A0818">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="System Hunter">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="System Hunter">
+<meta property="og:description" content="Arise. Daily quests, levels, and 73 workouts from beginner to elite.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0818'/><text x='50' y='72' font-size='68' font-family='Arial' font-weight='bold' fill='%235BE9E4' text-anchor='middle'>E</text></svg>">
+<style>
+html{background:#0A0818}
+body{margin:0;padding:0;background:#0A0818;overscroll-behavior-y:none;min-height:100vh;min-height:100dvh}
+</style>
+</head>
+<body>
+<div id="root"><div class="boot">Waking the System<span class="dots"></span></div></div>
+
+<style>
+  :root{
+    --void:#0A0818; --deep:#120E2E; --panel:#181341; --edge:#2E2668;
+    --arc:#5BE9E4; --mana:#9B7BFF; --gold:#F2B84B; --blood:#FF4D6D;
+    --ink:#EAE6FF; --mute:#8D86BE;
+    --display:"Arial Narrow","Haettenschweiler",Impact,"Franklin Gothic Medium",sans-serif;
+    --body:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  #root{font-family:var(--body);color:var(--ink);
+    background:radial-gradient(120% 60% at 50% -10%,#241a5c 0%,transparent 60%),
+      radial-gradient(80% 40% at 100% 100%,#10203f 0%,transparent 60%),var(--void);
+    min-height:100vh;
+    padding-top:calc(14px + env(safe-area-inset-top));
+    padding-right:calc(12px + env(safe-area-inset-right));
+    padding-bottom:calc(92px + env(safe-area-inset-bottom));
+    padding-left:calc(12px + env(safe-area-inset-left));
+    max-width:760px;margin:0 auto;overflow-x:hidden}
+  .boot{padding:80px 20px;text-align:center;color:var(--arc);letter-spacing:.18em;font-size:13px}
+  .dots::after{content:"";animation:dots 1.2s steps(4,end) infinite}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+  .win{position:relative;background:linear-gradient(180deg,rgba(24,19,65,.92),rgba(14,11,40,.92));
+    border:1px solid var(--edge);border-radius:2px;padding:14px;margin-bottom:12px;
+    box-shadow:0 0 0 1px rgba(91,233,228,.07),0 14px 40px -22px #000}
+  .win::before,.win::after{content:"";position:absolute;width:10px;height:10px;border:1px solid var(--arc);opacity:.75}
+  .win::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+  .win::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+  .win-title{font-family:var(--display);font-size:19px;letter-spacing:.14em;color:var(--arc);margin:0 0 10px;font-weight:700}
+  .win-title small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.02em;color:var(--mute);font-weight:400;margin-top:3px}
+
+  .hunter{display:flex;gap:14px;align-items:center}
+  .rankbadge{width:64px;height:64px;flex:0 0 64px;display:grid;place-items:center;
+    font-family:var(--display);font-size:34px;font-weight:700;color:var(--void);
+    background:conic-gradient(from 210deg,var(--arc),var(--mana),var(--arc));
+    clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)}
+  .hname{font-family:var(--display);font-size:26px;letter-spacing:.06em;line-height:1;margin:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .htitle{color:var(--gold);font-size:12px;margin:4px 0 8px;letter-spacing:.04em}
+  .bar{height:7px;background:#0C0926;border:1px solid var(--edge);overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mana),var(--arc));transition:width .5s cubic-bezier(.2,.9,.2,1)}
+  .barlab{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:5px}
+  .barlab b{color:var(--ink);font-weight:600}
+  .purse{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .chip{border:1px solid var(--edge);padding:6px 10px;font-size:12px;display:flex;gap:6px;align-items:center;background:rgba(10,8,24,.6)}
+  .chip.g b{color:var(--gold)} .chip.s b{color:var(--blood)}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px}
+  .stat{text-align:center;border-top:1px solid var(--edge);padding-top:7px}
+  .stat u{display:block;font-size:10px;color:var(--mute);text-decoration:none;letter-spacing:.1em}
+  .stat b{display:block;font-size:20px;font-family:var(--display);letter-spacing:.04em}
+
+  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;
+    background:linear-gradient(180deg,rgba(10,8,24,.6),var(--void) 40%);
+    border-top:1px solid var(--edge);backdrop-filter:blur(8px);
+    padding:6px calc(6px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(6px + env(safe-area-inset-left));max-width:760px;margin:0 auto}
+  .tabs button{flex:1;background:none;border:0;color:var(--mute);font-family:var(--display);
+    font-size:14px;letter-spacing:.1em;padding:10px 2px;cursor:pointer;position:relative}
+  .tabs button.on{color:var(--arc)}
+  .tabs button.on::after{content:"";position:absolute;top:0;left:22%;right:22%;height:2px;background:var(--arc)}
+
+  .qrow{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(46,38,104,.8);cursor:pointer}
+  .qrow:last-of-type{border-bottom:0}
+  .qfig{width:58px;height:58px;flex:0 0 58px;background:rgba(10,8,24,.7);border:1px solid var(--edge)}
+  .qmeta{flex:1;min-width:0}
+  .qmeta h4{margin:0;font-size:15px;font-weight:600}
+  .qmeta p{margin:3px 0 0;font-size:12px;color:var(--mute)}
+  .qcheck{width:30px;height:30px;flex:0 0 30px;border:1px solid var(--edge);display:grid;place-items:center;color:transparent;font-size:16px;background:rgba(10,8,24,.6)}
+  .qrow.done .qcheck{background:var(--arc);color:var(--void);border-color:var(--arc)}
+  .qrow.done .qmeta h4{color:var(--mute);text-decoration:line-through}
+  .qdone-banner{text-align:center;padding:14px;border:1px solid var(--arc);color:var(--arc);
+    font-family:var(--display);letter-spacing:.14em;font-size:17px;margin-top:10px;background:rgba(91,233,228,.06)}
+  .warn{font-size:12px;color:var(--mute);margin:10px 0 0;line-height:1.55}
+
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .filters button{background:rgba(10,8,24,.6);border:1px solid var(--edge);color:var(--mute);
+    font-size:12px;padding:6px 11px;cursor:pointer;font-family:var(--body)}
+  .filters button.on{border-color:var(--arc);color:var(--arc);background:rgba(91,233,228,.08)}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
+  .card{border:1px solid var(--edge);background:linear-gradient(180deg,rgba(24,19,65,.8),rgba(12,9,32,.9));
+    padding:8px;cursor:pointer;position:relative;text-align:left;color:inherit;font:inherit}
+  .card.locked{opacity:.4}
+  .card svg{width:100%;display:block;background:radial-gradient(60% 60% at 50% 45%,rgba(155,123,255,.14),transparent 70%)}
+  .card h4{margin:6px 0 0;font-size:13px;font-weight:600;line-height:1.25}
+  .card p{margin:3px 0 0;font-size:11px;color:var(--mute)}
+  .rk{position:absolute;top:6px;right:6px;font-family:var(--display);font-size:13px;width:20px;height:20px;display:grid;place-items:center;border:1px solid currentColor}
+  .rk-E{color:#7EE0A0}.rk-D{color:var(--arc)}.rk-C{color:var(--mana)}.rk-B{color:var(--gold)}.rk-A{color:var(--blood)}
+  .gear{position:absolute;top:6px;left:6px;font-size:9px;letter-spacing:.06em;color:var(--gold);border:1px solid rgba(242,184,75,.5);padding:1px 4px}
+
+  .veil{position:fixed;inset:0;background:rgba(5,4,14,.82);z-index:60;display:grid;place-items:end center}
+  .sheet{width:100%;max-width:760px;max-height:92vh;overflow-y:auto;background:var(--deep);
+    border-top:1px solid var(--arc);padding:16px calc(14px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));animation:rise .22s ease-out}
+  @keyframes rise{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+  .sheet h2{font-family:var(--display);font-size:27px;margin:0;letter-spacing:.05em}
+  .sheet .sub{color:var(--mute);font-size:12px;margin:5px 0 14px}
+  .demo{background:radial-gradient(70% 70% at 50% 45%,rgba(155,123,255,.16),transparent 70%);border:1px solid var(--edge);margin-bottom:14px}
+  .demo svg{width:100%;display:block}
+  .cues{list-style:none;padding:0;margin:0 0 14px}
+  .cues li{padding:7px 0 7px 22px;position:relative;font-size:14px;line-height:1.45;border-bottom:1px solid rgba(46,38,104,.5)}
+  .cues li::before{content:"";position:absolute;left:4px;top:14px;width:6px;height:6px;background:var(--arc);transform:rotate(45deg)}
+  .btn{width:100%;padding:14px;background:linear-gradient(90deg,var(--mana),var(--arc));border:0;color:#0A0818;
+    font-family:var(--display);font-size:18px;letter-spacing:.12em;cursor:pointer}
+  .btn.ghost{background:none;border:1px solid var(--edge);color:var(--mute);margin-top:8px;font-size:15px}
+  .btn:disabled{filter:grayscale(1);opacity:.5;cursor:default}
+
+  .item{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(46,38,104,.6)}
+  .item:last-child{border-bottom:0}
+  .item .ico{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border:1px solid var(--edge);font-size:19px}
+  .item h4{margin:0;font-size:14px}
+  .item p{margin:3px 0 0;font-size:12px;color:var(--mute);line-height:1.4}
+  .buy{border:1px solid var(--gold);background:none;color:var(--gold);padding:7px 11px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:var(--body)}
+  .buy:disabled{opacity:.35;cursor:default}
+  .buy.owned{border-color:var(--edge);color:var(--mute)}
+  .buy.warnbtn{border-color:var(--blood);color:var(--blood)}
+
+  .pr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(46,38,104,.6)}
+  .prin{width:66px;background:#0C0926;border:1px solid var(--edge);color:var(--ink);padding:8px;text-align:center;font:inherit}
+
+  /* onboarding */
+  .ob{max-width:520px;margin:0 auto;padding-top:22px}
+  .ob .step{font-size:11px;color:var(--mute);letter-spacing:.16em;margin-bottom:10px}
+  .ob h2{font-family:var(--display);font-size:30px;letter-spacing:.04em;margin:0 0 6px;line-height:1.1}
+  .ob p.lead{color:var(--mute);font-size:13px;line-height:1.6;margin:0 0 18px}
+  .opts{display:grid;gap:8px;margin-bottom:16px}
+  .opt{text-align:left;background:rgba(10,8,24,.6);border:1px solid var(--edge);color:var(--ink);
+    padding:13px 14px;font:inherit;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .opt.on{border-color:var(--arc);background:rgba(91,233,228,.09)}
+  .opt small{display:block;color:var(--mute);font-size:12px;margin-top:3px;line-height:1.4}
+  .opt .tick{color:var(--arc);font-size:15px;opacity:0}
+  .opt.on .tick{opacity:1}
+  .namein{width:100%;background:#0C0926;border:1px solid var(--edge);color:var(--ink);padding:14px;font:inherit;font-size:17px;margin-bottom:16px}
+  .namein:focus{outline:none;border-color:var(--arc)}
+
+  /* system message intro */
+  .sysmsg{position:fixed;inset:0;z-index:95;background:rgba(4,3,12,.94);display:grid;place-items:center;padding:22px;
+    font-family:var(--body);color:var(--ink)}
+  .sysbox{width:100%;max-width:420px;border:1px solid var(--arc);background:linear-gradient(180deg,rgba(24,19,65,.96),rgba(10,8,26,.96));
+    padding:26px 22px;position:relative;box-shadow:0 0 60px -18px var(--arc)}
+  .sysbox::before,.sysbox::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--arc)}
+  .sysbox::before{top:-2px;left:-2px;border-right:0;border-bottom:0}
+  .sysbox::after{bottom:-2px;right:-2px;border-left:0;border-top:0}
+  .syshead{font-family:var(--display);letter-spacing:.28em;font-size:13px;color:var(--arc);text-align:center;margin-bottom:20px}
+  .sysline{font-size:16px;line-height:1.6;margin:0 0 12px;color:var(--ink);opacity:0;transform:translateY(6px);animation:lineIn .45s forwards}
+  .sysline.big{font-family:var(--display);font-size:24px;letter-spacing:.05em;color:var(--arc);line-height:1.25}
+  @keyframes lineIn{to{opacity:1;transform:none}}
+  .sysbtns{margin-top:22px;opacity:0;animation:lineIn .4s forwards}
+
+  /* guided tour */
+  .tourblock{position:fixed;inset:0;z-index:99}
+  .spot{position:fixed;z-index:100;border:2px solid var(--arc);pointer-events:none;
+    box-shadow:0 0 0 9999px rgba(4,3,12,.86),0 0 22px -2px var(--arc);
+    transition:top .3s cubic-bezier(.3,.8,.3,1),left .3s cubic-bezier(.3,.8,.3,1),width .3s,height .3s}
+  .tip{position:fixed;z-index:101;width:min(330px,calc(100vw - 28px));background:var(--panel);
+    border:1px solid var(--arc);padding:14px 15px;transition:top .3s,left .3s}
+  .tip h4{margin:0 0 6px;font-family:var(--display);font-size:19px;letter-spacing:.08em;color:var(--arc)}
+  .tip p{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink)}
+  .tiprow{display:flex;align-items:center;gap:10px;margin-top:14px}
+  .tiprow .dots2{flex:1;display:flex;gap:4px}
+  .tiprow .dots2 i{width:5px;height:5px;background:var(--edge);border-radius:50%}
+  .tiprow .dots2 i.on{background:var(--arc)}
+  .tip button{border:1px solid var(--edge);background:none;color:var(--mute);padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
+  .tip button.go{border-color:var(--arc);color:var(--void);background:var(--arc);font-weight:600}
+
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:78px;z-index:80;background:var(--panel);
+    border:1px solid var(--arc);color:var(--arc);padding:11px 16px;font-size:13px;letter-spacing:.05em;
+    pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
+  @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+  .lvlup{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(5,4,14,.8);
+    font-family:var(--display);text-align:center;animation:pop .3s;padding:20px}
+  .lvlup div{font-size:44px;color:var(--arc);letter-spacing:.2em;line-height:1.2}
+  .lvlup p{font-family:var(--body);color:var(--ink);font-size:14px;letter-spacing:.02em;max-width:340px;margin:10px auto 0;line-height:1.5}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+
+<script>
+/* =========================================================
+   THE SYSTEM — universal build
+   Pose = 22 numbers: head,neck,hip,[backElbow,hand,knee,foot],[frontElbow,hand,knee,foot]
+   idx: 0/1 head 2/3 neck 4/5 hip 6/7 bE 8/9 bH 10/11 bK 12/13 bF 14/15 fE 16/17 fH 18/19 fK 20/21 fF
+   ========================================================= */
+const P=(...n)=>n;
+const m=(base,ed)=>{const a=base.slice();for(const k in ed)a[k]=ed[k];return a};
+const ST = P(50,14, 50,24, 50,52, 45,37, 44,50, 46,70, 46,88, 55,37, 56,50, 54,70, 54,88);
+const SQ = P(48,28, 49,38, 52,64, 56,46, 66,40, 40,70, 44,88, 58,48, 68,42, 62,70, 58,88);
+const PLK_UP = P(22,42, 30,45, 60,50, 28,56, 26,72, 74,56, 88,70, 30,57, 27,72, 72,56, 86,70);
+const PLK_DN = P(20,58, 28,60, 60,58, 36,66, 28,72, 74,62, 88,72, 38,67, 29,72, 72,62, 86,72);
+const LIE    = P(20,62, 28,62, 56,64, 24,68, 20,70, 68,58, 78,70, 26,69, 22,71, 66,58, 76,70);
+const BENCH_L= P(24,58, 34,58, 62,58, 34,48, 34,36, 70,60, 84,64, 36,50, 36,38, 72,60, 86,64);
+
+/* eq: [] = nothing needed. Codes: db kb bb bar bench band machine */
+const EX=[
+/* ================= BODYWEIGHT ================= */
+{id:'wallpush',n:'Wall Push-Up',r:'E',c:'push',st:'STR',d:'3 × 10',eq:[],
+ cues:['Stand an arm-length from a wall, hands at chest height.','Lower your chest toward the wall over 3 slow seconds.','Push back until your arms are straight, body in one line.','Too easy? Walk your feet further back.'],
+ f:[P(30,20,36,28,48,56,30,32,24,30,52,76,54,90,32,34,25,34,50,76,52,90),
+    P(24,24,32,31,48,58,30,38,22,32,52,76,54,90,32,40,23,36,50,76,52,90)]},
+{id:'incpush',n:'Incline Push-Up',r:'E',c:'push',st:'STR',d:'3 × 8',eq:[],
+ cues:['Hands on a bed, counter, or couch arm.','Lower until your chest is near the surface.','Squeeze your glutes so the hips don\'t sag.','Use a lower surface as you get stronger.'],
+ f:[P(26,34,34,38,60,50,32,46,30,58,74,58,88,70,34,48,31,60,72,58,86,70),
+    P(24,46,32,49,60,54,38,54,30,60,74,60,88,71,40,56,31,61,72,60,86,71)]},
+{id:'chairsq',n:'Chair Squat',r:'E',c:'legs',st:'STR',d:'3 × 10',eq:[],
+ cues:['Stand in front of a chair, feet shoulder width.','Sit back and touch the seat — don\'t collapse into it.','Drive through your heels to stand tall.','The best beginner leg move there is.'],
+ f:[ST,m(SQ,{4:54,5:64,10:42,11:70})]},
+{id:'wallsit',n:'Wall Sit',r:'E',c:'legs',st:'END',d:'3 × 20s hold',eq:[],
+ cues:['Back flat on a wall, slide down until your knees bend.','Start shallow. Shins as vertical as you can manage.','Breathe. Do not hold your breath.','Add 5 seconds a week.'],
+ f:[P(62,22,62,30,62,54,58,40,56,52,46,56,44,80,60,40,58,52,44,56,42,80),
+    P(62,24,62,32,62,56,58,42,56,54,46,58,44,82,60,42,58,54,44,58,42,82)]},
+{id:'kneeplank',n:'Knee Plank',r:'E',c:'core',st:'CORE',d:'3 × 20s hold',eq:[],
+ cues:['Forearms down, knees down, straight line head to knees.','Pull your belly in, squeeze your glutes.','Low back aching means your hips sagged. Lift them.','Stop when form breaks, not when it burns.'],
+ f:[P(22,50,30,52,58,56,26,60,22,64,70,62,84,66,28,61,24,65,68,62,82,66),
+    P(22,49,30,51,58,55,26,59,22,64,70,61,84,66,28,60,24,65,68,61,82,66)]},
+{id:'bridge',n:'Glute Bridge',r:'E',c:'legs',st:'STR',d:'3 × 12',eq:[],
+ cues:['On your back, knees bent, feet flat and close to your butt.','Push through your heels and lift your hips into a ramp.','Squeeze hard at the top for a full second.','Wakes up what sitting all day puts to sleep.'],
+ f:[LIE,m(LIE,{3:60,5:50,7:66,11:52,15:67,19:52})]},
+{id:'march',n:'Standing March',r:'E',c:'cardio',st:'END',d:'3 × 45s',eq:[],
+ cues:['Stand tall, drive one knee to hip height.','Swing the opposite arm like a fast walk.','Stay light and rhythmic.','Hold a wall if your balance is shaky.'],
+ f:[m(ST,{6:44,8:42,14:56,16:58,18:58,19:60,20:56,21:72}),
+    m(ST,{6:56,8:58,10:56,11:60,12:56,13:72,14:44,16:42})]},
+{id:'calf',n:'Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:[],
+ cues:['Near a wall for balance, feet hip width.','Rise onto the balls of your feet as high as possible.','Lower over 3 seconds — that\'s where the work is.','Do them while brushing your teeth. Free reps.'],
+ f:[ST,m(ST,{1:10,3:20,5:48,7:33,9:46,11:66,13:84,15:33,17:46,19:66,21:84})]},
+{id:'birddog',n:'Bird Dog',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
+ cues:['Hands and knees, back flat like a tabletop.','Reach one arm forward and the opposite leg back.','Wobbling? Go shorter, not faster.','Best move going for a cranky lower back.'],
+ f:[P(26,44,34,46,62,48,30,54,28,66,70,54,78,66,32,55,30,66,68,54,76,66),
+    P(24,42,32,44,62,48,24,40,14,38,70,52,88,42,32,55,30,66,68,54,76,66)]},
+{id:'deadbug',n:'Dead Bug',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
+ cues:['On your back, arms up, knees over hips.','Lower one arm and the opposite leg toward the floor.','Keep your lower back pressed flat the whole time.','Stop the moment your back arches.'],
+ f:[P(20,60,30,60,58,62,30,50,32,40,60,50,62,40,32,52,34,42,62,52,64,42),
+    P(20,60,30,60,58,62,24,54,14,52,60,50,62,40,32,52,34,42,68,58,82,60)]},
+{id:'kneepush',n:'Knee Push-Up',r:'D',c:'push',st:'STR',d:'3 × 8',eq:[],
+ cues:['Knees down, hands slightly wider than shoulders.','Straight line head to knees — no piking the hips.','Elbows travel back around 45°, not flared straight out.','The bridge between incline and full push-ups.'],
+ f:[P(22,44,30,47,58,53,28,58,26,72,70,60,84,72,30,59,27,72,68,60,82,72),
+    P(20,58,28,60,58,58,36,66,28,72,70,62,84,72,38,67,29,72,68,62,82,72)]},
+{id:'squat',n:'Bodyweight Squat',r:'D',c:'legs',st:'STR',d:'3 × 12',eq:[],
+ cues:['Feet shoulder width, toes turned out slightly.','Sit down and back, chest proud, knees over toes.','Go as deep as you can without the low back rounding.','Arms straight out front work as a counterweight.'],
+ f:[ST,SQ]},
+{id:'lunge',n:'Reverse Lunge',r:'D',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
+ cues:['Step backward — kinder to the knees than stepping forward.','Drop the back knee toward the floor, front shin vertical.','Push through the front heel to stand.','Hold a wall until balance catches up.'],
+ f:[ST,P(48,20,48,30,50,58,43,42,42,54,66,66,74,86,54,42,56,54,44,70,42,88)]},
+{id:'plank',n:'Plank',r:'D',c:'core',st:'CORE',d:'3 × 30s hold',eq:[],
+ cues:['Forearms and toes, body one hard straight line.','Brace your abs like you\'re about to take a punch.','Look at the floor to keep your neck neutral.','30 solid seconds beats 90 sloppy ones.'],
+ f:[P(20,50,28,52,58,54,24,60,20,66,72,56,88,66,26,61,22,66,70,56,86,66),
+    P(20,49,28,51,58,53,24,59,20,66,72,55,88,66,26,60,22,66,70,55,86,66)]},
+{id:'stepup',n:'Step-Up',r:'D',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
+ cues:['A stair, a bench, or a low sturdy box.','Plant the whole foot and drive up through that heel.','Lower yourself slowly instead of dropping.','Stairs exist everywhere. No excuse.'],
+ f:[P(50,16,50,26,50,54,45,39,44,52,46,72,46,88,58,39,62,50,64,64,70,74),
+    P(48,10,48,20,50,48,43,33,42,46,42,66,40,84,54,33,56,46,62,60,68,72)]},
+{id:'hinge',n:'Hip Hinge',r:'D',c:'pull',st:'STR',d:'3 × 10',eq:[],
+ cues:['Soft knees. Push your hips back like closing a car door with your butt.','Back flat, chest pointing down, not curled over.','Hamstrings should feel it, not your lower back.','Teaches you how to pick things up without wrecking yourself.'],
+ f:[ST,P(30,34,38,36,60,48,36,48,34,60,60,68,58,88,38,49,36,61,62,68,60,88)]},
+{id:'sideknee',n:'Side Plank (knees)',r:'D',c:'core',st:'CORE',d:'3 × 20s each side',eq:[],
+ cues:['On your side, elbow under shoulder, knees bent and stacked.','Lift hips into one line from head to knees.','Top hand on your hip or reaching up.','Hits what the regular plank misses.'],
+ f:[P(24,44,32,48,58,58,28,58,24,68,70,64,80,72,34,40,36,30,72,64,82,72),
+    P(24,42,32,46,58,56,28,56,24,68,70,62,80,72,34,38,36,28,72,62,82,72)]},
+{id:'climber',n:'Slow Mountain Climber',r:'D',c:'cardio',st:'AGI',d:'3 × 30s',eq:[],
+ cues:['Top of a push-up, hands under shoulders.','Draw one knee to your chest, then switch. Controlled.','Hips stay level — no butt popping up.','Speed it up once form is automatic.'],
+ f:[P(22,40,30,43,58,50,28,54,26,70,70,56,84,70,30,55,27,70,52,58,44,62),
+    P(22,40,30,43,58,50,28,54,26,70,52,56,44,60,30,55,27,70,70,58,84,70)]},
+{id:'pushup',n:'Full Push-Up',r:'C',c:'push',st:'STR',d:'4 × 6',eq:[],
+ cues:['Hands under shoulders, body rigid head to heels.','Lower until your chest is a fist off the floor.','Push the floor away — whole body moves as one plank.','The rep you\'ll measure yourself by for years.'],
+ f:[PLK_UP,PLK_DN]},
+{id:'split',n:'Split Squat',r:'C',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
+ cues:['One foot forward, one back, split stance the whole set.','Drop straight down, back knee toward the floor.','Front heel stays glued down.','Harder than it looks. Respect it.'],
+ f:[P(50,16,50,26,50,54,45,39,44,52,62,66,70,86,55,39,56,52,42,70,40,88),
+    P(50,26,50,36,50,62,45,48,44,60,64,76,70,88,55,48,56,60,40,74,38,88)]},
+{id:'sideplank',n:'Side Plank',r:'C',c:'core',st:'CORE',d:'3 × 30s each side',eq:[],
+ cues:['Elbow under shoulder, legs straight and stacked.','Drive the hips up and hold the line.','Don\'t let the top shoulder roll forward.','Struggling? Drop the bottom knee, keep the clock going.'],
+ f:[P(20,40,28,44,58,58,24,56,20,68,76,68,88,74,30,36,32,26,78,68,90,74),
+    P(20,38,28,42,58,56,24,54,20,68,76,66,88,74,30,34,32,24,78,66,90,74)]},
+{id:'hollow',n:'Hollow Hold',r:'C',c:'core',st:'CORE',d:'3 × 20s hold',eq:[],
+ cues:['On your back, press your low back flat into the floor.','Lift shoulders and legs a few inches up.','Back lifts off? Legs go higher, or bend the knees.','Gymnasts build their entire core on this.'],
+ f:[P(22,52,30,54,56,62,22,46,12,42,68,58,84,50,24,48,14,44,70,58,86,52),
+    P(22,50,30,53,56,62,22,44,12,40,68,57,84,48,24,46,14,42,70,57,86,50)]},
+{id:'jack',n:'Jumping Jack',r:'C',c:'cardio',st:'AGI',d:'4 × 40s',eq:[],
+ cues:['Arms and legs out, then back in.','Bad knees? Step one foot out at a time instead.','Land soft, toes then heel.','Best 40-second heart-rate spike in the game.'],
+ f:[m(ST,{1:16,3:25,7:38,9:50,15:38,17:50}),
+    P(50,14,50,23,50,50,36,32,30,18,38,68,32,86,64,32,70,18,62,68,68,86)]},
+{id:'row_table',n:'Table Row',r:'C',c:'pull',st:'STR',d:'3 × 8',eq:[],
+ cues:['Lie under a sturdy table, grab the edge, body straight.','Pull your chest to the edge, squeeze the shoulder blades.','Bend the knees to make it easier, straighten to make it harder.','Push-ups alone build a hunchback. Pull something.'],
+ f:[BENCH_L,m(BENCH_L,{1:48,3:48,5:54,6:40,7:42,14:42,15:44})]},
+{id:'superman',n:'Superman Hold',r:'C',c:'pull',st:'VIT',d:'3 × 20s hold',eq:[],
+ cues:['Face down, arms out front, legs straight.','Lift arms, chest, and legs at the same time.','Squeeze your glutes, look at the floor.','Balances out everything you do sitting down.'],
+ f:[P(24,54,32,56,60,60,26,50,14,46,72,62,86,56,28,52,16,48,74,62,88,58),
+    P(24,48,32,52,60,58,24,42,12,36,72,58,88,46,26,44,14,38,74,58,90,48)]},
+{id:'bear',n:'Bear Crawl Hold',r:'C',c:'core',st:'CORE',d:'3 × 25s hold',eq:[],
+ cues:['Hands and knees, hover the knees an inch off the floor.','Flat back — you could balance a cup on it.','Breathe normally while your abs scream.','Add small steps once holding is easy.'],
+ f:[P(24,44,32,46,62,48,28,56,26,68,70,58,80,68,30,57,27,68,68,58,78,68),
+    P(24,42,32,44,62,46,28,54,26,68,70,56,80,68,30,55,27,68,68,56,78,68)]},
+{id:'diamond',n:'Diamond Push-Up',r:'B',c:'push',st:'STR',d:'3 × 6',eq:[],
+ cues:['Hands together under your chest, thumbs and fingers making a triangle.','Elbows tucked tight to your ribs.','Lower until your chest touches your hands.','Triceps assassin. Expect the rep count to crater.'],
+ f:[m(PLK_UP,{6:30,8:34},{}),m(PLK_DN,{6:32,8:34})]},
+{id:'pike',n:'Pike Push-Up',r:'B',c:'push',st:'STR',d:'3 × 6',eq:[],
+ cues:['Push-up position, walk the feet in so your hips point at the ceiling.','Lower the top of your head toward the floor between your hands.','This is your overhead press without a barbell.','Feet on a chair makes it brutal.'],
+ f:[P(26,38,32,44,56,26,28,50,24,66,70,46,84,66,30,51,25,66,68,46,82,66),
+    P(24,54,30,52,56,28,32,60,24,66,70,48,84,66,34,61,25,66,68,48,82,66)]},
+{id:'burpee_s',n:'Step-Back Burpee',r:'B',c:'cardio',st:'AGI',d:'4 × 8',eq:[],
+ cues:['Squat down, hands on the floor, step the feet back one at a time.','Step them in, then stand tall.','No jumping needed — stepping keeps joints happy, heart rate high.','Add the jump only when stepping feels easy.'],
+ f:[ST,PLK_UP]},
+{id:'slbridge',n:'Single-Leg Glute Bridge',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
+ cues:['Bridge position, then extend one leg straight out.','Push the planted heel down and lift the hips level.','Don\'t let the free hip drop.','Fixes the strength gap between your left and right side.'],
+ f:[m(LIE,{18:76,19:62,20:90,21:60}),m(LIE,{3:60,5:50,7:66,11:52,15:67,18:80,19:46,20:96,21:40})]},
+{id:'archer',n:'Archer Push-Up',r:'A',c:'push',st:'STR',d:'3 × 4 each side',eq:[],
+ cues:['Hands wide. Lower toward one hand, the other arm stays straight.','The straight arm is a kickstand, not a pusher.','Push back to center and alternate.','Your gateway to the one-arm push-up.'],
+ f:[m(PLK_UP,{14:34,15:54,16:44,17:72}),m(PLK_DN,{0:18,2:26,14:40,15:58,16:52,17:72})]},
+{id:'pistol',n:'Assisted Pistol Squat',r:'A',c:'legs',st:'AGI',d:'3 × 4 each leg',eq:[],
+ cues:['Hold a doorframe. One leg down, the other straight out front.','Lower under control as deep as you can, then drive up.','Use as much hand assist as you need — reduce it over time.','Balance, mobility, and raw leg strength in one rep.'],
+ f:[P(50,16,50,26,50,54,44,38,42,50,48,72,48,88,58,38,66,44,68,58,78,56),
+    P(48,32,48,42,52,66,42,52,38,62,40,74,44,88,58,52,68,52,72,62,88,58)]},
+{id:'handstand',n:'Wall Handstand Hold',r:'A',c:'push',st:'AGI',d:'4 × 20s hold',eq:[],
+ cues:['Chest to the wall, walk your feet up slowly.','Arms locked, ribs pulled in, squeeze everything.','Come down before form goes, not after.','Pure showoff move. Earn it.'],
+ f:[P(50,80,50,70,50,42,50,58,50,88,50,26,50,10,52,58,52,88,54,26,54,10),
+    P(50,82,50,72,50,44,50,60,50,88,50,28,50,12,52,60,52,88,54,28,54,12)]},
+{id:'burpee_f',n:'Full Burpee',r:'A',c:'cardio',st:'AGI',d:'5 × 10',eq:[],
+ cues:['Floor, chest down, jump the feet in, jump up, hands overhead.','Every rep is a full sentence — don\'t half-rep the top.','Pace yourself. Round four is where people fold.','The universal "am I actually in shape" test.'],
+ f:[m(ST,{1:20,3:30,5:56,7:42,9:54,15:42,17:54}),
+    P(50,8,50,18,50,44,44,8,42,-2,46,60,46,76,56,8,58,-2,54,60,54,76)]},
+
+/* ================= DUMBBELLS ================= */
+{id:'db_curl',n:'Dumbbell Curl',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['db'],p:'db',
+ cues:['Stand tall, dumbbells at your sides, palms forward.','Curl up without swinging your body — elbows pinned to your ribs.','Lower over 3 seconds. The lowering is where arms are built.','Lighter and slower beats heavier and swinging.'],
+ f:[m(ST,{6:44,7:38,8:43,9:52,14:56,15:38,16:57,17:52}),
+    m(ST,{6:44,7:38,8:47,9:30,14:56,15:38,16:53,17:30})]},
+{id:'db_hammer',n:'Hammer Curl',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['db'],p:'db',
+ cues:['Same as a curl but palms face each other the whole way.','Hits the forearm and the thicker part of the bicep.','No swinging. If your back moves, the weight is too heavy.','Pairs well right after regular curls.'],
+ f:[m(ST,{8:43,9:52,16:57,17:52}),m(ST,{7:40,8:46,9:32,15:40,16:54,17:32})]},
+{id:'db_goblet',n:'Goblet Squat',r:'D',c:'legs',st:'STR',d:'3 × 10',eq:['db'],p:'kb',
+ cues:['Hold one dumbbell vertically against your chest like a goblet.','Squat down between your knees, elbows inside your thighs.','The weight up front keeps your chest from dumping forward.','Best squat for learning depth safely.'],
+ f:[m(ST,{6:44,7:34,8:48,9:36,14:56,15:34,16:52,17:36}),
+    m(SQ,{6:42,7:44,8:48,9:46,14:58,15:44,16:52,17:46})]},
+{id:'db_row',n:'One-Arm Dumbbell Row',r:'D',c:'pull',st:'STR',d:'3 × 10 each arm',eq:['db'],p:'db1',
+ cues:['One hand and knee on a bench, other foot planted, back flat.','Pull the dumbbell to your hip, leading with the elbow.','Squeeze the shoulder blade at the top, lower it all the way.','Don\'t twist your torso to move more weight.'],
+ f:[P(28,34,36,38,62,46,34,50,32,64,68,56,64,74,38,52,36,64,74,60,86,72),
+    P(28,34,36,38,62,46,34,50,32,64,68,56,64,74,44,46,44,52,74,60,86,72)]},
+{id:'db_floor',n:'Dumbbell Floor Press',r:'D',c:'push',st:'STR',d:'3 × 10',eq:['db'],p:'db',
+ cues:['On your back, knees bent, dumbbells over your chest.','Lower until your triceps touch the floor, then press up.','The floor stops you before your shoulders get cranky.','No bench needed. Great hotel-room chest work.'],
+ f:[m(LIE,{6:26,7:52,8:26,9:42,14:28,15:52,16:28,17:42}),
+    m(LIE,{6:22,7:60,8:28,9:60,14:24,15:62,16:30,17:60})]},
+{id:'db_lat',n:'Lateral Raise',r:'D',c:'push',st:'STR',d:'3 × 15',eq:['db'],p:'db',
+ cues:['Light weight. Seriously, lighter than you think.','Raise the dumbbells out to the sides to shoulder height.','Slight bend in the elbows, lead with the elbows not the hands.','This is what builds the round-shoulder look.'],
+ f:[m(ST,{6:44,7:38,8:43,9:52,14:56,15:38,16:57,17:52}),
+    m(ST,{6:36,7:30,8:24,9:26,14:64,15:30,16:76,17:26})]},
+{id:'db_press',n:'Dumbbell Shoulder Press',r:'C',c:'push',st:'STR',d:'3 × 8',eq:['db'],p:'db',
+ cues:['Dumbbells at shoulder height, palms forward.','Press straight overhead until your arms lock out.','Don\'t arch your lower back — squeeze your glutes and abs.','Standing works your whole body. Seated is stricter.'],
+ f:[m(ST,{6:38,7:30,8:38,9:34,14:62,15:30,16:62,17:34}),
+    m(ST,{6:42,7:20,8:44,9:8,14:58,15:20,16:56,17:8})]},
+{id:'db_bench',n:'Dumbbell Bench Press',r:'C',c:'push',st:'STR',d:'4 × 8',eq:['db','bench'],p:'db',pp:'bench',
+ cues:['Lie back, dumbbells over your chest, feet flat on the floor.','Lower until you feel a stretch across your chest — not deeper.','Press up and slightly together at the top.','Dumbbells beat the barbell for most people\'s shoulders.'],
+ f:[m(LIE,{6:26,7:52,8:26,9:40,14:28,15:52,16:28,17:40}),
+    m(LIE,{6:20,7:58,8:26,9:62,14:22,15:60,16:28,17:62})]},
+{id:'db_fly',n:'Dumbbell Chest Fly',r:'C',c:'push',st:'STR',d:'3 × 12',eq:['db','bench'],p:'db',pp:'bench',
+ cues:['Lie back, arms above your chest with a soft elbow bend.','Open your arms wide like a hug in reverse, then bring them back together.','Go light. This is a stretch move, not an ego move.','Stop when your upper arms are level with your chest.'],
+ f:[m(LIE,{6:26,7:52,8:26,9:40,14:28,15:52,16:28,17:40}),
+    m(LIE,{6:18,7:56,8:8,9:58,14:20,15:58,16:10,17:60})]},
+{id:'db_rdl',n:'Dumbbell Romanian Deadlift',r:'C',c:'legs',st:'STR',d:'3 × 10',eq:['db'],p:'db',
+ cues:['Dumbbells in front of your thighs, soft knees.','Push your hips straight back, letting the weights slide down your legs.','Stop when you feel the hamstring stretch — back stays flat.','Stand up by squeezing your glutes, not by yanking with your back.'],
+ f:[m(ST,{8:44,9:50,16:56,17:50}),
+    P(30,34,38,36,60,48,40,48,42,64,60,68,58,88,42,49,44,64,62,68,60,88)]},
+{id:'db_lunge',n:'Dumbbell Lunge',r:'C',c:'legs',st:'STR',d:'3 × 8 each leg',eq:['db'],p:'db',
+ cues:['A dumbbell in each hand, arms just hanging.','Step back and drop the back knee toward the floor.','Torso stays upright, front shin vertical.','Grip usually fails before the legs do. That\'s fine, it\'s training too.'],
+ f:[m(ST,{8:44,9:52,16:56,17:52}),
+    P(48,20,48,30,50,58,43,42,42,56,66,66,74,86,54,42,56,56,44,70,42,88)]},
+{id:'db_tri',n:'Overhead Triceps Extension',r:'C',c:'push',st:'STR',d:'3 × 12',eq:['db'],p:'kb',
+ cues:['One dumbbell held with both hands, straight overhead.','Bend only at the elbows and lower it behind your head.','Elbows stay pointing forward, close to your ears.','Slow and controlled. This joint doesn\'t like sloppy.'],
+ f:[m(ST,{6:46,7:24,8:48,9:8,14:54,15:24,16:52,17:8}),
+    m(ST,{6:46,7:22,8:50,9:26,14:54,15:22,16:52,17:26})]},
+{id:'db_carry',n:'Farmer Carry',r:'D',c:'full',st:'END',d:'4 × 40 steps',eq:['db'],p:'db',
+ cues:['Heavy weight in each hand. Stand tall and walk.','Shoulders back, ribs down, don\'t lean to one side.','Walk until your grip is nearly done, then set them down safely.','Stupidly simple and it builds everything.'],
+ f:[m(ST,{8:44,9:54,18:58,19:60,20:56,21:72,16:56,17:54}),
+    m(ST,{8:44,9:54,10:56,11:60,12:56,13:72,16:56,17:54})]},
+{id:'db_thruster',n:'Dumbbell Thruster',r:'B',c:'full',st:'END',d:'4 × 10',eq:['db'],p:'db',
+ cues:['Dumbbells at your shoulders. Squat down.','Drive up out of the squat and press overhead in one motion.','Legs do the work, arms just finish it.','Fastest way to make yourself hate a 10-rep set.'],
+ f:[m(SQ,{6:42,7:44,8:44,9:40,14:58,15:44,16:56,17:40}),
+    m(ST,{6:42,7:20,8:44,9:6,14:58,15:20,16:56,17:6})]},
+{id:'db_bulg',n:'Bulgarian Split Squat',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:['db','bench'],p:'db',
+ cues:['Back foot up on a bench, front foot two feet out.','Drop straight down, torso slightly forward.','Front heel stays down the entire rep.','One of the hardest things you can do with two dumbbells.'],
+ f:[P(46,16,47,26,50,54,42,39,41,54,66,60,76,64,52,39,53,54,44,72,42,88),
+    P(44,26,45,36,50,62,40,48,39,62,68,68,78,66,50,48,51,62,42,76,40,88)]},
+
+/* ================= KETTLEBELL ================= */
+{id:'kb_halo',n:'Kettlebell Halo',r:'D',c:'push',st:'AGI',d:'3 × 8 each way',eq:['kb'],p:'kb',
+ cues:['Hold the bell upside down by the horns at chest height.','Circle it around your head, staying close.','Ribs stay down, no leaning back.','Best shoulder warm-up before any pressing.'],
+ f:[m(ST,{6:46,7:30,8:48,9:30,14:54,15:30,16:52,17:30}),
+    m(ST,{6:42,7:22,8:38,9:16,14:58,15:22,16:62,17:16})]},
+{id:'kb_swing',n:'Kettlebell Swing',r:'C',c:'full',st:'END',d:'5 × 15',eq:['kb'],p:'kb2',
+ cues:['This is a hip snap, not a squat and not a front raise.','Hike the bell back between your legs, then snap your hips forward.','The bell floats to chest height on its own. Arms are ropes.','Squeeze your glutes hard at the top and stand fully upright.'],
+ f:[P(34,34,40,38,58,50,40,48,42,62,60,66,58,88,42,49,44,62,62,66,60,88),
+    m(ST,{6:44,7:36,8:42,9:34,14:56,15:36,16:58,17:34})]},
+{id:'kb_cp',n:'Kettlebell Clean & Press',r:'B',c:'full',st:'STR',d:'4 × 6 each arm',eq:['kb'],p:'kb1',
+ cues:['Swing the bell up and catch it in the rack position at your shoulder.','Catch it soft — it shouldn\'t bang your forearm.','From the rack, press it straight overhead.','Learn the clean before you add the press.'],
+ f:[m(ST,{14:58,15:32,16:54,17:34}),m(ST,{14:56,15:20,16:54,17:6})]},
+{id:'kb_tgu',n:'Turkish Get-Up',r:'A',c:'full',st:'CORE',d:'3 × 3 each side',eq:['kb'],p:'kb1',
+ cues:['Start lying down with the bell locked out over your shoulder.','Stand up one deliberate step at a time, eyes on the bell.','Then reverse it back down the exact same way.','Practice with a shoe on your fist before you use weight.'],
+ f:[m(LIE,{14:34,15:52,16:36,17:38}),
+    P(50,16,50,26,50,54,45,39,44,52,46,72,46,88,54,26,54,8,54,70,54,88)]},
+
+/* ================= BARBELL ================= */
+{id:'bb_squat',n:'Barbell Back Squat',r:'B',c:'legs',st:'STR',d:'4 × 6',eq:['bb'],p:'bar',
+ cues:['Bar on your upper back, not your neck. Grip it hard.','Big breath, brace, then sit down between your hips.','Knees track over your toes, chest stays up.','Use a rack with safety bars. Always.'],
+ f:[m(ST,{6:40,7:32,8:38,9:26,14:60,15:32,16:62,17:26}),
+    m(SQ,{0:48,1:28,6:38,7:44,8:36,9:38,14:62,15:44,16:64,17:38})]},
+{id:'bb_dl',n:'Barbell Deadlift',r:'B',c:'pull',st:'STR',d:'4 × 5',eq:['bb'],p:'bar2',
+ cues:['Bar over mid-foot, shins nearly touching it.','Flat back, chest up, take the slack out before you pull.','Push the floor away and drag the bar up your legs.','If your back rounds, the set is over. No hero reps.'],
+ f:[P(34,36,40,40,58,52,40,50,42,68,58,66,56,88,42,51,44,68,60,66,58,88),
+    m(ST,{8:44,9:54,16:56,17:54})]},
+{id:'bb_bench',n:'Barbell Bench Press',r:'B',c:'push',st:'STR',d:'4 × 6',eq:['bb','bench'],p:'bar',pp:'bench',
+ cues:['Feet flat, shoulder blades pinched together and pulled down.','Lower the bar to your lower chest with control.','Elbows around 45° from your body, not flared out wide.','Use a spotter or safety arms. Every single time.'],
+ f:[m(LIE,{6:24,7:52,8:24,9:38,14:28,15:52,16:28,17:38}),
+    m(LIE,{6:18,7:58,8:24,9:60,14:22,15:60,16:28,17:60})]},
+{id:'bb_ohp',n:'Overhead Press',r:'B',c:'push',st:'STR',d:'4 × 6',eq:['bb'],p:'bar',
+ cues:['Bar on your front shoulders, hands just outside them.','Squeeze your glutes, press up, move your head back out of the way.','Finish with the bar over the middle of your feet, not in front.','The most honest lift there is. Nothing to hide behind.'],
+ f:[m(ST,{6:40,7:30,8:40,9:32,14:60,15:30,16:60,17:32}),
+    m(ST,{6:42,7:18,8:44,9:6,14:58,15:18,16:56,17:6})]},
+{id:'bb_row',n:'Bent-Over Row',r:'B',c:'pull',st:'STR',d:'4 × 8',eq:['bb'],p:'bar2',
+ cues:['Hinge until your torso is around 45°, back flat.','Pull the bar to your belly button, elbows driving back.','Lower it under control — no dropping and bouncing.','Balances out all your pressing.'],
+ f:[P(30,34,38,38,60,48,38,50,38,62,60,68,58,88,40,51,40,62,62,68,60,88),
+    P(30,34,38,38,60,48,44,44,42,52,60,68,58,88,46,45,44,52,62,68,60,88)]},
+{id:'bb_thrust',n:'Barbell Hip Thrust',r:'C',c:'legs',st:'STR',d:'4 × 10',eq:['bb','bench'],p:'bar2',pp:'bench',
+ cues:['Upper back on a bench, bar across your hips (use a pad).','Drive through your heels and lift until your body is a tabletop.','Squeeze your glutes hard at the top, chin tucked.','The single best glute builder that exists.'],
+ f:[m(LIE,{5:64,11:58,19:58}),m(LIE,{3:60,5:48,7:66,11:50,15:67,19:50})]},
+{id:'bb_front',n:'Front Squat',r:'A',c:'legs',st:'STR',d:'4 × 5',eq:['bb'],p:'bar',
+ cues:['Bar racked on your front delts, elbows high the whole time.','Elbows drop, you drop the bar. Keep them up.','Stay upright and squat straight down.','Punishes any weakness in your upper back.'],
+ f:[m(ST,{6:42,7:30,8:44,9:32,14:58,15:30,16:56,17:32}),
+    m(SQ,{0:50,1:28,6:42,7:42,8:44,9:42,14:58,15:42,16:56,17:42})]},
+{id:'bb_clean',n:'Power Clean',r:'A',c:'full',st:'AGI',d:'5 × 3',eq:['bb'],p:'bar2',
+ cues:['Deadlift speed off the floor, then explode with the hips.','Shrug hard and pull yourself under the bar.','Catch it on your front shoulders in a quarter squat.','Get coached on this one. Video yourself at minimum.'],
+ f:[P(34,36,40,40,58,52,40,50,42,68,58,66,56,88,42,51,44,68,60,66,58,88),
+    m(SQ,{0:48,1:24,2:49,3:34,4:50,5:58,6:42,7:38,8:44,9:38,14:58,15:38,16:56,17:38})]},
+
+/* ================= PULL-UP BAR ================= */
+{id:'hang',n:'Dead Hang',r:'D',c:'pull',st:'END',d:'4 × 25s',eq:['bar'],p:'fixbar',
+ cues:['Just hang from the bar with straight arms.','Relax and let your shoulders decompress.','Builds the grip you\'ll need for everything else.','Accumulate two minutes total. However you split it.'],
+ f:[P(50,26,50,34,50,60,47,22,46,10,48,76,48,92,53,22,54,10,52,76,52,92),
+    P(50,27,50,35,50,61,47,23,46,10,48,77,48,93,53,23,54,10,52,77,52,93)]},
+{id:'kneeraise',n:'Hanging Knee Raise',r:'C',c:'core',st:'CORE',d:'3 × 10',eq:['bar'],p:'fixbar',
+ cues:['Hang from the bar, no swinging.','Pull your knees up toward your chest using your abs.','Lower slowly. If you swing, you\'re using momentum.','Straighten the legs to level it up.'],
+ f:[P(50,26,50,34,50,60,47,22,46,10,48,76,48,92,53,22,54,10,52,76,52,92),
+    P(50,26,50,34,50,58,47,22,46,10,44,44,36,54,53,22,54,10,56,44,64,54)]},
+{id:'chinup',n:'Chin-Up / Pull-Up',r:'B',c:'pull',st:'STR',d:'4 × 3-6',eq:['bar'],p:'fixbar',
+ cues:['Can\'t do one? Jump to the top and lower as slowly as possible.','From a dead hang, pull your chest toward the bar.','Shoulder blades pull down before the arms bend.','Five slow negatives a day and one day the real rep shows up.'],
+ f:[P(50,26,50,34,50,60,47,22,46,10,48,76,48,92,53,22,54,10,52,76,52,92),
+    P(50,16,50,26,50,52,42,20,46,10,46,66,44,82,58,20,54,10,54,66,56,82)]},
+{id:'ttb',n:'Toes to Bar',r:'A',c:'core',st:'CORE',d:'4 × 6',eq:['bar'],p:'fixbar',
+ cues:['Hang, then bring your straight legs all the way to the bar.','Push down on the bar with straight arms to help.','Control the way down — that\'s the hard half.','Knee raises first. This is the boss version.'],
+ f:[P(50,26,50,34,50,60,47,22,46,10,48,76,48,92,53,22,54,10,52,76,52,92),
+    P(52,30,52,36,50,54,47,22,46,10,44,36,46,14,53,22,54,10,56,36,54,14)]},
+
+/* ================= BANDS ================= */
+{id:'band_pull',n:'Band Pull-Apart',r:'E',c:'pull',st:'VIT',d:'3 × 15',eq:['band'],p:'band',
+ cues:['Hold a band in front of you at chest height, arms straight.','Pull it apart until it touches your chest, squeezing your shoulder blades.','Slow on the way back. Don\'t let it snap you.','Do these before every push workout. Your shoulders will thank you.'],
+ f:[m(ST,{6:44,7:34,8:44,9:36,14:56,15:34,16:56,17:36}),
+    m(ST,{6:38,7:34,8:26,9:34,14:62,15:34,16:74,17:34})]},
+{id:'band_row',n:'Band Row',r:'D',c:'pull',st:'STR',d:'3 × 15',eq:['band'],p:'band',
+ cues:['Anchor the band at chest height — a door, a pole, whatever holds.','Pull the handles to your ribs, elbows driving back.','Squeeze for a second, then let it back out slowly.','Pack a band in your bag. Instant back workout anywhere.'],
+ f:[m(ST,{6:44,7:36,8:34,9:36,14:56,15:36,16:66,17:36}),
+    m(ST,{6:40,7:36,8:48,9:38,14:60,15:36,16:52,17:38})]},
+{id:'band_face',n:'Face Pull',r:'D',c:'pull',st:'VIT',d:'3 × 15',eq:['band'],p:'band',
+ cues:['Anchor high. Pull the band toward your forehead.','Hands finish beside your ears, elbows high and wide.','Think about pulling the band apart as you pull it in.','The best posture-fixing exercise there is.'],
+ f:[m(ST,{6:44,7:32,8:36,9:30,14:56,15:32,16:64,17:30}),
+    m(ST,{6:38,7:26,8:46,9:22,14:62,15:26,16:54,17:22})]},
+
+/* ================= MACHINES / GYM ================= */
+{id:'lat_pull',n:'Lat Pulldown',r:'D',c:'pull',st:'STR',d:'4 × 10',eq:['machine'],p:'cable',
+ cues:['Wide grip, chest up, slight lean back.','Pull the bar to your upper chest, elbows driving down.','Don\'t yank with your whole body. The lats do the work.','The training-wheels version of a pull-up. Use it.'],
+ f:[m(ST,{1:24,3:32,5:56,6:42,7:22,8:38,9:8,14:58,15:22,16:62,17:8}),
+    m(ST,{1:24,3:32,5:56,6:38,7:32,8:36,9:26,14:62,15:32,16:64,17:26})]},
+{id:'cable_row',n:'Seated Cable Row',r:'D',c:'pull',st:'STR',d:'4 × 10',eq:['machine'],p:'cable',
+ cues:['Sit tall, slight knee bend, chest proud.','Pull the handle to your belly button, elbows past your ribs.','Let it stretch your back on the way out, but don\'t slump.','Squeeze your shoulder blades like you\'re holding a pencil between them.'],
+ f:[P(38,30,44,36,50,58,44,44,36,44,58,60,74,64,46,45,38,45,60,60,76,64),
+    P(38,30,44,36,50,58,52,42,48,46,58,60,74,64,54,43,50,47,60,60,76,64)]},
+{id:'legpress',n:'Leg Press',r:'C',c:'legs',st:'STR',d:'4 × 10',eq:['machine'],p:'plate',
+ cues:['Feet shoulder width on the platform, whole foot in contact.','Lower until your knees are around 90° — deeper if your back stays flat.','Never lock your knees hard at the top.','Don\'t let your lower back peel off the pad. That\'s the danger point.'],
+ f:[P(24,44,32,48,52,58,30,54,26,62,68,50,84,44,32,55,28,63,70,52,86,46),
+    P(24,44,32,48,52,58,30,54,26,62,60,54,68,44,32,55,28,63,62,56,70,46)]},
+{id:'treadmill',n:'Incline Treadmill Walk',r:'E',c:'cardio',st:'END',d:'20 min',eq:['machine'],
+ cues:['Steep incline, slow speed. Brutal without the joint pounding.','Don\'t hang off the handrails — it deletes most of the work.','You should be able to talk but not sing.','The most underrated cardio in any gym.'],
+ f:[P(48,14,49,24,52,52,43,36,40,48,46,72,42,88,56,36,58,48,60,68,62,84),
+    P(48,14,49,24,52,52,55,36,58,48,58,70,60,86,44,36,41,47,44,70,40,86)]},
+{id:'rowerg',n:'Rowing Machine',r:'C',c:'cardio',st:'END',d:'5 × 3 min',eq:['machine'],p:'cable',
+ cues:['Legs, then back, then arms. Reverse it on the way in.','Most of the power comes from your legs, not your arms.','Long strokes beat frantic short ones.','500m intervals with a minute rest is a great starting workout.'],
+ f:[P(34,34,40,40,48,58,40,46,34,44,62,50,76,58,42,47,36,45,64,52,78,60),
+    P(42,30,46,36,50,58,50,42,52,46,64,58,80,62,52,43,54,47,66,58,82,64)]}
+];
+
+const RANKS=['E','D','C','B','A'];
+const RANK_LV={E:1,D:4,C:9,B:16,A:26};
+const RANK_NAME={E:'E-Rank Awakened',D:'D-Rank Hunter',C:'C-Rank Hunter',B:'B-Rank Hunter',A:'A-Rank Hunter',S:'S-Rank Monarch'};
+const CATS={push:'Push',pull:'Pull',legs:'Legs',core:'Core',cardio:'Cardio',full:'Full body'};
+const EQNAME={db:'Dumbbells',kb:'Kettlebell',bb:'Barbell',bar:'Pull-up bar',bench:'Bench',band:'Bands',machine:'Machines'};
+
+const SHOP=[
+ {id:'t_awake',k:'title',n:'The Awakened',p:60,ico:'✦',d:'First title. You showed up.'},
+ {id:'t_iron',k:'title',n:'Iron Willed',p:220,ico:'⚔',d:'For finishing quests you didn\'t feel like starting.'},
+ {id:'t_shadow',k:'title',n:'Shadow of the Gym',p:500,ico:'☾',d:'They stopped noticing you leave. You never stopped going.'},
+ {id:'t_monarch',k:'title',n:'Monarch in Training',p:1200,ico:'♛',d:'Reserved for the delusional and the consistent.'},
+ {id:'p_rest',k:'potion',n:'Potion of Rest',p:150,ico:'⌛',d:'Protects your streak for one extra missed day. Consumed on use.'},
+ {id:'th_ember',k:'theme',n:'Ember Sigil',p:400,ico:'◆',d:'Recolors the System to molten orange.'},
+ {id:'th_abyss',k:'theme',n:'Abyss Sigil',p:400,ico:'◆',d:'Recolors the System to deep green void.'}
+];
+const THEMES={
+ th_ember:{arc:'#FF9E4A',mana:'#FF5E5B',edge:'#5A2A2A',deep:'#1E0F16',panel:'#2A1520'},
+ th_abyss:{arc:'#5BE39B',mana:'#3E8F7C',edge:'#1F4A3E',deep:'#08160F',panel:'#0E2418'}
+};
+
+const GOALS={
+ muscle:{n:'Build muscle',w:{push:3,pull:3,legs:3,core:1,cardio:1,full:1}},
+ strong:{n:'Get stronger',w:{push:3,pull:3,legs:4,core:2,cardio:1,full:2}},
+ cond:{n:'Conditioning',w:{push:1,pull:1,legs:2,core:2,cardio:4,full:3}},
+ consist:{n:'Just move more',w:{push:2,pull:2,legs:2,core:2,cardio:3,full:1}}
+};
+const XPLEVEL={new:1,some:5,trained:12,adv:20};
+
+/* ---------------- state ---------------- */
+/* ---------------- storage ----------------
+   Uses Claude's window.storage when running inside Claude,
+   falls back to the browser's own storage anywhere else. */
+const DB=(()=>{
+  if(typeof window!=='undefined'&&window.storage&&window.storage.get)return window.storage;
+  return {
+    async get(k){const v=localStorage.getItem(k);if(v===null)throw new Error('missing');return{key:k,value:v}},
+    async set(k,v){localStorage.setItem(k,v);return{key:k,value:v}}
+  };
+})();
+
+const KEY='sh:hunter:v2';
+let S={
+ setup:false,name:'',goal:'consist',exp:'new',eq:[],days:4,
+ lvl:1,xp:0,gold:0,streak:0,best:0,last:null,
+ stats:{STR:5,END:5,VIT:5,AGI:5,CORE:5},
+ prs:{pushup:0,squat:0,plank:0},
+ logs:0,questDate:null,questDone:[],questBonus:false,owned:[],title:null,theme:null,potions:0,tourSeen:false
+};
+const need=l=>40+l*30;
+const rankOf=l=>l>=40?'S':l>=26?'A':l>=16?'B':l>=9?'C':l>=4?'D':'E';
+const unlocked=r=>S.lvl>=(RANK_LV[r]||1);
+const hasEq=e=>(e.eq||[]).every(x=>S.eq.includes(x));
+const today=()=>new Date().toLocaleDateString('en-CA');
+
+async function load(){try{const r=await DB.get(KEY);if(r&&r.value)S=Object.assign(S,JSON.parse(r.value));}catch(e){}}
+let sT;function save(){clearTimeout(sT);sT=setTimeout(async()=>{try{await DB.set(KEY,JSON.stringify(S))}catch(e){console.error('save failed',e)}},250)}
+
+/* ---------------- figures ---------------- */
+function pts(p){const o=[];for(let i=0;i<22;i+=2)o.push({x:p[i],y:p[i+1]});return o}
+function figSVG(prop,pprop){
+  let stat='',dyn='';
+  if(pprop==='bench') stat+='<rect x="14" y="66" width="60" height="5" rx="1" class="eqs"/><rect x="20" y="71" width="4" height="16" class="eqs"/><rect x="64" y="71" width="4" height="16" class="eqs"/>';
+  if(prop==='fixbar') stat+='<line x1="18" y1="6" x2="82" y2="6" class="eqs2"/><line x1="20" y1="0" x2="20" y2="6" class="eqs"/><line x1="80" y1="0" x2="80" y2="6" class="eqs"/>';
+  if(prop==='cable') stat+='<rect x="86" y="14" width="12" height="60" class="eqs"/><line x1="92" y1="24" x2="92" y2="24" class="eqs2" data-p="cbl"/>';
+  if(prop==='plate') stat+='<rect x="84" y="30" width="14" height="40" rx="2" class="eqs"/>';
+  if(prop==='db'||prop==='band') dyn+='<g data-p="h0"></g><g data-p="h1"></g>';
+  if(prop==='db1'||prop==='kb'||prop==='kb1') dyn+='<g data-p="h1"></g>';
+  if(prop==='kb2') dyn+='<g data-p="h1"></g>';
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">
+    <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
+    ${stat}
+    <g class="back"><polyline data-l="1,3,4"/><polyline data-l="2,5,6"/></g>
+    <g class="front"><polyline data-l="1,2"/><polyline data-l="1,7,8"/><polyline data-l="2,9,10"/><circle data-head r="7"/></g>
+    <g class="eq" data-prop="${prop||''}">${dyn}</g>
+  </svg>`;
+}
+function paint(svg,pose,prop){
+  const p=pts(pose);
+  svg.querySelectorAll('polyline').forEach(pl=>pl.setAttribute('points',pl.dataset.l.split(',').map(i=>p[+i].x+','+p[+i].y).join(' ')));
+  const h=svg.querySelector('[data-head]');h.setAttribute('cx',p[0].x);h.setAttribute('cy',p[0].y);
+  if(!prop)return;
+  const bH=p[4],fH=p[8];
+  const set=(sel,html)=>{const g=svg.querySelector(sel);if(g)g.innerHTML=html};
+  const dbAt=(q)=>`<rect x="${q.x-6}" y="${q.y-2.6}" width="12" height="5.2" rx="2.2" class="eqf"/>`;
+  const kbAt=(q)=>`<circle cx="${q.x}" cy="${q.y+3}" r="4.6" class="eqf"/><path d="M${q.x-3.4} ${q.y+1} a3.4 4 0 0 1 6.8 0" class="eqo"/>`;
+  if(prop==='db'){set('[data-p="h0"]',dbAt(bH));set('[data-p="h1"]',dbAt(fH))}
+  else if(prop==='db1'){set('[data-p="h1"]',dbAt(fH))}
+  else if(prop==='kb'||prop==='kb1'||prop==='kb2'){set('[data-p="h1"]',kbAt(prop==='kb2'?{x:(bH.x+fH.x)/2,y:(bH.y+fH.y)/2}:fH))}
+  else if(prop==='band'){set('[data-p="h0"]',`<line x1="${bH.x}" y1="${bH.y}" x2="${fH.x}" y2="${fH.y}" class="eqb"/>`);set('[data-p="h1"]','')}
+  else if(prop==='bar'||prop==='bar2'){
+    const y=(bH.y+fH.y)/2, x1=Math.min(bH.x,fH.x)-16, x2=Math.max(bH.x,fH.x)+16;
+    const g=svg.querySelector('.eq');
+    g.innerHTML=`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="eqf2"/>
+      <rect x="${x1-2}" y="${y-7}" width="5" height="14" rx="1" class="eqf"/>
+      <rect x="${x2-3}" y="${y-7}" width="5" height="14" rx="1" class="eqf"/>`;
+  }
+  else if(prop==='cable'){const l=svg.querySelector('[data-p="cbl"]');if(l){l.setAttribute('x1',92);l.setAttribute('y1',30);l.setAttribute('x2',fH.x);l.setAttribute('y2',fH.y)}}
+}
+const lerp=(a,b,t)=>a+(b-a)*t;
+const REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let rigs=[];
+function mount(svg,frames,phase,prop){const r={svg,frames,phase:phase||0,prop};rigs.push(r);paint(svg,frames[0],prop);return r}
+function tick(now){
+  if(!REDUCED)for(const r of rigs){
+    const t=((now/1400)+r.phase)%2,k=t<1?t:2-t,e=k*k*(3-2*k),a=r.frames[0],b=r.frames[1],o=[];
+    for(let i=0;i<22;i++)o.push(lerp(a[i],b[i],e));
+    paint(r.svg,o,r.prop);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+function styleSvg(svg){
+  svg.querySelectorAll('polyline').forEach(p=>{p.setAttribute('fill','none');p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round')});
+  const g=svg.querySelector('.gnd');if(g){g.setAttribute('stroke','var(--edge)');g.setAttribute('stroke-width','1')}
+  svg.querySelectorAll('.back polyline').forEach(p=>{p.setAttribute('stroke','var(--mana)');p.setAttribute('stroke-width','4');p.setAttribute('opacity','.4')});
+  svg.querySelectorAll('.front polyline').forEach(p=>{p.setAttribute('stroke','var(--arc)');p.setAttribute('stroke-width','5')});
+  svg.querySelector('[data-head]').setAttribute('fill','var(--arc)');
+  svg.querySelectorAll('.eqs').forEach(e=>{e.setAttribute('fill','var(--edge)');e.setAttribute('stroke','none')});
+  svg.querySelectorAll('.eqs2').forEach(e=>{e.setAttribute('stroke','var(--edge)');e.setAttribute('stroke-width','2.5')});
+}
+const EQCSS=`<style>.eqf{fill:var(--gold)}.eqo{fill:none;stroke:var(--gold);stroke-width:1.6}
+.eqb{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 2.5}.eqf2{stroke:var(--gold);stroke-width:3}</style>`;
+
+/* ---------------- quest ---------------- */
+function seeded(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return()=>{h=Math.imul(h^h>>>15,2246822507);h^=h>>>13;return(h>>>0)/4294967296}}
+function pool(){const p=EX.filter(e=>unlocked(e.r)&&hasEq(e));return p.length?p:EX.filter(e=>!e.eq.length&&e.r==='E')}
+function questFor(d){
+  const rnd=seeded(d+'|'+S.lvl+'|'+S.eq.join('')+'|'+S.goal),pl=pool(),w=GOALS[S.goal].w;
+  const bag=[];for(const c in w)for(let i=0;i<w[c];i++)bag.push(c);
+  const out=[],used=new Set();
+  let guard=0;
+  while(out.length<5&&guard++<200){
+    const c=bag[Math.floor(rnd()*bag.length)];
+    let opts=pl.filter(e=>e.c===c&&!used.has(e.id));
+    if(!opts.length)opts=pl.filter(e=>!used.has(e.id));
+    if(!opts.length)break;
+    const pick=opts[Math.floor(rnd()*opts.length)];
+    used.add(pick.id);out.push(pick);
+  }
+  return out;
+}
+function rollQuest(){const d=today();if(S.questDate!==d){S.questDate=d;S.questDone=[];S.questBonus=false;save()}return questFor(d)}
+
+/* ---------------- progression ---------------- */
+let pendingLevel=null;
+function award(xp,gold,stat){
+  S.xp+=xp;S.gold+=gold;S.logs++;
+  if(stat&&S.stats[stat]!==undefined)S.stats[stat]+=1;
+  let g=0;
+  while(S.xp>=need(S.lvl)){S.xp-=need(S.lvl);S.lvl++;g++;for(const k in S.stats)S.stats[k]+=1}
+  save();if(g)pendingLevel=S.lvl;return g;
+}
+const gap=()=>Math.max(1,7-(S.days||4));
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/864e5)}
+function touchStreak(){
+  const d=today();if(S.last===d)return;
+  if(!S.last){S.streak=1}
+  else{
+    const n=daysBetween(S.last,d);
+    if(n<=gap())S.streak++;
+    else if(S.potions>0){S.potions--;S.streak++;toast('Potion of Rest consumed — streak held')}
+    else S.streak=1;
+  }
+  S.best=Math.max(S.best,S.streak);S.last=d;save();
+}
+
+/* ---------------- UI ---------------- */
+let tab='quest',filt={r:'all',c:'all',eq:'mine'},open=null,ob={step:0,name:'',exp:null,goal:null,eq:[],days:null};
+const root=document.getElementById('root');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2100)}
+function applyTheme(){const t=THEMES[S.theme],r=document.documentElement.style;
+  if(!t){['--arc','--mana','--edge','--deep','--panel'].forEach(v=>r.removeProperty(v));return}
+  r.setProperty('--arc',t.arc);r.setProperty('--mana',t.mana);r.setProperty('--edge',t.edge);r.setProperty('--deep',t.deep);r.setProperty('--panel',t.panel)}
+
+/* ----- onboarding ----- */
+function viewOB(){
+  const s=ob.step;
+  const wrap=(step,title,lead,body,btn,ok)=>`<div class="ob">
+    <div class="step">${step} OF 5</div><h2>${title}</h2><p class="lead">${lead}</p>${body}
+    <button class="btn" data-obnext ${ok?'':'disabled'}>${btn}</button>
+    ${s>0?'<button class="btn ghost" data-obback>Back</button>':''}</div>`;
+  const opt=(v,k,label,sub,multi)=>{
+    const on=multi?ob.eq.includes(v):ob[k]===v;
+    return `<button class="opt ${on?'on':''}" data-ob="${k}:${v}"><span>${label}${sub?`<small>${sub}</small>`:''}</span><span class="tick">✓</span></button>`};
+  if(s===0)return wrap(1,'The System has selected you.',
+    'Every hunter needs a name. Yours goes on the card.',
+    `<input class="namein" id="obname" maxlength="18" placeholder="Enter your name" value="${esc(ob.name)}" autocomplete="off">`,
+    'Begin',ob.name.trim().length>0);
+  if(s===1)return wrap(2,'How much have you trained?',
+    'This sets your starting level and which movements unlock right away. Be honest — nobody is watching.',
+    `<div class="opts">
+      ${opt('new','exp','Brand new','Never really trained, or coming back after years off')}
+      ${opt('some','exp','A little','On and off. You know a squat from a deadlift')}
+      ${opt('trained','exp','Trained','Consistent for a while. Comfortable in a gym')}
+      ${opt('adv','exp','Advanced','Years in. You have numbers you care about')}
+    </div>`,'Continue',!!ob.exp);
+  if(s===2)return wrap(3,'What are you chasing?',
+    'Your daily quests get built around this. You can change it later.',
+    `<div class="opts">
+      ${opt('muscle','goal','Build muscle','More pressing and pulling volume')}
+      ${opt('strong','goal','Get stronger','Heavier compounds, lower reps')}
+      ${opt('cond','goal','Conditioning','More cardio and full-body work')}
+      ${opt('consist','goal','Just move more','Balanced and forgiving. Habit first')}
+    </div>`,'Continue',!!ob.goal);
+  if(s===3)return wrap(4,'What do you have access to?',
+    'Pick everything you can actually get to. Nothing selected is completely fine — the bodyweight library is huge.',
+    `<div class="opts">
+      ${opt('db','eq','Dumbbells','',1)}
+      ${opt('kb','eq','Kettlebell','',1)}
+      ${opt('bb','eq','Barbell and plates','',1)}
+      ${opt('bench','eq','A bench','',1)}
+      ${opt('bar','eq','Pull-up bar','',1)}
+      ${opt('band','eq','Resistance bands','',1)}
+      ${opt('machine','eq','Gym machines and cardio equipment','',1)}
+    </div>`,ob.eq.length?'Continue':'I train with nothing but my body',true);
+  return wrap(5,'How many days a week?',
+    'This decides how forgiving your streak is. Rest days are part of the plan, not a failure.',
+    `<div class="opts">
+      ${opt(3,'days','3 days','Streak survives up to 4 days between sessions')}
+      ${opt(4,'days','4 days','Streak survives up to 3 days between sessions')}
+      ${opt(5,'days','5 days','Streak survives up to 2 days between sessions')}
+      ${opt(6,'days','6 days','Streak survives 1 day between sessions')}
+    </div>`,'Enter the System',!!ob.days);
+}
+function finishOB(){
+  S.setup=true;S.name=ob.name.trim().slice(0,18);S.exp=ob.exp;S.goal=ob.goal;S.eq=ob.eq.slice();S.days=ob.days;
+  S.lvl=XPLEVEL[ob.exp]||1;
+  const bump={new:0,some:2,trained:5,adv:9}[ob.exp]||0;
+  for(const k in S.stats)S.stats[k]+=bump;
+  save();tab='quest';render();showIntro();
+}
+
+/* ----- main views ----- */
+function hunterCard(){
+  const r=rankOf(S.lvl),n=need(S.lvl);
+  const title=S.title?(SHOP.find(x=>x.id===S.title)||{}).n:RANK_NAME[r];
+  return `<section class="win">
+    <div class="hunter">
+      <div class="rankbadge"><span>${r}</span></div>
+      <div style="flex:1;min-width:0">
+        <h1 class="hname">${esc(S.name||'Hunter')}</h1>
+        <div class="htitle">${esc(title)} · Level ${S.lvl}</div>
+        <div class="bar"><i style="width:${Math.min(100,S.xp/n*100)}%"></i></div>
+        <div class="barlab"><span>Experience</span><span><b>${S.xp}</b> / ${n}</span></div>
+      </div>
+    </div>
+    <div class="purse">
+      <div class="chip g">Gold <b>${S.gold}</b></div>
+      <div class="chip s">Streak <b>${S.streak}</b></div>
+      <div class="chip">Best <b>${S.best}</b></div>
+      <div class="chip">Sets logged <b>${S.logs}</b></div>
+      ${S.potions?`<div class="chip">Potions <b>${S.potions}</b></div>`:''}
+    </div>
+    <div class="stats">${Object.entries(S.stats).map(([k,v])=>`<div class="stat"><u>${k}</u><b>${v}</b></div>`).join('')}</div>
+  </section>`;
+}
+function viewQuest(){
+  const q=rollQuest(),done=S.questDone,all=q.length&&q.every(e=>done.includes(e.id));
+  const light=unlocked('D')?'knee push-ups':'wall push-ups';
+  return hunterCard()+`
+  <section class="win">
+    <h2 class="win-title">Daily Quest<small>Built from your goal and your equipment. Resets at midnight.</small></h2>
+    ${q.map((e,i)=>`<div class="qrow ${done.includes(e.id)?'done':''}" data-q="${e.id}">
+        <svg class="qfig" data-fig="${e.id}" data-phase="${i*0.3}" viewBox="0 0 100 100"></svg>
+        <div class="qmeta"><h4>${esc(e.n)}</h4><p>${esc(e.d)} · ${CATS[e.c]}</p></div>
+        <div class="qcheck">✓</div></div>`).join('')}
+    ${all?'<div class="qdone-banner">Quest Complete</div>':''}
+    <p class="warn">Tap a row to see how it's done and log it. Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn't.</p>
+  </section>
+  <section class="win">
+    <h2 class="win-title">Instant Dungeon<small>Optional bonus. Six minutes, whatever you have left.</small></h2>
+    <p style="font-size:14px;line-height:1.55;margin:0 0 12px">Set a six-minute timer and cycle: <b>5 ${light} → 8 squats → 20-second plank</b>. Repeat until the timer dies. Count your rounds and try to beat it next time.</p>
+    <button class="btn" data-dungeon>Clear the dungeon · +60 XP · +40 gold</button>
+  </section>`;
+}
+function viewLib(){
+  let list=EX.filter(e=>(filt.r==='all'||e.r===filt.r)&&(filt.c==='all'||e.c===filt.c));
+  if(filt.eq==='mine')list=list.filter(hasEq);
+  const owned=S.eq.length?S.eq.map(x=>EQNAME[x]).join(', '):'bodyweight only';
+  return `<section class="win">
+    <h2 class="win-title">Skill Library<small>${EX.length} movements total. Your kit: ${esc(owned)}.</small></h2>
+    <div class="filters">
+      <button data-f="eq:mine" class="${filt.eq==='mine'?'on':''}">What I can do</button>
+      <button data-f="eq:all" class="${filt.eq==='all'?'on':''}">Show everything</button>
+    </div>
+    <div class="filters">
+      <button data-f="r:all" class="${filt.r==='all'?'on':''}">All ranks</button>
+      ${RANKS.map(r=>`<button data-f="r:${r}" class="${filt.r===r?'on':''}">${r}${unlocked(r)?'':' · Lv'+RANK_LV[r]}</button>`).join('')}
+    </div>
+    <div class="filters">
+      <button data-f="c:all" class="${filt.c==='all'?'on':''}">Everything</button>
+      ${Object.entries(CATS).map(([k,v])=>`<button data-f="c:${k}" class="${filt.c===k?'on':''}">${v}</button>`).join('')}
+    </div>
+    <div class="grid">
+      ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
+        <span class="rk rk-${e.r}">${e.r}</span>
+        ${e.eq.length?`<span class="gear">${e.eq.map(x=>EQNAME[x].split(' ')[0].toUpperCase()).join('+')}</span>`:''}
+        <svg data-fig="${e.id}" data-phase="${(i%7)*0.28}" viewBox="0 0 100 100"></svg>
+        <h4>${esc(e.n)}</h4><p>${esc(e.d)}</p></button>`).join('')}
+    </div>
+    ${list.length?'':'<p class="warn">Nothing matches that filter. Try "Show everything".</p>'}
+  </section>`;
+}
+function viewRecords(){
+  const rows=[['pushup','Push-ups to failure'],['squat','Squats to failure'],['plank','Plank hold (seconds)']];
+  return hunterCard()+`<section class="win">
+    <h2 class="win-title">Personal Records<small>Test these every couple of weeks. Not every day.</small></h2>
+    ${rows.map(([k,l])=>`<div class="pr">
+      <div><h4 style="margin:0;font-size:14px">${l}</h4>
+      <p style="margin:3px 0 0;font-size:12px;color:var(--mute)">Best: <b style="color:var(--gold);font-size:14px">${S.prs[k]||'—'}</b></p></div>
+      <div style="display:flex;gap:6px"><input class="prin" type="number" inputmode="numeric" min="0" data-pr="${k}" placeholder="0"><button class="buy" data-prsave="${k}">Save</button></div>
+    </div>`).join('')}
+    <p class="warn">Beating a record pays 3 gold per point of improvement. Going to failure is a test, not a workout — do it fresh and take the rest of that day easy.</p>
+  </section>`;
+}
+function viewShop(){
+  return `<section class="win">
+    <h2 class="win-title">The Vault<small>Gold: ${S.gold}</small></h2>
+    ${SHOP.map(it=>{
+      const owned=S.owned.includes(it.id),eqd=(it.k==='title'&&S.title===it.id)||(it.k==='theme'&&S.theme===it.id);
+      let label='Buy · '+it.p,dis=S.gold<it.p;
+      if(it.k!=='potion'&&owned){label=eqd?'Equipped':'Equip';dis=false}
+      return `<div class="item"><div class="ico">${it.ico}</div>
+        <div style="flex:1"><h4>${esc(it.n)}</h4><p>${esc(it.d)}</p></div>
+        <button class="buy ${owned&&it.k!=='potion'?'owned':''}" data-shop="${it.id}" ${dis?'disabled':''}>${label}</button></div>`}).join('')}
+    ${S.title?'<div class="item"><div class="ico">✕</div><div style="flex:1"><h4>Remove title</h4><p>Go back to your rank name.</p></div><button class="buy" data-shop="clear_title">Remove</button></div>':''}
+    ${S.theme?'<div class="item"><div class="ico">✕</div><div style="flex:1"><h4>Default sigil</h4><p>Back to the blue System.</p></div><button class="buy" data-shop="clear_theme">Reset</button></div>':''}
+  </section>
+  <section class="win">
+    <h2 class="win-title">Your Profile<small>Change these any time.</small></h2>
+    <div class="item"><div class="ico">◈</div><div style="flex:1"><h4>Goal: ${GOALS[S.goal].n}</h4><p>Shapes what shows up in your daily quest.</p></div><button class="buy" data-cyclegoal>Change</button></div>
+    <div class="item"><div class="ico">▤</div><div style="flex:1"><h4>Equipment</h4><p>${S.eq.length?esc(S.eq.map(x=>EQNAME[x]).join(', ')):'Bodyweight only'}</p></div><button class="buy" data-editeq>Edit</button></div>
+    <div class="item"><div class="ico">◷</div><div style="flex:1"><h4>${S.days} days a week</h4><p>Streak survives up to ${gap()} day${gap()>1?'s':''} between sessions.</p></div><button class="buy" data-cycledays>Change</button></div>
+    <div class="item"><div class="ico">?</div><div style="flex:1"><h4>Replay the tutorial</h4><p>Walks you through the app again in about a minute.</p></div><button class="buy" data-replaytour>Replay</button></div>
+    <div class="item"><div class="ico">⟲</div><div style="flex:1"><h4>Start over</h4><p>Wipes your level, gold, and records on this device. Cannot be undone.</p></div><button class="buy warnbtn" data-reset>Reset</button></div>
+  </section>
+  <section class="win">
+    <h2 class="win-title">How gold works<small></small></h2>
+    <p style="font-size:14px;line-height:1.6;margin:0;color:var(--mute)">Logging a movement pays 10 gold. Finishing the whole daily quest pays 80 XP and 50 gold. Clearing the Instant Dungeon pays 40. Beating a record pays 3 per point. There's no way to buy gold — only to earn it.</p>
+  </section>`;
+}
+function viewEqEdit(){
+  return `<section class="win"><h2 class="win-title">Your Equipment<small>Tap what you can get to. This changes your quests and your library.</small></h2>
+  <div class="opts">${Object.entries(EQNAME).map(([k,v])=>`<button class="opt ${S.eq.includes(k)?'on':''}" data-toggleeq="${k}"><span>${v}</span><span class="tick">✓</span></button>`).join('')}</div>
+  <button class="btn" data-eqdone>Save kit</button></section>`;
+}
+
+function render(){
+  applyTheme();
+  if(!S.setup){root.innerHTML=viewOB();const n=document.getElementById('obname');if(n){n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');b.disabled=!ob.name.trim()}}return}
+  const body=tab==='quest'?viewQuest():tab==='lib'?viewLib():tab==='rec'?viewRecords():tab==='eqedit'?viewEqEdit():viewShop();
+  root.innerHTML=EQCSS+body+`<nav class="tabs">
+    <button data-tab="quest" class="${tab==='quest'?'on':''}">QUEST</button>
+    <button data-tab="lib" class="${tab==='lib'?'on':''}">SKILLS</button>
+    <button data-tab="rec" class="${tab==='rec'?'on':''}">RECORDS</button>
+    <button data-tab="shop" class="${tab==='shop'||tab==='eqedit'?'on':''}">VAULT</button></nav>`;
+  rigs=[];
+  root.querySelectorAll('svg[data-fig]').forEach(svg=>{
+    const e=EX.find(x=>x.id===svg.dataset.fig);if(!e)return;
+    svg.innerHTML=figSVG(e.p,e.pp);styleSvg(svg);mount(svg,e.f,parseFloat(svg.dataset.phase||0),e.p);
+  });
+  if(open)renderSheet();
+  if(pendingLevel!==null)showLevelUp();
+}
+function renderSheet(){
+  const e=EX.find(x=>x.id===open);if(!e)return;
+  const lockedRank=!unlocked(e.r),lockedEq=!hasEq(e);
+  const q=rollQuest(),inQ=q.some(x=>x.id===e.id),doneToday=S.questDone.includes(e.id);
+  const v=document.createElement('div');v.className='veil';v.dataset.veil='1';
+  const kit=e.eq.length?e.eq.map(x=>EQNAME[x]).join(' + '):'no equipment';
+  v.innerHTML=`<div class="sheet">${EQCSS}
+    <h2>${esc(e.n)}</h2>
+    <div class="sub">${e.r}-Rank · ${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
+    <div class="demo"><svg data-sheetfig viewBox="0 0 100 100"></svg></div>
+    <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+    <div class="sub" style="margin:0 0 12px">Target for now: <b style="color:var(--gold)">${esc(e.d)}</b></div>
+    ${lockedRank?`<button class="btn" disabled>Unlocks at level ${RANK_LV[e.r]}</button>`
+      :lockedEq?`<button class="btn" disabled>Needs ${esc(kit)}</button>`
+      :`<button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
+    <button class="btn ghost" data-close>Close</button></div>`;
+  document.body.appendChild(v);
+  const svg=v.querySelector('[data-sheetfig]');
+  svg.innerHTML=figSVG(e.p,e.pp);styleSvg(svg);mount(svg,e.f,0,e.p);
+}
+function closeSheet(){document.querySelectorAll('[data-veil]').forEach(v=>{v.querySelectorAll('svg').forEach(s=>{rigs=rigs.filter(r=>r.svg!==s)});v.remove()});open=null}
+function showLevelUp(){
+  const lv=pendingLevel;pendingLevel=null;
+  const r=rankOf(lv),prev=rankOf(lv-1);
+  const d=document.createElement('div');d.className='lvlup';
+  d.innerHTML=`<div>LEVEL ${lv}<p>${r!==prev?'Rank up. You are now '+RANK_NAME[r]+'. New skills unlocked in the library.':'All stats increased by 1.'}</p></div>`;
+  document.body.appendChild(d);
+  const bye=()=>{d.remove();if(r!==prev)render()};
+  d.addEventListener('click',bye);setTimeout(()=>{if(d.isConnected)bye()},2600);
+}
+
+/* ---------------- system intro ---------------- */
+function showIntro(){
+  const lines=[
+    ['[ NOTIFICATION ]','head'],
+    ['You have been selected as a Player.','big'],
+    ['Daily quests will be issued at midnight. Complete them and you grow stronger. Ignore them and you stay exactly as you are.',''],
+    ['Rewards are earned. Never given.','']
+  ];
+  const d=document.createElement('div');d.className='sysmsg';
+  d.innerHTML=`<div class="sysbox">
+    <div class="syshead" style="opacity:0;animation:lineIn .4s forwards">[ NOTIFICATION ]</div>
+    ${lines.slice(1).map((l,i)=>`<p class="sysline ${l[1]}" style="animation-delay:${.5+i*.9}s">${esc(l[0])}</p>`).join('')}
+    <div class="sysbtns" style="animation-delay:${.5+(lines.length-1)*.9}s">
+      <button class="btn" data-accept>Accept</button>
+    </div></div>`;
+  document.body.appendChild(d);
+}
+
+/* ---------------- guided tour ---------------- */
+const TOUR=[
+ {sel:'.rankbadge',t:'This is you',x:'Your rank, level and stats. Every set you log feeds this card. Rank goes E → D → C → B → A as you level.'},
+ {sel:'.bar',t:'Experience',x:'Fills every time you log a movement. Fill it completely and you level up, which unlocks harder skills in the library.'},
+ {sel:'.qrow',t:'Your daily quest',x:'Four or five movements picked for your goal and the gear you said you have. It rebuilds itself every morning.'},
+ {sel:'.qrow',t:'Tap any row',x:'It opens a demo of the movement — an animated figure, form cues, and how many sets to do. That is where you log it.'},
+ {sel:'.qcheck',t:'Then check it off',x:'Logging pays XP and gold. Finish every row in the quest and you get a bonus on top. That is the whole loop.'},
+ {sel:'[data-dungeon]',t:'Instant dungeon',x:'Optional. Six minutes of circuits on days you have extra in the tank. Skip it whenever you want.'},
+ {sel:'[data-tab="lib"]',t:'The library',x:'68 movements from wall push-ups to power cleans. Filter by what you can actually do, or browse everything and see what unlocks later.'},
+ {sel:'[data-tab="rec"]',t:'Records',t2:1,x:'Max push-ups, max squats, longest plank. Test them every couple of weeks — beating an old number pays gold per point.'},
+ {sel:'[data-tab="shop"]',t:'The vault',x:'Spend gold on titles and color themes. You can also change your goal, edit your equipment, or reset everything from here.'}
+];
+let tour={on:false,i:0,els:null};
+function startTour(){
+  S.tourSeen=true;save();
+  tour.on=true;tour.i=0;tab='quest';closeSheet();render();
+  const block=document.createElement('div');block.className='tourblock';
+  const spot=document.createElement('div');spot.className='spot';
+  const tip=document.createElement('div');tip.className='tip';
+  document.body.append(block,spot,tip);
+  tour.els={block,spot,tip};
+  window.addEventListener('resize',placeTour);
+  window.addEventListener('scroll',placeTour,true);
+  stepTour(0);
+}
+function stepTour(i){
+  tour.i=i;
+  const s=TOUR[i],{tip}=tour.els;
+  tip.innerHTML=`<h4>${esc(s.t)}</h4><p>${esc(s.x)}</p>
+    <div class="tiprow">
+      <span class="dots2">${TOUR.map((_,k)=>`<i class="${k<=i?'on':''}"></i>`).join('')}</span>
+      ${i<TOUR.length-1?'<button data-tskip>Skip</button>':''}
+      <button class="go" data-tnext>${i<TOUR.length-1?'Next':'Let\'s go'}</button>
+    </div>`;
+  const el=document.querySelector(s.sel);
+  if(el)el.scrollIntoView({block:'center',behavior:'smooth'});
+  setTimeout(placeTour,el?260:0);
+}
+function placeTour(){
+  if(!tour.on)return;
+  const s=TOUR[tour.i],{spot,tip}=tour.els;
+  const el=document.querySelector(s.sel);
+  if(!el){spot.style.opacity=0;tip.style.top='50%';tip.style.left='50%';tip.style.transform='translate(-50%,-50%)';return}
+  spot.style.opacity=1;tip.style.transform='none';
+  const r=el.getBoundingClientRect(),pad=7;
+  spot.style.top=(r.top-pad)+'px';spot.style.left=(r.left-pad)+'px';
+  spot.style.width=(r.width+pad*2)+'px';spot.style.height=(r.height+pad*2)+'px';
+  const th=tip.offsetHeight||150,tw=tip.offsetWidth||320;
+  let top=r.bottom+16;
+  if(top+th>window.innerHeight-12)top=Math.max(12,r.top-th-16);
+  let left=r.left+r.width/2-tw/2;
+  left=Math.min(Math.max(12,left),window.innerWidth-tw-12);
+  tip.style.top=top+'px';tip.style.left=left+'px';
+}
+function endTour(){
+  if(!tour.on)return;
+  tour.on=false;
+  Object.values(tour.els).forEach(e=>e.remove());
+  tour.els=null;
+  window.removeEventListener('resize',placeTour);
+  window.removeEventListener('scroll',placeTour,true);
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener('click',ev=>{
+  const t=ev.target;
+  // intro + tour
+  if(t.closest('[data-accept]')){document.querySelector('.sysmsg')?.remove();startTour();return}
+  if(t.closest('[data-tskip]')){endTour();toast('Tutorial skipped. Replay it any time from the Vault.');return}
+  if(t.closest('[data-tnext]')){
+    if(tour.i>=TOUR.length-1){endTour();toast('You are set. Go clear your first quest.')}
+    else stepTour(tour.i+1);
+    return}
+  if(t.closest('[data-replaytour]')){tab='quest';render();startTour();return}
+  if(tour.on)return;
+  // onboarding
+  const o=t.closest('[data-ob]');
+  if(o){const [k,v]=o.dataset.ob.split(':');
+    if(k==='eq'){const i=ob.eq.indexOf(v);i>=0?ob.eq.splice(i,1):ob.eq.push(v)}
+    else ob[k]=(k==='days')?+v:v;
+    render();return}
+  if(t.closest('[data-obnext]')){
+    if(ob.step===0){const n=document.getElementById('obname');if(n)ob.name=n.value}
+    if(ob.step===4){finishOB();return}
+    ob.step++;render();return}
+  if(t.closest('[data-obback]')){ob.step=Math.max(0,ob.step-1);render();return}
+
+  const tb=t.closest('[data-tab]');if(tb){tab=tb.dataset.tab;closeSheet();render();return}
+  const f=t.closest('[data-f]');if(f){const [k,v]=f.dataset.f.split(':');filt[k]=v;render();return}
+  const ex=t.closest('[data-ex]');if(ex){open=ex.dataset.ex;renderSheet();return}
+  const qr=t.closest('[data-q]');if(qr){open=qr.dataset.q;renderSheet();return}
+  if(t.closest('[data-close]')||t.dataset.veil==='1'){closeSheet();return}
+
+  const lg=t.closest('[data-log]');
+  if(lg){
+    const e=EX.find(x=>x.id===lg.dataset.log),q=rollQuest(),inQ=q.some(x=>x.id===e.id);
+    touchStreak();
+    if(inQ&&!S.questDone.includes(e.id))S.questDone.push(e.id);
+    award(inQ?25:15,10,e.st);
+    if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){S.questBonus=true;award(80,50,null);toast('Daily Quest complete · +80 XP · +50 gold')}
+    else toast(e.n+' logged · +'+(inQ?25:15)+' XP · +10 gold');
+    closeSheet();render();return}
+
+  if(t.closest('[data-dungeon]')){touchStreak();award(60,40,'END');toast('Dungeon cleared · +60 XP · +40 gold');render();return}
+
+  const ps=t.closest('[data-prsave]');
+  if(ps){const k=ps.dataset.prsave,inp=document.querySelector(`[data-pr="${k}"]`),v=parseInt(inp.value,10);
+    if(!v||v<0){toast('Enter a number first');return}
+    const old=S.prs[k]||0;
+    if(v>old){const g=(v-old)*3;S.prs[k]=v;award(30,g,k==='plank'?'CORE':'STR');toast('New record · +'+g+' gold')}
+    else{toast('Logged. Record still '+old+'.');save()}
+    render();return}
+
+  const sh=t.closest('[data-shop]');
+  if(sh){const id=sh.dataset.shop;
+    if(id==='clear_title'){S.title=null;save();render();return}
+    if(id==='clear_theme'){S.theme=null;save();render();return}
+    const it=SHOP.find(x=>x.id===id),owned=S.owned.includes(id);
+    if(it.k==='potion'){if(S.gold<it.p){toast('Not enough gold');return}S.gold-=it.p;S.potions++;toast('Potion of Rest acquired');save();render();return}
+    if(!owned){if(S.gold<it.p){toast('Not enough gold');return}S.gold-=it.p;S.owned.push(id);toast(it.n+' acquired')}
+    if(it.k==='title')S.title=S.title===id?null:id;
+    if(it.k==='theme')S.theme=S.theme===id?null:id;
+    save();render();return}
+
+  if(t.closest('[data-cyclegoal]')){const k=Object.keys(GOALS);S.goal=k[(k.indexOf(S.goal)+1)%k.length];save();toast('Goal: '+GOALS[S.goal].n);render();return}
+  if(t.closest('[data-cycledays]')){S.days=S.days>=6?3:S.days+1;save();render();return}
+  if(t.closest('[data-editeq]')){tab='eqedit';render();return}
+  const te=t.closest('[data-toggleeq]');
+  if(te){const k=te.dataset.toggleeq,i=S.eq.indexOf(k);i>=0?S.eq.splice(i,1):S.eq.push(k);save();render();return}
+  if(t.closest('[data-eqdone]')){tab='shop';save();toast('Kit updated');render();return}
+  if(t.closest('[data-reset]')){
+    if(!confirm('Wipe your hunter and start over? This cannot be undone.'))return;
+    S={setup:false,name:'',goal:'consist',exp:'new',eq:[],days:4,lvl:1,xp:0,gold:0,streak:0,best:0,last:null,
+      stats:{STR:5,END:5,VIT:5,AGI:5,CORE:5},prs:{pushup:0,squat:0,plank:0},logs:0,questDate:null,questDone:[],
+      questBonus:false,owned:[],title:null,theme:null,potions:0};
+    ob={step:0,name:'',exp:null,goal:null,eq:[],days:null};
+    save();applyTheme();render();return}
+});
+
+/* ---------------- boot ---------------- */
+(async()=>{
+  await load();
+  if(S.setup&&S.last){
+    const d=today(),n=daysBetween(S.last,d);
+    if(n>gap()){if(S.potions>0)S.potions--;else S.streak=0;save()}
+  }
+  render();
+  if(S.setup&&!S.tourSeen)setTimeout(startTour,400);
+})();
+</script>
+
+</body>
+</html>
