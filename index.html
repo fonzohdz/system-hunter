@@ -20,6 +20,8 @@
 :root{
   --void:#020103; --deep:#070408; --panel:#0C060A; --line:#2A0C1A;
   --ash:#9E8590; --bone:#F6E9EF;
+  /* dimmer than --ash but still AA against --void (4.98:1) */
+  --ash2:#8C7681;
   --crimson:#E8114F; --magenta:#FF3D7F; --core:#FFF0F5; --gold:#E8C583;
   --deepblade:#7A0A2C; --guard:#4A1020; --grip:#2A0A14; --pommel:#5C1226;
   /* rgb triplets of --crimson / --magenta, so glows and washes follow the palette */
@@ -91,9 +93,10 @@ html,body{margin:0;background:var(--void)}
   font-family:var(--display);font-size:12px;letter-spacing:.5em;text-indent:.5em;color:var(--ash)}
 .aurawrap{position:relative;z-index:1}
 .aurascale{display:flex;justify-content:space-between;margin-bottom:7px}
-.as{font-size:9px;letter-spacing:.13em;color:#3A2029;text-transform:uppercase}
+.as{font-size:9px;letter-spacing:.13em;color:var(--ash2);text-transform:uppercase}
 .as.on{color:var(--ash)}
 .as.cur{color:var(--magenta)}
+.as b{font-weight:400;margin-right:3px;font-size:8px;vertical-align:1px}
 .aurabar{height:3px;background:var(--line);overflow:hidden}
 .aurabar i{display:block;height:100%;background:linear-gradient(90deg,var(--deepblade),var(--crimson) 55%,var(--core));
   transition:width 1s cubic-bezier(.3,.9,.3,1)}
@@ -134,16 +137,18 @@ html,body{margin:0;background:var(--void)}
 
 /* work list */
 .work{list-style:none;margin:0;padding:0}
-.w{display:flex;align-items:center;gap:15px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}
-.w:first-child{border-top:1px solid var(--line)}
+.work li{list-style:none}
+.w{display:flex;align-items:center;gap:15px;padding:14px 0;width:100%;text-align:left;
+  background:none;border:0;border-bottom:1px solid var(--line);color:inherit;font:inherit;cursor:pointer}
+.work li:first-child .w{border-top:1px solid var(--line)}
+.wtitle{display:block;font-size:15.5px}
+.wdose{display:block;margin:3px 0 0;font-size:11.5px;color:var(--ash);letter-spacing:.09em;text-transform:uppercase}
 .wmeta{flex:1;min-width:0}
-.wmeta h3{margin:0;font-size:15.5px;font-weight:500}
-.wmeta p{margin:3px 0 0;font-size:11.5px;color:var(--ash);letter-spacing:.09em;text-transform:uppercase}
 .wmark{width:26px;height:26px;flex:0 0 26px;border:1px solid var(--line);display:grid;place-items:center;
   color:var(--magenta);font-size:13px}
 .w.done{opacity:.4}
 .w.done .wmark{border-color:var(--crimson);background:rgba(var(--c1),.1)}
-.w.done .wmeta h3{text-decoration:line-through;text-decoration-color:var(--ash)}
+.w.done .wtitle{text-decoration:line-through;text-decoration-color:var(--ash)}
 
 /* library */
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
@@ -258,7 +263,7 @@ html,body{margin:0;background:var(--void)}
 .clsb{background:none;border:1px solid var(--line);color:var(--ash);font:inherit;font-size:12.5px;
   padding:10px 4px;cursor:pointer;text-align:center;letter-spacing:.04em;line-height:1.2}
 .clsb.on{border-color:var(--crimson);color:var(--magenta);background:rgba(var(--c1),.08)}
-.clsb small{display:block;font-size:9.5px;color:#6B5561;margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
+.clsb small{display:block;font-size:9.5px;color:var(--ash2);margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
 .clsb.on small{color:var(--ash)}
 .clsb.lock{border-style:dashed;opacity:.72}
 .clsb.lock small{color:var(--gold);letter-spacing:.04em;display:flex;align-items:center;
@@ -393,7 +398,20 @@ html,body{margin:0;background:var(--void)}
 .wmus{margin:3px 0 0;font-size:11px;color:var(--magenta);letter-spacing:.05em}
 .cardmus{margin:3px 0 0;font-size:10.5px;color:var(--magenta);letter-spacing:.04em;line-height:1.3}
 
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+/* A visible focus ring that is ours, not the browser default, and only for
+   keyboard users so it never fires on tap. */
+:focus-visible{outline:2px solid var(--magenta);outline-offset:2px;border-radius:1px}
+.tabs button:focus-visible{outline-offset:-4px}
+
+/* Reduced motion: the aura loop and figure rig already check this in JS. Here
+   the level-up burst becomes a plain fade and the sigil stops turning. */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .sigil{animation:none}
+  .acore,.aring,#burst{display:none}
+  .atext{transition:none;opacity:1 !important}
+  .aflash{display:none}
+}
 
 </style>
 </head>
@@ -1524,6 +1542,7 @@ const wepOwned=id=>!WEAPONPRICE[id]||S.owned.includes('wep_'+id);
 function palSwatch(id,on,attr){
   const p=PALETTES[id];
   return `<button class="palb ${on?'on':''}" ${attr} title="${esc(p.n)}"
+    aria-label="${esc(p.n)} palette${on?', selected':''}" aria-pressed="${on?'true':'false'}"
     style="--pa:${p.core};--pb:${p.magenta};--pc:${p.deepblade}"><i></i></button>`;
 }
 /* Class, weapon and palette pickers are identical in onboarding and the vault —
@@ -1537,7 +1556,7 @@ const wepGrid=(sel,attr,buy)=>`<div class="clsgrid">${WEPKEYS.map(k=>{
   const own=wepOwned(k),p=WEAPONPRICE[k];
   return `<button class="clsb ${sel===k&&own?'on':''} ${own?'':'lock'}"
     data-${attr}="${k}" ${own||buy?'':'disabled'}>${WEAPONNAME[k]}${
-    own?'':`<small><span class="coin"></span>${p}</small>`}</button>`}).join('')}</div>`;
+    own?'':`<small><span class="coin" aria-hidden="true"></span>${p}</small>`}</button>`}).join('')}</div>`;
 
 function titleName(){
   const t=ALLTITLES[S.title];
@@ -1752,9 +1771,12 @@ function heroBlock(){
     </div>
     <div class="aurawrap">
       <div class="aurascale">
-        ${AURA.map((a,k)=>`<span class="as ${k<=i?'on':''} ${k===i?'cur':''}">${esc(tierName(k))}</span>`).join('')}
+        ${AURA.map((a,k)=>`<span class="as ${k<=i?'on':''} ${k===i?'cur':''}">`+
+          `<b aria-hidden="true">${k===i?'◆':k<i?'●':'○'}</b>${esc(tierName(k))}</span>`).join('')}
       </div>
-      <div class="aurabar"><i style="width:${pct}%"></i></div>
+      <div class="aurabar" role="progressbar" aria-valuenow="${i}" aria-valuemin="0"
+           aria-valuemax="${AURA.length-1}" aria-valuetext="${esc(tierName(i))}"
+           aria-label="Aura tier"><i style="width:${pct}%"></i></div>
       <p class="auranote">${dead
         ? 'Your aura has gone out. Clear anything today to relight it.'
         : `<b>${S.streak}</b> day streak · fades after ${gapAllowed()} idle day${gapAllowed()>1?'s':''}`}</p>
@@ -1771,15 +1793,17 @@ function crestBlock(){
     <div class="lvlbadge"><span>${S.lvl}</span></div>
     <div class="lvlmeta">
       <div class="lvlline"><b>Level ${S.lvl}</b><span class="xpnum">${S.xp} / ${n} XP</span></div>
-      <div class="xpbar"><i style="width:${Math.min(100,S.xp/n*100)}%"></i></div>
+      <div class="xpbar" role="progressbar" aria-valuenow="${S.xp}" aria-valuemin="0"
+           aria-valuemax="${n}" aria-label="Experience toward level ${S.lvl+1}"><i style="width:${Math.min(100,S.xp/n*100)}%"></i></div>
     </div>
-    <div class="goldchip"><span class="coin"></span>${S.gold.toLocaleString()}</div>
+    <div class="goldchip"><span class="coin" aria-hidden="true"></span>${S.gold.toLocaleString()}</div>
   </div>`;
 }
 function statsBlock(){
   const max=Math.max(...Object.values(S.stats),20);
   return `<section class="props">${Object.entries(S.stats).map(([k,v])=>
-    `<div class="prop"><span>${k}</span><b>${v}</b><i style="--v:${Math.round(v/max*100)}%"></i></div>`).join('')}</section>`;
+    `<div class="prop"><span>${k}</span><b>${v}</b>
+      <i style="--v:${Math.round(v/max*100)}%" role="img" aria-label="${k} ${v}"></i></div>`).join('')}</section>`;
 }
 
 /* ----- views ----- */
@@ -1813,10 +1837,12 @@ function viewQuest(){
     ${kitBar()}
     ${q.length<5?`<p class="note" style="margin-top:0">Only ${q.length} movement${q.length===1?'':'s'} available at this rank with today's kit. Widen the kit or level up for more.</p>`:''}
     <ul class="work">
-      ${q.map((e,i)=>`<li class="w ${done.includes(e.id)?'done':''}" data-q="${e.id}">
-        <div class="wmeta"><h3>${esc(e.n)}</h3><p>${esc(e.d)}</p>
-          <p class="wmus">${e.mus.p.map(musName).join(" · ")}</p></div>
-        <div class="wmark">${done.includes(e.id)?'✦':''}</div></li>`).join('')}
+      ${q.map((e,i)=>{const dn=done.includes(e.id);return `<li>
+        <button class="w ${dn?'done':''}" data-q="${e.id}"
+          aria-label="${esc(e.n)}, ${esc(e.d)}, works ${e.mus.p.map(musName).join(' and ')}. ${dn?'Logged today':'Not yet logged'}">
+        <span class="wmeta"><span class="wtitle">${esc(e.n)}</span><span class="wdose">${esc(e.d)}</span>
+          <span class="wmus">${e.mus.p.map(musName).join(" · ")}</span></span>
+        <span class="wmark" aria-hidden="true">${dn?'✦':''}</span></button></li>`}).join('')}
     </ul>
     ${all?'<div class="cleared">Quest cleared</div>':''}
     <p class="note">Tap a row for the form cues and to log it. Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn\'t.</p>
@@ -1888,7 +1914,9 @@ function heatmap(){
   for(let i=69;i>=0;i--){
     const d=new Date(now.getTime()-i*864e5).toLocaleDateString('en-CA');
     const n=S.history[d]||0;
-    cells.push(`<i class="hm${n?(n>=4?'3':n>=2?'2':'1'):'0'}" title="${d}: ${n}"></i>`);
+    const lv=n?(n>=4?3:n>=2?2:1):0;
+    cells.push(`<i class="hm${lv}" data-lv="${lv}" role="img"
+      aria-label="${d}: ${n} logged" title="${d}: ${n} logged"></i>`);
   }
   return `<div class="heat">${cells.join('')}</div>
     <div class="heatkey"><span>10 weeks ago</span><span>today</span></div>`;
@@ -1907,7 +1935,7 @@ function shopItems(){
 function viewVault(){
   const locked=WEPKEYS.filter(k=>!wepOwned(k));
   return `<section class="block top">
-    <div class="blockhead"><h2>Appearance</h2><span class="tally"><span class="coin"></span> ${S.gold.toLocaleString()}</span></div>
+    <div class="blockhead"><h2>Appearance</h2><span class="tally"><span class="coin" aria-hidden="true"></span> ${S.gold.toLocaleString()}</span></div>
     <div class="wprev">${bladeSVG()}</div>
     <p class="picklab">Class</p>
     ${clsGrid(S.class,'setcls')}
@@ -1923,7 +1951,7 @@ function viewVault(){
     <p class="note">Switching class, weapon or palette changes nothing but the look. Your level, gold, streak and records stay exactly where they are.</p>
   </section>
   <section class="block">
-    <div class="blockhead"><h2>The Vault</h2><span class="tally"><span class="coin"></span> ${S.gold.toLocaleString()}</span></div>
+    <div class="blockhead"><h2>The Vault</h2><span class="tally"><span class="coin" aria-hidden="true"></span> ${S.gold.toLocaleString()}</span></div>
     ${shopItems().map(it=>{
       const own=S.owned.includes(it.id);
       const eqd=it.k==='title'&&S.title===it.id;
@@ -1962,7 +1990,7 @@ function showCard(){
   const title=titleName();
   const top=Object.entries(S.stats).sort((a,b)=>b[1]-a[1])[0];
   const v=document.createElement('div');v.className='cardveil';v.dataset.veil='1';
-  v.innerHTML=`<div class="cardwrap">
+  v.innerHTML=`<div class="cardwrap" role="dialog" aria-modal="true" aria-label="Your hunter card">
     <div class="hcard">
       <div class="hc-top">
         <span class="hc-brand">ASCENDANT</span>
@@ -1995,6 +2023,7 @@ function showCard(){
     <button class="btn ghost" data-close>Close</button>
   </div>`;
   document.body.appendChild(v);
+  trapFocus(v);
 }
 
 /* ----- render ----- */
@@ -2021,8 +2050,8 @@ function renderSheet(){
   const q=rollQuest(),inQ=q.some(x=>x.id===e.id),doneToday=S.questDone.includes(e.id);
   const kit=e.eq.length?e.eq.map(x=>EQNAME[x]).join(' + '):'no equipment';
   const v=document.createElement('div');v.className='veil';v.dataset.veil='1';
-  v.innerHTML=`<div class="sheet">
-    <div class="sheet-rank rk-${e.r}">${e.r}</div>
+  v.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(e.n)}">
+    <div class="sheet-rank rk-${e.r}" role="img" aria-label="Rank ${e.r}">${e.r}</div>
     <h2>${esc(e.n)}</h2>
     <div class="sub">${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
     ${bodyMap(e.mus)}
@@ -2035,11 +2064,38 @@ function renderSheet(){
      :`<button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
     <button class="btn ghost" data-close>Close</button></div>`;
   document.body.appendChild(v);
+  trapFocus(v);
+}
+/* Focus goes into a sheet when it opens and comes back to whatever opened it
+   when it closes, so a keyboard user is never dumped at the top of the page. */
+let lastFocus=null;
+const FOCUSABLE='button:not([disabled]),[href],input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])';
+function trapFocus(v){
+  lastFocus=document.activeElement;
+  const first=v.querySelector(FOCUSABLE);
+  if(first)first.focus();
+  v.addEventListener('keydown',ev=>{
+    if(ev.key!=='Tab')return;
+    const f=[...v.querySelectorAll(FOCUSABLE)];
+    if(!f.length)return;
+    const a=f[0],z=f[f.length-1];
+    if(ev.shiftKey&&document.activeElement===a){ev.preventDefault();z.focus()}
+    else if(!ev.shiftKey&&document.activeElement===z){ev.preventDefault();a.focus()}
+  });
 }
 function closeSheet(){
+  const had=document.querySelector('[data-veil]');
   document.querySelectorAll('[data-veil]').forEach(v=>v.remove());
   open=null;
+  if(had&&lastFocus&&lastFocus.isConnected){lastFocus.focus();lastFocus=null}
 }
+/* Escape closes whatever is on top: a sheet, the card, or the tour. */
+addEventListener('keydown',ev=>{
+  if(ev.key!=='Escape')return;
+  if(document.querySelector('.sysmsg'))return;      // the intro must be accepted
+  if(tour.on){endTour();toast('Skipped. Replay it from the Vault.');return}
+  if(document.querySelector('[data-veil]')){closeSheet();return}
+});
 
 /* ----- level up ----- */
 let shards=[],BW,BH,burstOn=false,bx,bc;
@@ -2076,7 +2132,16 @@ function showLevelUp(){
         ${ranked?'<span class="aloot-i">New skills unlocked</span>':''}
       </div>
     </div>`;
+  el.setAttribute('role','status');
+  el.setAttribute('aria-live','polite');
   document.body.appendChild(el);
+  const bye=()=>{burstOn=false;el.remove();if(ranked)render()};
+  if(REDUCED){                       // a fade and the text, nothing else
+    el.querySelector('.atext').style.opacity=1;
+    el.addEventListener('click',bye);
+    setTimeout(()=>{if(el.isConnected)bye()},4200);
+    return;
+  }
   bc=el.querySelector('#burst');bx=bc.getContext('2d');sizeBurst();
   shards=[];burstOn=true;requestAnimationFrame(burstLoop);
   const core=el.querySelector('.acore'),flash=el.querySelector('.aflash'),
@@ -2099,7 +2164,6 @@ function showLevelUp(){
   setTimeout(()=>{core.style.transition='transform 1.2s ease-out, opacity 1.2s';
     core.style.transform='translate(-50%,-50%) scale(1.5)';core.style.opacity=.3},1960);
   setTimeout(()=>{txt.style.opacity=1},2120);
-  const bye=()=>{burstOn=false;el.remove();if(ranked)render()};
   el.addEventListener('click',bye);
   setTimeout(()=>{if(el.isConnected)bye()},5400);
 }
