@@ -418,14 +418,12 @@ html,body{margin:0;background:var(--void)}
   pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
 @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 
-/* exercise figures — shaped limbs, a thin void edge so overlaps read, and a
-   dimmer far side for depth */
+/* exercise figures — the original stick weights */
 .fig{width:100%;height:100%;display:block}
-.fig path,.fig ellipse,.fig circle{transition:none}   /* the rig animates, not CSS */
+.fig polyline,.fig circle{transition:none}   /* the rig animates, not CSS */
 .gnd{stroke:var(--line);stroke-width:1}
-.figback{opacity:.5}
-.figback path,.figback ellipse{stroke:var(--void);stroke-width:.8;paint-order:stroke}
-.figfront path,.figfront ellipse,.figfront circle{stroke:var(--void);stroke-width:1;paint-order:stroke}
+.figback polyline{stroke:var(--deepblade);stroke-width:5}
+.figfront polyline{stroke-width:6}
 .eqf{fill:#D8C2CC}
 .eqo{fill:none;stroke:#D8C2CC;stroke-width:1.5}
 .eqb{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 2.5}
@@ -2107,27 +2105,12 @@ function findAnchor(frames,onFloor,travel){
   return {idx,at};
 }
 
-/* A tapered capsule from a to b: half-width w1 at the root, w2 at the tip. */
-function limb(a,b,w1,w2){
-  const dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||.01;
-  const c=dx/L,s=dy/L,px=-s,py=c;
-  const P=(t,w)=>`${(a.x+c*L*t+px*w).toFixed(1)} ${(a.y+s*L*t+py*w).toFixed(1)}`;
-  return `M${P(0,-w1)}Q${P(.5,-(w1+w2)*.56)} ${P(1,-w2)}`+
-         `Q${P(1+w2*.85/L,0)} ${P(1,w2)}`+
-         `Q${P(.5,(w1+w2)*.56)} ${P(0,w1)}`+
-         `Q${P(-w1*.85/L,0)} ${P(0,-w1)}Z`;
-}
-/* Shoulders down to waist, with a little chest through the middle. */
-function torso(n,h){
-  const dx=h.x-n.x,dy=h.y-n.y,L=Math.hypot(dx,dy)||.01;
-  const c=dx/L,s=dy/L,px=-s,py=c;
-  const P=(t,w)=>`${(n.x+c*L*t+px*w).toFixed(1)} ${(n.y+s*L*t+py*w).toFixed(1)}`;
-  return `M${P(0,-6.2)}Q${P(.38,-6.6)} ${P(1,-4.4)}L${P(1,4.4)}Q${P(.38,6.6)} ${P(0,6.2)}Z`;
-}
-const FIGW={au:2.6,al:1.9,lu:3.6,ll:2.5};      // arm upper/lower, leg upper/lower
-const FIGB=.78;                                 // far side runs a little thinner
-
 let figSeq=0;
+/* The original stick figure. Four strokes and a head — deliberately crude,
+   because a polished mannequin promises anatomy that eleven keypoints cannot
+   deliver, and the eye forgives a stick figure everything. The rig underneath
+   is unchanged: angles still blend, bones still hold their length, contacts
+   still plant. Simple drawing, correct motion. */
 function figSVG(){
   const id=++figSeq;
   return `<svg viewBox="0 0 100 100" class="fig" aria-hidden="true">
@@ -2135,38 +2118,26 @@ function figSVG(){
       <stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--crimson)"/>
     </linearGradient></defs>
     <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
-    <g class="figback" fill="var(--deepblade)">
-      <path data-p="bau"/><path data-p="bal"/><path data-p="blu"/><path data-p="bll"/>
-      <ellipse data-p="bh"/><ellipse data-p="bf"/></g>
-    <g class="figfront" fill="url(#fg${id})">
-      <path data-p="torso"/>
-      <path data-p="fau"/><path data-p="fal"/><path data-p="flu"/><path data-p="fll"/>
-      <ellipse data-p="fh"/><ellipse data-p="ff"/>
-      <circle data-p="head" r="6.4"/></g>
+    <g class="figback" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <polyline data-l="1,3,4"/><polyline data-l="2,5,6"/></g>
+    <g class="figfront" fill="none" stroke-linecap="round" stroke-linejoin="round"
+       stroke="url(#fg${id})">
+      <polyline data-l="1,2"/><polyline data-l="1,7,8"/><polyline data-l="2,9,10"/></g>
+    <circle data-p="head" r="7.5" fill="url(#fg${id})"/>
     <g class="figeq" data-p="eq"></g></svg>`;
 }
 function paintFig(svg,K,prop){
-  const p=K.p, J=K.sh;
+  const p=K.p;
   const A=svg.__f||(svg.__f={});
   const q=k=>A[k]||(A[k]=svg.querySelector(`[data-p="${k}"]`));
-  const set=(k,d)=>{const e=q(k);if(e)e.setAttribute('d',d)};
-  const N=p[1],H=p[2],HD=p[0];
-  const b=FIGB;
-  /* arms from the shoulders, legs from the hips — not all four from the spine */
-  set('bau',limb(J.bSh,p[3],FIGW.au*b,FIGW.al*b)); set('bal',limb(p[3],p[4],FIGW.al*b,FIGW.al*b*.85));
-  set('blu',limb(J.bHp,p[5],FIGW.lu*b,FIGW.ll*b)); set('bll',limb(p[5],p[6],FIGW.ll*b,FIGW.ll*b*.8));
-  set('torso',torso(N,H));
-  set('fau',limb(J.fSh,p[7],FIGW.au,FIGW.al));     set('fal',limb(p[7],p[8],FIGW.al,FIGW.al*.85));
-  set('flu',limb(J.fHp,p[9],FIGW.lu,FIGW.ll));     set('fll',limb(p[9],p[10],FIGW.ll,FIGW.ll*.8));
-  /* Hands and feet: small, oriented along the limb they finish. */
-  const cap=(k,at,from,rx,ry)=>{const e=q(k);if(!e)return;
-    const ang=Math.atan2(at.y-from.y,at.x-from.x)*57.2958;
-    e.setAttribute('cx',at.x);e.setAttribute('cy',at.y);
-    e.setAttribute('rx',rx);e.setAttribute('ry',ry);
-    e.setAttribute('transform',`rotate(${ang.toFixed(1)} ${at.x} ${at.y})`)};
-  cap('bh',p[4],p[3],2.4*b,1.9*b); cap('bf',p[6],p[5],3.2*b,1.9*b);
-  cap('fh',p[8],p[7],2.6,2.1);     cap('ff',p[10],p[9],3.4,2.1);
-  const hd=q('head'); if(hd){hd.setAttribute('cx',HD.x);hd.setAttribute('cy',HD.y)}
+  const lines=A.__l||(A.__l=svg.querySelectorAll('polyline'));
+  for(let i=0;i<lines.length;i++){
+    const idx=lines[i].getAttribute('data-l').split(',');
+    let d='';
+    for(let j=0;j<idx.length;j++)d+=(j?' ':'')+p[+idx[j]].x.toFixed(1)+','+p[+idx[j]].y.toFixed(1);
+    lines[i].setAttribute('points',d);
+  }
+  const hd=q('head'); if(hd){hd.setAttribute('cx',p[0].x);hd.setAttribute('cy',p[0].y)}
   if(!prop)return;
   const bH=p[4],fH=p[8],eq=q('eq'); if(!eq)return;
   const db=z=>`<rect x="${z.x-5.5}" y="${z.y-2.4}" width="11" height="4.8" rx="2" class="eqf"/>`;
