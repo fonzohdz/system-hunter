@@ -43,6 +43,29 @@ with animated figure demos.
   Keep this simple. One painter, one loop, one timing curve. Motion types,
   per-exercise tempo and frame stepping have all been tried and all been
   removed again.
+- **Author each pose from the exercise, never from its category.** `c` is a
+  filter tag, not a movement description. A deadlift is `pull` but its elbows
+  stay straight and the hips do the work; a calf raise is `legs` but the knee
+  barely changes; a shrug is `pull` with long arms. Rules of the form
+  "pull means the elbow bends" produce exactly the wrong pose.
+- **Every pose owes an answer to one question:** with the name covered, is this
+  recognisably that exercise? Ranked below that: correct gross mechanics, clear
+  contact points, a readable silhouette at 52px, pleasant motion, and only then
+  anatomical precision. It is a pictogram, not a biomechanics model.
+- **State the contacts and keep them still.** Whatever supports the body —
+  planted hands, a foot on a box, shoulders on the floor, a bar in the hands —
+  must not drift between frames. Drifting contacts are what read as "cursed".
+  Where the support is an object, draw a minimal one (`p` / `pp`).
+- **Holds hold.** Plank, wall sit, dead hang and hollow hold should barely move.
+  A near-static correct pose beats invented motion.
+- **Hanging movements start hanging.** Feet off the floor in frame one.
+- A movement needing more than two positions to read (burpee, get-up, clean)
+  takes more frames. `f` is any length ≥ 2; the loop walks all of them.
+- Nothing infers facing direction, and nothing should. A torso leaning left in
+  screen space is a person bent forward, not a person who turned around.
+- Poses were tuned against a literal renderer at 52px. Verify a change by
+  looking at it — `scratchpad/sheet.js` builds a start/mid/end contact sheet of
+  all 155. Geometry assertions catch broken data, never a wrong-looking pose.
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
   those with fixed pixel padding.
