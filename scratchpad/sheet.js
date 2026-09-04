@@ -21,14 +21,17 @@ const AUTHORED=new Set(('squat lunge hinge pushup birddog deadbug stepup bb_ohp 
 /* Behaviour, stated per movement rather than inferred from the category. */
 const HOLD=new Set('plank kneeplank sideplank sideknee hollow wallsit bear hang handstand superman'.split(' '));
 /* Known limits of an 11-joint rig, stated rather than hidden. */
-const LIMIT={db_wrist:'no wrist joint in the rig — the setup pose carries the identification, the motion is necessarily small'};
+const LIMIT={db_wrist:'RIG-LIMITED — setup recognisable, wrist articulation unavailable. No wrist joint in the rig — the setup pose carries the identification, the motion is necessarily small'};
 const ALT =new Set('birddog deadbug climber march db_walklunge'.split(' '));
 const LOCO=new Set('db_carry db_farmerwalk kb_carry_rack treadmill sled_push rowerg'.split(' '));
-const kind=e=>{const f=M.framesFor(e);
+/* Multi-phase is a statement about the exercise, not a frame count: many reps
+   now carry extra frames purely to keep a limb on its arc. */
+const MULTI=new Set('burpee_f burpee_s bb_clean kb_tgu kb_cp kb_snatch db_thruster bb_ohp_push db_arnold ghr db_walklunge rowerg'.split(' '));
+const kind=e=>{
   if(HOLD.has(e.id))return 'hold';
   if(LOCO.has(e.id))return 'locomotion';
   if(ALT.has(e.id))return 'alternating';
-  if(f.length>2)return 'multi-phase';
+  if(MULTI.has(e.id))return 'multi-phase';
   return 'rep'};
 /* What the painter can actually draw, so "has context" is a fact about the
    rendered picture rather than about the data. */
@@ -72,8 +75,16 @@ function held(p,prop){
   if(prop==='cablemid')return `<rect x="93" y="44" width="7" height="12" class="eqs"/><line x1="94" y1="50" x2="${fH.x}" y2="${fH.y}" class="eqc"/>`+db(fH);
   if(prop==='strap')return `<line x1="${bH.x}" y1="4" x2="${bH.x}" y2="${bH.y}" class="eqc"/><line x1="${fH.x}" y1="4" x2="${fH.x}" y2="${fH.y}" class="eqc"/>`;
   if(prop==='plate')return `<circle cx="${(bH.x+fH.x)/2}" cy="${(bH.y+fH.y)/2}" r="6" class="eqo"/>`;
-  if(prop==='tbar')return `<line x1="${fH.x-9}" y1="${fH.y}" x2="${fH.x+9}" y2="${fH.y}" class="eqf2"/>`+
-    `<circle cx="${fH.x}" cy="83" r="10.5" class="eqo"/>`;
+  if(prop==='tbar'){const x=fH.x,y=fH.y;
+    return `<polygon points="${x-23},${y} ${x-13},${y-8} ${x+13},${y-8} ${x+23},${y} ${x+13},${y+8} ${x-13},${y+8}" class="eqo"/>`+
+      `<rect x="${x-27}" y="${y-7}" width="4.5" height="14" rx="1" class="eqf"/>`+
+      `<rect x="${x+22.5}" y="${y-7}" width="4.5" height="14" rx="1" class="eqf"/>`;}
+  if(prop==='bar1')return `<line x1="6" y1="90" x2="${fH.x}" y2="${fH.y}" class="eqf2"/>`+
+    `<rect x="2" y="86" width="9" height="8" rx="2" class="eqs"/>`+
+    `<rect x="${fH.x-2.5}" y="${fH.y-6}" width="5" height="12" rx="1" class="eqf"/>`;
+  if(prop==='assistpad'){const k=p[9];
+    return `<rect x="${k.x-15}" y="${k.y+5}" width="30" height="4.5" rx="1.5" class="eqs"/>`+
+      `<rect x="${k.x-2}" y="${k.y+9}" width="4" height="14" class="eqs"/>`;}
   if(prop==='cableank')return `<rect x="93" y="78" width="7" height="12" class="eqs"/>`+
     `<line x1="94" y1="84" x2="${p[6].x}" y2="${p[6].y}" class="eqc"/>`;
   if(prop==='cablelob')return `<rect x="0" y="78" width="7" height="12" class="eqs"/>`+
