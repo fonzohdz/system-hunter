@@ -245,6 +245,9 @@ html,body{margin:0;background:var(--void)}
 .namein{width:100%;background:#060309;border:1px solid var(--line);color:var(--bone);
   padding:15px;font:inherit;font-size:17px;margin-bottom:8px}
 .namein:focus{outline:none;border-color:var(--crimson)}
+.eqhead{font-size:10px;letter-spacing:.22em;color:var(--ash);text-transform:uppercase;
+  margin:16px 0 7px}
+.eqhead:first-child{margin-top:0}
 
 /* class + palette picker */
 .wprev{position:relative;height:168px;display:grid;place-items:center;margin:0 0 16px;
@@ -721,7 +724,92 @@ const EX=[
 {id:'rowerg',mus:{p:['lats','quads'],s:['midback','biceps','lower-back']},n:'Rowing Machine',r:'C',c:'cardio',st:'END',d:'5 × 3 min',eq:['machine'],p:'cable',
  cues:['Legs, then back, then arms. Reverse it on the way in.','Most of the power comes from your legs, not your arms.','Long strokes beat frantic short ones.','500m intervals with a minute rest is a great starting workout.'],
  f:[P(34,34,40,40,48,58,40,46,34,44,62,50,76,58,42,47,36,45,64,52,78,60),
-    P(42,30,46,36,50,58,50,42,52,46,64,58,80,62,52,43,54,47,66,58,82,64)]}
+    P(42,30,46,36,50,58,50,42,52,46,64,58,80,62,52,43,54,47,66,58,82,64)]},
+/* ================= MACHINES & CABLES ================= */
+{id:'mch_chest',n:'Machine Chest Press',r:'E',c:'push',st:'STR',d:'3 × 10',eq:['machine'],
+ mus:{p:['chest','triceps'],s:['front-delts']},
+ cues:['Set the seat so the handles line up with the middle of your chest.','Press out until your arms are straight but not locked hard.','Let it come back slowly until you feel a stretch across the chest.','The machine holds the path for you, so you can push hard while you learn.']},
+{id:'mch_incline',n:'Incline Machine Press',r:'D',c:'push',st:'STR',d:'3 × 10',eq:['machine'],
+ mus:{p:['chest','front-delts'],s:['triceps']},
+ cues:['Handles start level with your collarbone, not your chin.','Press up and slightly in, following the machine\'s track.','Keep your shoulders pinned back against the pad the whole set.','Hits the upper chest, which most people under-train.']},
+{id:'mch_shoulder',n:'Machine Shoulder Press',r:'D',c:'push',st:'STR',d:'3 × 10',eq:['machine'],
+ mus:{p:['front-delts','triceps'],s:['side-delts','traps']},
+ cues:['Seat height so the handles sit just above your shoulders.','Press up without shrugging your ears toward your hands.','Stop just short of locking out and come straight back down.','Overhead work with a backrest is the safest way to start pressing.']},
+{id:'mch_pecdeck',n:'Pec Deck',r:'E',c:'push',st:'STR',d:'3 × 12',eq:['machine'],
+ mus:{p:['chest'],s:['front-delts']},
+ cues:['Forearms flat on the pads, elbows at chest height.','Bring the pads together in front of you, slowly.','Stop opening when you feel a stretch, not a pull.','A chest movement with no balance demand at all.']},
+{id:'mch_row',n:'Chest-Supported Row',r:'E',c:'pull',st:'STR',d:'3 × 10',eq:['machine'],
+ mus:{p:['midback','lats'],s:['biceps','rear-delts']},
+ cues:['Chest stays on the pad from the first rep to the last.','Pull the handles to your ribs and squeeze the shoulder blades.','Let the weight stretch your back out before the next rep.','The pad takes your lower back out of it entirely.']},
+{id:'mch_legcurl',n:'Seated Leg Curl',r:'E',c:'legs',st:'STR',d:'3 × 12',eq:['machine'],
+ mus:{p:['hamstrings'],s:['calves']},
+ cues:['Pad sits just above your heels, knees lined up with the pivot.','Curl your heels under you and pause for a second.','Return slowly — that is where hamstrings actually grow.','Almost nothing else in a gym trains hamstrings directly.']},
+{id:'mch_legext',n:'Leg Extension',r:'E',c:'legs',st:'STR',d:'3 × 12',eq:['machine'],
+ mus:{p:['quads'],s:[]},
+ cues:['Knees at the pivot point, pad low on the shins.','Straighten your legs and hold the top for a beat.','Lower under control instead of letting the stack drop.','Sore knees? Use a shorter range near the top rather than skipping it.']},
+{id:'mch_abduct',n:'Hip Abduction Machine',r:'E',c:'legs',st:'STR',d:'3 × 15',eq:['machine'],
+ mus:{p:['glutes'],s:[]},
+ cues:['Sit tall, pads on the outside of your knees.','Push your knees apart and hold the end position briefly.','Come back slowly rather than letting them snap shut.','Trains the side of the glute, which keeps knees tracking properly.']},
+{id:'mch_adduct',n:'Hip Adduction Machine',r:'E',c:'legs',st:'STR',d:'3 × 15',eq:['machine'],
+ mus:{p:['quads'],s:['glutes']},
+ cues:['Pads on the inside of your knees, sit upright.','Squeeze your knees together and pause.','Open slowly and only as far as is comfortable.','The inner thigh is a common weak link in squats and lunges.']},
+{id:'mch_calf',n:'Seated Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:['machine'],
+ mus:{p:['calves'],s:[]},
+ cues:['Pad across the lower thigh, balls of the feet on the platform.','Push up as high as you can go and hold at the top.','Lower until you feel a stretch, over three seconds.','Bent knees hit the deeper calf muscle that standing raises miss.']},
+{id:'mch_hack',n:'Hack Squat',r:'C',c:'legs',st:'STR',d:'4 × 8',eq:['machine'],
+ mus:{p:['quads','glutes'],s:['hamstrings']},
+ cues:['Feet mid-platform, shoulder width, back flat on the pad.','Drop until your thighs are about parallel, deeper if it stays comfortable.','Drive through the whole foot, not just the toes.','Heavy leg work without needing to balance a bar.']},
+{id:'mch_assist',n:'Assisted Pull-Up',r:'E',c:'pull',st:'STR',d:'3 × 8',eq:['machine'],
+ mus:{p:['lats','biceps'],s:['midback','forearms']},
+ cues:['More counterweight makes it easier, not harder — start generous.','Pull your chest toward the bar and lead with the elbows.','Lower all the way down until the arms are straight.','The honest path to a real pull-up. Drop the assistance a plate at a time.']},
+{id:'mch_crunch',n:'Ab Crunch Machine',r:'E',c:'core',st:'CORE',d:'3 × 12',eq:['machine'],
+ mus:{p:['abs'],s:['obliques']},
+ cues:['Grip the handles and curl your ribs toward your hips.','It is a short movement — you are rounding, not bending at the hips.','Come back slowly and stop before your back arches.','Lets you add weight to ab work, which planks cannot.']},
+{id:'mch_hipthrust',n:'Hip Thrust Machine',r:'D',c:'legs',st:'STR',d:'3 × 10',eq:['machine'],
+ mus:{p:['glutes'],s:['hamstrings','quads']},
+ cues:['Pad across the hips, feet flat and about shoulder width.','Drive through your heels until your hips are level with your knees.','Squeeze hard at the top for a full second, then lower under control.','The most direct glute movement in the building.']},
+{id:'mch_shrug',n:'Machine Shrug',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['machine'],
+ mus:{p:['traps'],s:['forearms']},
+ cues:['Stand tall, arms straight, grip the handles.','Lift your shoulders straight up toward your ears.','No rolling — shoulders go up and down, not around.','Straight up beats heavy and half-moving every time.']},
+{id:'cbl_pushdown',n:'Triceps Pushdown',r:'E',c:'push',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['triceps'],s:[]},
+ cues:['Cable set high, elbows pinned to your sides.','Straighten your arms without letting the elbows drift forward.','Let it come back up until you feel the stretch, then go again.','If your body is swinging, the weight is doing the choosing.']},
+{id:'cbl_ohtri',n:'Overhead Cable Extension',r:'D',c:'push',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['triceps'],s:[]},
+ cues:['Face away from the stack, rope overhead, elbows beside your ears.','Straighten your arms forward and up.','Keep the upper arms still — only the forearms move.','The overhead angle hits the long head that pushdowns miss.']},
+{id:'cbl_curl',n:'Cable Curl',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['biceps'],s:['forearms']},
+ cues:['Cable low, elbows at your sides, stand a step back from the stack.','Curl up without letting your elbows travel forward.','Lower slowly all the way to straight arms.','The cable keeps tension on at the bottom, where dumbbells go slack.']},
+{id:'cbl_lat',n:'Cable Lateral Raise',r:'D',c:'push',st:'STR',d:'3 × 12 each arm',eq:['cable'],
+ mus:{p:['side-delts'],s:['traps']},
+ cues:['Cable low, handle in the far hand, stand side-on.','Raise your arm out to shoulder height, elbow slightly soft.','Lower over three seconds. Light weight, this one is not a lift.','Builds the width of the shoulder rather than the front of it.']},
+{id:'cbl_face',n:'Cable Face Pull',r:'E',c:'pull',st:'VIT',d:'3 × 15',eq:['cable'],
+ mus:{p:['rear-delts','traps'],s:['midback']},
+ cues:['Rope at face height, pull it toward your forehead.','Split the rope apart as you pull and lead with the elbows.','High and wide — this is not a row to the chest.','The best single antidote to a day spent at a desk.']},
+{id:'cbl_flyhigh',n:'High Cable Fly',r:'D',c:'push',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['chest'],s:['front-delts']},
+ cues:['Both cables set high, step forward into a split stance.','Bring your hands down and together in front of your hips.','Slight bend in the elbows, held the whole way.','Hits the lower chest that flat pressing under-serves.']},
+{id:'cbl_flylow',n:'Low Cable Fly',r:'D',c:'push',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['chest'],s:['front-delts']},
+ cues:['Cables low, palms facing forward, step out into a split stance.','Sweep your hands up and together to chest height.','Control the way back — do not let the stack pull you open.','The upward angle catches the upper chest.']},
+{id:'cbl_crossover',n:'Cable Crossover',r:'C',c:'push',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['chest'],s:['front-delts','abs']},
+ cues:['Cables at shoulder height, one foot forward for balance.','Bring the handles together and let them cross slightly.','Keep the elbow angle fixed — you are hugging, not pressing.','The crossing at the end squeezes the chest harder than a fly.']},
+{id:'cbl_straight',n:'Straight-Arm Pulldown',r:'D',c:'pull',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['lats'],s:['abs','triceps']},
+ cues:['Bar set high, arms straight, hinge forward slightly.','Pull the bar down to your thighs with the arms locked out.','Feel it in the side of your back, not the triceps.','Teaches you where your lats are, which makes every row better.']},
+{id:'cbl_pullthrough',n:'Cable Pull-Through',r:'D',c:'legs',st:'STR',d:'3 × 12',eq:['cable'],
+ mus:{p:['glutes','hamstrings'],s:['lower-back']},
+ cues:['Face away from a low cable, rope between your legs.','Push your hips back with a flat back, then snap them forward.','Stand tall and squeeze — do not lean back past straight.','A hip hinge you can learn safely before you touch a barbell.']},
+{id:'cbl_woodchop',n:'Cable Woodchop',r:'C',c:'core',st:'CORE',d:'3 × 10 each side',eq:['cable'],
+ mus:{p:['obliques','abs'],s:['side-delts']},
+ cues:['Stand side-on, cable high, arms straight.','Pull down and across to the opposite hip, pivoting the back foot.','Turn through the ribs, not by yanking with the arms.','Trains the twist your core actually does outside the gym.']},
+{id:'cbl_pallof',n:'Pallof Press',r:'D',c:'core',st:'CORE',d:'3 × 10 each side',eq:['cable'],
+ mus:{p:['obliques','abs'],s:['front-delts']},
+ cues:['Stand side-on to a chest-height cable, handle at your sternum.','Press it straight out and refuse to let it twist you.','Hold for two seconds at full stretch, then bring it back in.','You are resisting rotation, which is most of what a core is for.']},
+{id:'cbl_kick',n:'Cable Glute Kickback',r:'E',c:'legs',st:'STR',d:'3 × 12 each leg',eq:['cable'],
+ mus:{p:['glutes'],s:['hamstrings']},
+ cues:['Ankle strap on, face the stack, hold on for balance.','Drive the leg straight back and squeeze at the end.','Keep the low back still — the movement is at the hip.','One leg at a time finds the side that has been coasting.']}
 ];
 
 /* ============================================================
@@ -732,7 +820,22 @@ const RANKS=['E','D','C','B','A','S'];
 const RANK_LV={E:1,D:4,C:9,B:16,A:26,S:40};
 const RANK_TITLE={E:'Novice',D:'Adept',C:'Expert',B:'Master',A:'Grandmaster',S:'Sword Saint'};
 const CATS={push:'Push',pull:'Pull',legs:'Legs',core:'Core',cardio:'Cardio',full:'Full body'};
-const EQNAME={db:'Dumbbells',kb:'Kettlebell',bb:'Barbell',bar:'Pull-up bar',bench:'Bench',band:'Bands',machine:'Machines'};
+const EQNAME={db:'Dumbbells',kb:'Kettlebell',bb:'Barbell',ezbar:'EZ bar',trapbar:'Trap bar',
+ landmine:'Landmine',bar:'Pull-up bar',dip:'Dip bars',trx:'Suspension trainer',
+ bench:'Bench',band:'Bands',machine:'Machines',cable:'Cable stack',
+ medball:'Medicine ball',sled:'Sled'};
+/* Fifteen flat checkboxes is a wall. Grouped by where the thing lives in a gym,
+   which is how people picture their own kit. */
+const eqPicker=(has,attr)=>EQGROUP.map(([label,keys])=>
+  `<p class="eqhead">${label}</p><div class="opts">`+keys.map(k=>
+    `<button class="opt ${has.includes(k)?"on":""}" data-${attr}="${k}">`+
+    `<span>${EQNAME[k]}</span><span class="tick">✦</span></button>`).join("")+`</div>`).join("");
+const EQGROUP=[
+ ['Free weights',['db','kb','bb','ezbar','trapbar','landmine']],
+ ['Machines & cables',['machine','cable']],
+ ['Bodyweight gear',['bar','dip','trx','bench']],
+ ['Conditioning',['band','medball','sled']]
+];
 /* Aura thresholds. Shared by every class — only the tier NAMES change. */
 const AURA=[{min:0},{min:1},{min:3},{min:7},{min:21}];
 
@@ -1323,7 +1426,7 @@ function viewOB(){
     </div>`,'Continue',!!ob.goal);
   if(s===4)return wrap(5,'What can you get to?',
     'Pick everything you have access to. Nothing selected is fine — the bodyweight library is huge.',
-    `<div class="opts">${Object.entries(EQNAME).map(([k,v])=>opt(k,'eq',v,'',1)).join('')}</div>`,
+    eqPicker(ob.eq,'obeq'),
     ob.eq.length?'Continue':'I train with nothing but my body',true);
   return wrap(6,'How many days a week?',
     'Decides how forgiving your streak is. Rest days are part of the plan, not a failure.',
@@ -1531,8 +1634,7 @@ function viewDayEq(){
   return `<section class="block top">
     <div class="blockhead"><h2>Today's Kit</h2></div>
     <p class="note" style="margin-top:0">What you can actually get to today. This does not change your profile — tomorrow goes back to your full kit.</p>
-    <div class="opts">${Object.entries(EQNAME).map(([k,v])=>
-      `<button class="opt ${have.includes(k)?'on':''}" data-toggleday="${k}"><span>${v}</span><span class="tick">✦</span></button>`).join('')}</div>
+    ${eqPicker(have,'toggleday')}
     <button class="btn" data-daydone>Build today's quest</button></section>`;
 }
 function viewQuest(){
@@ -1684,8 +1786,7 @@ function viewEqEdit(){
   return `<section class="block top">
     <div class="blockhead"><h2>Your Equipment</h2></div>
     <p class="note" style="margin-top:0">Tap what you can get to. Changes your quests and your library.</p>
-    <div class="opts">${Object.entries(EQNAME).map(([k,v])=>
-      `<button class="opt ${S.eq.includes(k)?'on':''}" data-toggleeq="${k}"><span>${v}</span><span class="tick">✦</span></button>`).join('')}</div>
+    ${eqPicker(S.eq,'toggleeq')}
     <button class="btn" data-eqdone>Save kit</button></section>`;
 }
 
@@ -1914,6 +2015,9 @@ document.addEventListener('click',ev=>{
   if(t.closest('[data-replaytour]')){tab='quest';render();startTour();return}
   if(tour.on)return;
 
+  const oe=t.closest('[data-obeq]');
+  if(oe){const k=oe.dataset.obeq,i=ob.eq.indexOf(k);
+    i>=0?ob.eq.splice(i,1):ob.eq.push(k);render();return}
   const oc=t.closest('[data-obcls]');
   if(oc){ob.class=oc.dataset.obcls;                 // class sets the weapon/palette defaults
     const dw=CLASSES[ob.class].w;
