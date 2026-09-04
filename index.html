@@ -450,7 +450,6 @@ const EX=[
     P(24,42,32,44,62,48,24,40,14,38,70,52,88,42,32,55,30,66,68,54,76,66)]},
 {id:'deadbug',n:'Dead Bug',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['On your back, arms up, knees over hips.','Lower one arm and the opposite leg toward the floor.','Keep your lower back pressed flat the whole time.','Stop the moment your back arches.'],
- hi:'core',
  f:[P(20,74,29,74,56,76,32,64,34,52,58,62,72,60,33,63,35,51,60,62,74,60),
     P(20,74,29,74,56,76,24,68,13,66,58,62,72,60,33,63,35,51,70,72,86,76)]},
 {id:'kneepush',n:'Knee Push-Up',r:'D',c:'push',st:'STR',d:'3 × 8',eq:[],
@@ -716,7 +715,7 @@ const EX=[
  cues:['Feet shoulder width on the platform, whole foot in contact.','Lower until your knees are around 90° — deeper if your back stays flat.','Never lock your knees hard at the top.','Don\'t let your lower back peel off the pad. That\'s the danger point.'],
  f:[P(24,44,32,48,52,58,30,54,26,62,68,50,84,44,32,55,28,63,70,52,86,46),
     P(24,44,32,48,52,58,30,54,26,62,60,54,68,44,32,55,28,63,62,56,70,46)]},
-{id:'treadmill',n:'Incline Treadmill Walk',r:'E',c:'cardio',st:'END',d:'20 min',eq:['machine'],
+{id:'treadmill',n:'Incline Treadmill Walk',r:'E',c:'cardio',st:'END',d:'20 min',eq:['machine'],p:'tread',
  cues:['Steep incline, slow speed. Brutal without the joint pounding.','Don\'t hang off the handrails — it deletes most of the work.','You should be able to talk but not sing.','The most underrated cardio in any gym.'],
  hi:'legs',
  f:[P(50,14,50,26,50,56,40,40,37,53,45,74,45,90,60,40,63,50,58,66,60,80),
@@ -990,8 +989,12 @@ let sT;function save(){clearTimeout(sT);sT=setTimeout(async()=>{
 function pts(p){const o=[];for(let i=0;i<22;i+=2)o.push({x:p[i],y:p[i+1]});return o}
 let figSeq=0;
 /* Which limbs carry the bright accent, defaulting from category so all 73 get a
-   sensible split without per-exercise authoring. An exercise overrides with `hi`. */
-const HIDEF={push:'arms',pull:'arms',legs:'legs',core:'core',cardio:'legs',full:'both'};
+   sensible split without per-exercise authoring. An exercise overrides with `hi`.
+   Core work highlights the LIMBS, not the torso: at 52px you cannot see a torso
+   working, only what moves — and on a plank, hollow hold, bird dog or dead bug
+   what moves is the limbs. 'core' stays available for authoring but nothing
+   defaults to it. */
+const HIDEF={push:'arms',pull:'arms',legs:'legs',core:'both',cardio:'legs',full:'both'};
 const hiOf=e=>e.hi||HIDEF[e.c]||'both';
 const LIT=1, MUT=.3, LITB=.5, MUTB=.24;   // near lit / near muted / far lit / far muted
 function figSVG(prop,pprop,hi){
@@ -1000,6 +1003,13 @@ function figSVG(prop,pprop,hi){
   if(prop==='fixbar')stat+='<line x1="18" y1="6" x2="82" y2="6" class="eqs2"/><line x1="20" y1="0" x2="20" y2="6" class="eqs2"/><line x1="80" y1="0" x2="80" y2="6" class="eqs2"/>';
   if(prop==='cable')stat+='<rect x="86" y="14" width="12" height="60" class="eqs"/><line class="eqs2" data-p="cbl" x1="92" y1="24" x2="92" y2="24"/>';
   if(prop==='plate')stat+='<rect x="84" y="30" width="14" height="40" rx="2" class="eqs"/>';
+  /* Deck, upright, console, rail. A person walking in empty space is
+     indistinguishable from every other person walking in empty space — the
+     machine is what names the exercise at a glance. */
+  if(prop==='tread')stat+='<line x1="16" y1="95" x2="80" y2="87" class="eqs2"/>'+
+    '<line x1="80" y1="88" x2="86" y2="46" class="eqs2"/>'+
+    '<rect x="74" y="32" width="18" height="13" rx="1.5" class="eqs"/>'+
+    '<line x1="70" y1="59" x2="85" y2="56" class="eqs2"/>';
   if(prop==='db'||prop==='band')dyn+='<g data-p="h0"></g><g data-p="h1"></g>';
   if(prop==='db1'||prop==='kb'||prop==='kb1'||prop==='kb2')dyn+='<g data-p="h1"></g>';
   /* A pictogram, not an illustration. Four bright strokes and a head, exactly as
