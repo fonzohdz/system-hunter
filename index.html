@@ -418,6 +418,23 @@ html,body{margin:0;background:var(--void)}
   pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
 @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 
+/* exercise figures — shaped limbs, a thin void edge so overlaps read, and a
+   dimmer far side for depth */
+.fig{width:100%;height:100%;display:block}
+.gnd{stroke:var(--line);stroke-width:1}
+.figback{opacity:.5}
+.figback path,.figback ellipse{stroke:var(--void);stroke-width:.8;paint-order:stroke}
+.figfront path,.figfront ellipse,.figfront circle{stroke:var(--void);stroke-width:1;paint-order:stroke}
+.eqf{fill:#D8C2CC}
+.eqo{fill:none;stroke:#D8C2CC;stroke-width:1.5}
+.eqb{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 2.5}
+.eqf2{stroke:#D8C2CC;stroke-width:2.6}
+.figbox{width:52px;height:52px;flex:0 0 52px;border:1px solid var(--line);
+  background:linear-gradient(180deg,#090409,#020102)}
+.figbig{border:1px solid var(--line);background:linear-gradient(180deg,#0A0509,#020102);
+  margin-bottom:14px}
+.figbig svg{width:100%;height:auto;max-height:230px}
+
 /* muscle map */
 .bodymap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .bodyfig{margin:0;border:1px solid var(--line);padding:10px 6px 6px;
@@ -1820,7 +1837,7 @@ function viewSwap(e){
     <p class="note">Is it bothering you? Swapping for that reason also steps around it for the next two weeks.</p>
     ${alts.length?`<button class="btn ghost" data-swaphurt="${e.id}|${alts[0].id}">This one hurts — swap and step around it</button>`:''}
     <button class="btn ghost" data-close>Keep it</button></div>`;
-  document.body.appendChild(v);trapFocus(v);
+  document.body.appendChild(v);mountAll(v);trapFocus(v);
 }
 
 /* ---------------- guided session ----------------
@@ -1926,6 +1943,152 @@ function runTicker(){
       else render();
     }
   },250);
+}
+
+/* ---------------- figures, rebuilt ----------------
+   The pose DATA was never the problem — 22 numbers encode a movement fine. What
+   looked wonky was deriving the drawing from raw keypoints: stick lines, or
+   shapes reverse-engineered from them frame by frame.
+
+   This is how a 2D rig actually works. The limb shapes are authored once with
+   real mass and taper; only the ANGLES come from the pose. A thin --void edge
+   keeps overlapping parts from fusing, and the far side runs dimmer for depth.
+   Same body as the muscle map, so there is one figure system, not two. */
+const P2=(p)=>{const o=[];for(let i=0;i<22;i+=2)o.push({x:p[i],y:p[i+1]});return o};
+
+/* A tapered capsule from a to b: half-width w1 at the root, w2 at the tip. */
+function limb(a,b,w1,w2){
+  const dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||.01;
+  const c=dx/L,s=dy/L,px=-s,py=c;
+  const P=(t,w)=>`${(a.x+c*L*t+px*w).toFixed(1)} ${(a.y+s*L*t+py*w).toFixed(1)}`;
+  return `M${P(0,-w1)}Q${P(.5,-(w1+w2)*.56)} ${P(1,-w2)}`+
+         `Q${P(1+w2*.85/L,0)} ${P(1,w2)}`+
+         `Q${P(.5,(w1+w2)*.56)} ${P(0,w1)}`+
+         `Q${P(-w1*.85/L,0)} ${P(0,-w1)}Z`;
+}
+/* Shoulders down to waist, with a little chest through the middle. */
+function torso(n,h){
+  const dx=h.x-n.x,dy=h.y-n.y,L=Math.hypot(dx,dy)||.01;
+  const c=dx/L,s=dy/L,px=-s,py=c;
+  const P=(t,w)=>`${(n.x+c*L*t+px*w).toFixed(1)} ${(n.y+s*L*t+py*w).toFixed(1)}`;
+  return `M${P(0,-5.6)}Q${P(.38,-6.4)} ${P(1,-4.2)}L${P(1,4.2)}Q${P(.38,6.4)} ${P(0,5.6)}Z`;
+}
+const FIGW={au:2.6,al:1.9,lu:3.6,ll:2.5};      // arm upper/lower, leg upper/lower
+const FIGB=.78;                                 // far side runs a little thinner
+
+let figSeq=0;
+function figSVG(){
+  const id=++figSeq;
+  return `<svg viewBox="0 0 100 100" class="fig" aria-hidden="true">
+    <defs><linearGradient id="fg${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--crimson)"/>
+    </linearGradient></defs>
+    <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
+    <g class="figback" fill="var(--deepblade)">
+      <path data-p="bau"/><path data-p="bal"/><path data-p="blu"/><path data-p="bll"/>
+      <ellipse data-p="bh"/><ellipse data-p="bf"/></g>
+    <g class="figfront" fill="url(#fg${id})">
+      <path data-p="torso"/>
+      <path data-p="fau"/><path data-p="fal"/><path data-p="flu"/><path data-p="fll"/>
+      <ellipse data-p="fh"/><ellipse data-p="ff"/>
+      <circle data-p="head" r="6.4"/></g>
+    <g class="figeq" data-p="eq"></g></svg>`;
+}
+function paintFig(svg,pose,prop){
+  const p=P2(pose);
+  const A=svg.__f||(svg.__f={});
+  const q=k=>A[k]||(A[k]=svg.querySelector(`[data-p="${k}"]`));
+  const set=(k,d)=>{const e=q(k);if(e)e.setAttribute('d',d)};
+  const N=p[1],H=p[2],HD=p[0];
+  const b=FIGB;
+  set('bau',limb(N,p[3],FIGW.au*b,FIGW.al*b)); set('bal',limb(p[3],p[4],FIGW.al*b,FIGW.al*b*.85));
+  set('blu',limb(H,p[5],FIGW.lu*b,FIGW.ll*b)); set('bll',limb(p[5],p[6],FIGW.ll*b,FIGW.ll*b*.8));
+  set('torso',torso(N,H));
+  set('fau',limb(N,p[7],FIGW.au,FIGW.al));     set('fal',limb(p[7],p[8],FIGW.al,FIGW.al*.85));
+  set('flu',limb(H,p[9],FIGW.lu,FIGW.ll));     set('fll',limb(p[9],p[10],FIGW.ll,FIGW.ll*.8));
+  /* Hands and feet: small, oriented along the limb they finish. */
+  const cap=(k,at,from,rx,ry)=>{const e=q(k);if(!e)return;
+    const ang=Math.atan2(at.y-from.y,at.x-from.x)*57.2958;
+    e.setAttribute('cx',at.x);e.setAttribute('cy',at.y);
+    e.setAttribute('rx',rx);e.setAttribute('ry',ry);
+    e.setAttribute('transform',`rotate(${ang.toFixed(1)} ${at.x} ${at.y})`)};
+  cap('bh',p[4],p[3],2.4*b,1.9*b); cap('bf',p[6],p[5],3.2*b,1.9*b);
+  cap('fh',p[8],p[7],2.6,2.1);     cap('ff',p[10],p[9],3.4,2.1);
+  const hd=q('head'); if(hd){hd.setAttribute('cx',HD.x);hd.setAttribute('cy',HD.y)}
+  if(!prop)return;
+  const bH=p[4],fH=p[8],eq=q('eq'); if(!eq)return;
+  const db=z=>`<rect x="${z.x-5.5}" y="${z.y-2.4}" width="11" height="4.8" rx="2" class="eqf"/>`;
+  const kb=z=>`<circle cx="${z.x}" cy="${z.y+3}" r="4.2" class="eqf"/>`+
+              `<path d="M${z.x-3.2} ${z.y+1} a3.2 3.8 0 0 1 6.4 0" class="eqo"/>`;
+  if(prop==='db')eq.innerHTML=db(bH)+db(fH);
+  else if(prop==='db1')eq.innerHTML=db(fH);
+  else if(prop==='kb'||prop==='kb1')eq.innerHTML=kb(fH);
+  else if(prop==='kb2')eq.innerHTML=kb({x:(bH.x+fH.x)/2,y:(bH.y+fH.y)/2});
+  else if(prop==='band')eq.innerHTML=`<line x1="${bH.x}" y1="${bH.y}" x2="${fH.x}" y2="${fH.y}" class="eqb"/>`;
+  else if(prop==='bar'||prop==='bar2'){
+    const y=(bH.y+fH.y)/2,x1=Math.min(bH.x,fH.x)-15,x2=Math.max(bH.x,fH.x)+15;
+    eq.innerHTML=`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="eqf2"/>`+
+      `<rect x="${x1-2}" y="${y-6}" width="4.5" height="12" rx="1" class="eqf"/>`+
+      `<rect x="${x2-2.5}" y="${y-6}" width="4.5" height="12" rx="1" class="eqf"/>`;
+  }
+  else eq.innerHTML='';
+}
+
+/* Movements added after the figures were removed have no pose data. Rather than
+   nothing, they borrow a generic pose for their category — the brief for this
+   is "help someone who does not know the movement", and a rough push-up beats a
+   blank box. Duplicates across a category are fine and expected. */
+const GENERIC={
+ push:[P(20,52,28,55,56,62,26,66,24,80,74,64,92,70,27,67,25,80,75,64,93,70),
+       P(18,66,26,68,56,70,32,76,24,80,74,72,92,76,33,77,25,80,75,72,93,76)],
+ pull:[P(46,18,46,30,46,58,38,44,37,60,44,76,44,90,54,44,55,60,50,76,50,90),
+       P(46,16,46,28,46,56,36,40,34,26,44,74,44,90,56,40,58,26,50,74,50,90)],
+ legs:[P(50,16,50,28,50,58,41,42,40,58,45,76,45,90,59,42,60,58,55,76,55,90),
+       P(50,28,50,40,50,66,38,46,32,40,38,74,42,90,62,46,68,40,62,74,58,90)],
+ core:[P(20,62,28,64,54,70,26,84,10,86,74,74,92,82,27,85,11,86,75,74,93,82),
+       P(20,61,28,63,54,69,26,83,10,86,74,73,92,81,27,84,11,86,75,73,93,81)],
+ cardio:[P(50,14,50,26,50,56,38,40,34,52,45,74,45,90,62,40,66,52,58,66,60,80),
+         P(50,14,50,26,50,56,38,40,32,48,40,60,36,74,62,40,68,54,58,74,58,90)],
+ full:[P(46,16,46,28,46,58,38,42,37,58,44,76,44,90,54,42,55,58,50,76,50,90),
+       P(30,34,38,38,58,50,36,50,34,62,58,68,56,88,38,51,36,63,60,68,58,88)]
+};
+const framesFor=e=>e.f&&e.f.length>=2?e.f:(GENERIC[e.c]||GENERIC.full);
+
+const lerp=(a,b,t)=>a+(b-a)*t;
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let rigs=[];
+/* Holds get a long soft cycle, reps a quicker asymmetric one: slow down, brief
+   pause, faster back up. */
+const isHold=e=>/hold/i.test(e.d||'');
+const cycleFor=e=>isHold(e)?2800:(e.c==='cardio'?900:1500);
+function mountFig(svg,e,phase){
+  const r={svg,f:framesFor(e),phase:phase||0,prop:e.p,dur:cycleFor(e),hold:isHold(e)};
+  rigs.push(r);paintFig(svg,r.f[0],r.prop);return r;
+}
+(function figLoop(now){
+  if(!REDUCED)for(const r of rigs){
+    const n=r.f.length;
+    let t=((now/r.dur)+r.phase)%1;
+    /* asymmetric: 60% of the cycle lowering, 40% coming back */
+    let k=t<.6?t/.6:1-(t-.6)/.4;
+    k=k*k*(3-2*k);
+    const seg=(n-1)*k,i=Math.min(n-2,Math.floor(seg)),u=seg-i,o=[];
+    for(let j=0;j<22;j++)o.push(lerp(r.f[i][j],r.f[i+1][j],u));
+    paintFig(r.svg,o,r.prop);
+  }
+  requestAnimationFrame(figLoop);
+})(0);
+function mountAll(root){
+  rigs=[];
+  root.querySelectorAll('svg[data-fig]').forEach(sv=>{
+    const e=EX.find(x=>x.id===sv.dataset.fig);if(!e)return;
+    const ph=sv.dataset.phase||0;
+    sv.outerHTML=figSVG().replace('<svg ',`<svg data-fig="${e.id}" data-phase="${ph}" `);
+  });
+  root.querySelectorAll('svg[data-fig]').forEach(sv=>{
+    const e=EX.find(x=>x.id===sv.dataset.fig);if(!e)return;
+    mountFig(sv,e,parseFloat(sv.dataset.phase||0));
+  });
 }
 
 /* ---------------- provisions ----------------
@@ -2505,6 +2668,7 @@ function viewRun(){
     <p class="runsub">${CATS[e.c]} · builds ${e.st} · ${esc(scaledDose(e))}</p>
     ${(S.perf[e.id]||[]).length?`<p class="lastlog"><span>Last time</span>
       ${S.perf[e.id].slice(-3).join(' · ')}${isTimed(e)?'s':' reps'}</p>`:''}
+    <div class="figbig"><svg data-fig="${e.id}" data-phase="0"></svg></div>
     ${bodyMap(e.mus)}
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
     <button class="btn big" data-runstart>Start · ${esc(scaledDose(e))}</button>
@@ -2649,6 +2813,7 @@ function viewLib(){
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
         ${e.eq.length?`<span class="gearlab">${e.eq.map(x=>EQNAME[x].split(' ')[0]).join('+')}</span>`:''}
+        <svg data-fig="${e.id}" data-phase="${(i%7)*.13}" style="width:100%;aspect-ratio:1"></svg>
         <h4>${esc(e.n)}</h4><p>${esc(scaledDose(e))}</p>
         <p class="cardmus">${e.mus.p.map(musName).join(" · ")}</p></button>`).join('')}
     </div>
@@ -2815,7 +2980,7 @@ function showWeek(){
     </div>
     <button class="btn ghost" data-close>Close</button>
   </div>`;
-  document.body.appendChild(v);trapFocus(v);
+  document.body.appendChild(v);mountAll(v);trapFocus(v);
 }
 function showCard(){
   const r=rankOf(S.lvl),t=auraTier();
@@ -2855,7 +3020,7 @@ function showCard(){
     <button class="btn ghost" data-close>Close</button>
   </div>`;
   document.body.appendChild(v);
-  trapFocus(v);
+  mountAll(v);trapFocus(v);
 }
 
 /* ----- render ----- */
@@ -2869,7 +3034,7 @@ function render(){
     if(pendingLevel!==null)showLevelUp();return}
   if(tab==='run'||tab==='kit'){
     root.innerHTML=tab==='run'?viewRun():viewKitCheck();
-    if(tab==='run')runTicker();
+    if(tab==='run'){mountAll(root);runTicker()}
     /* Fires here too. A level earned mid-session belongs to the movement that
        earned it, not to whenever you happen to leave. */
     if(pendingLevel!==null)showLevelUp();
@@ -2882,6 +3047,7 @@ function render(){
     <button data-tab="rec" class="${tab==='rec'?'on':''}">Records</button>
     <button data-tab="prov" class="${tab==='prov'?'on':''}">Food</button>
     <button data-tab="vault" class="${tab==='vault'||tab==='eqedit'?'on':''}">Vault</button></nav>`;
+  mountAll(root);
   bindAura();
   if(open)renderSheet();
   if(pendingLevel!==null)showLevelUp();
@@ -2897,6 +3063,7 @@ function renderSheet(){
     <div class="sheet-rank rk-${e.r}" role="img" aria-label="Rank ${e.r}">${e.r}</div>
     <h2>${esc(e.n)}</h2>
     <div class="sub">${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
+    <div class="figbig"><svg data-fig="${e.id}" data-phase="0"></svg></div>
     ${bodyMap(e.mus)}
     <p class="muslist"><b>Works</b> ${e.mus.p.map(musName).join(', ')}${
       e.mus.s.length?`<br><b>Also</b> ${e.mus.s.map(musName).join(', ')}`:''}</p>
@@ -2907,7 +3074,7 @@ function renderSheet(){
      :`<button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
     <button class="btn ghost" data-close>Close</button></div>`;
   document.body.appendChild(v);
-  trapFocus(v);
+  mountAll(v);trapFocus(v);
 }
 /* Focus goes into a sheet when it opens and comes back to whatever opened it
    when it closes, so a keyboard user is never dumped at the top of the page. */
@@ -2928,7 +3095,9 @@ function trapFocus(v){
 }
 function closeSheet(){
   const had=document.querySelector('[data-veil]');
-  document.querySelectorAll('[data-veil]').forEach(v=>v.remove());
+  document.querySelectorAll('[data-veil]').forEach(v=>{
+    v.querySelectorAll('svg').forEach(x=>{rigs=rigs.filter(r=>r.svg!==x)});
+    v.remove()});
   open=null;
   if(had&&lastFocus&&lastFocus.isConnected){lastFocus.focus();lastFocus=null}
 }
@@ -3047,7 +3216,7 @@ const TOUR=[
  {sel:'[data-begin]',t:'Begin Quest',x:'Five movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests.'},
  {sel:'.kitline',t:'What you have today',x:'Travelling, or stuck in a hotel room? Change it here and the quest rebuilds around what you actually have.'},
  {sel:'[data-dungeon]',t:'Instant dungeon',x:'A six-minute timed loop for days you have extra in the tank. Three bodyweight stations, as many rounds as you can. It runs the clock for you.'},
- {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Filter by muscle to find what you want.'},
+ {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Every one animates so you can see the shape of it before you try it. Filter by muscle to find what you want.'},
  {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Milestones live here, and the two cards worth sending to the group chat.'},
  {sel:'[data-tab="prov"]',t:'Provisions',x:'Food ideas sorted by the situation you are in — a petrol station, a hotel room with a kettle, ten minutes after a long shift. Nothing there tracks anything.'},
  {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — it costs nothing and resets nothing. Spend gold on titles and new palettes. Goal, kit and rest days live here too.'}

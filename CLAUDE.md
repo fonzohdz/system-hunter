@@ -20,14 +20,16 @@ with animated figure demos.
   level, gold, streak and records otherwise, and there is no server backup.
 - **The storage shim (`DB`).** It uses `window.storage` inside Claude and falls
   back to `localStorage` everywhere else. Never call `window.storage` directly.
-- **~~The figure rig.~~ Removed.** The animated stick figures are gone. An
-  11-point skeleton could not distinguish 73 similar human movements — a chair
-  squat and a wall sit are the same joint angles differing only in what's behind
-  them — and they failed the "cover the label, name the movement" test at every
-  size. Exercises are identified by their muscle tags now.
-  The `f` pose arrays, and the `p`/`pp` prop fields, are still in `EX` but
-  **nothing reads them**. They're kept only so the removal is a git revert rather
-  than a re-authoring job; delete them once this has settled.
+- **The figure rig.** Each exercise may carry `f: [poseA, poseB, ...]`, each pose
+  being exactly 22 numbers: head, neck, hip, back elbow, back hand, back knee,
+  back foot, front elbow, front hand, front knee, front foot — x,y pairs in a
+  100x100 box. A pose of the wrong length renders a mangled figure and throws
+  nothing, so verify counts when editing.
+  The renderer is a **rig**: limb shapes are authored once with real mass and
+  taper, and only the ANGLES come from the pose. Do not go back to deriving the
+  drawing from raw keypoints — that is what looked wonky and got it deleted once.
+  Movements with no `f` fall back to a per-category stand-in pose. That is fine;
+  the bar is "help someone who does not know the movement", not "name it blind".
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
   those with fixed pixel padding.
