@@ -25,10 +25,18 @@ with animated figure demos.
   back foot, front elbow, front hand, front knee, front foot — x,y pairs in a
   100x100 box. A pose of the wrong length renders a mangled figure and throws
   nothing, so verify counts when editing.
-  The renderer is a **rig**: limb shapes are authored once with real mass and
-  taper, and only the ANGLES come from the pose. Do not go back to deriving the
-  drawing from raw keypoints — that is what looked wonky and got it deleted once.
-  Movements with no `f` fall back to a per-category stand-in pose. That is fine;
+  **Draw the pose exactly as authored.** Do not normalise bone lengths, snap to
+  a floor line, or pin contacts with inverse kinematics. All three have been
+  tried and all three made it worse.
+  Limb lengths vary between poses ON PURPOSE: a limb angled toward the camera
+  is shorter on screen. In a flat side view that foreshortening is the only
+  depth cue there is. Plank has a 6-unit forearm and a 12-unit thigh against 19
+  standing — that is not an error to fix, it is the drawing working. Forcing
+  constant bone lengths flattens it and the movements with the most rotation
+  (bird dog, dead bug, mountain climber) suffer worst.
+  These poses were tuned by eye against a literal renderer. Change the poses if
+  a movement reads wrong; do not add a correctness layer on top of them.
+  Movements with no `f` fall back to a per-category stand-in, which is fine —
   the bar is "help someone who does not know the movement", not "name it blind".
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
