@@ -1955,7 +1955,90 @@ function runTicker(){
    real mass and taper; only the ANGLES come from the pose. A thin --void edge
    keeps overlapping parts from fusing, and the far side runs dimmer for depth.
    Same body as the muscle map, so there is one figure system, not two. */
-const P2=(p)=>{const o=[];for(let i=0;i<22;i+=2)o.push({x:p[i],y:p[i+1]});return o};
+/* A pose is a set of DIRECTIONS, not positions.
+   The audit found forearms ranging from 2 to 20 units and upper arms from 4 to
+   27 across the library — the same body changing size between exercises, which
+   is what read as Stretch Armstrong. It also found both arms drawn from the
+   single neck point and both legs from the single hip point, which is what read
+   as "arms attached to the neck".
+
+   So the keypoints are treated as intent rather than truth: keep every joint's
+   DIRECTION from its parent, force the LENGTH to the canonical skeleton, hang
+   the arms off real shoulders and the legs off real hips, and plant the result
+   on the floor. Lengths are then identical in every pose of every exercise, and
+   identical mid-interpolation too, which a straight lerp of endpoints could
+   never guarantee. */
+const BONE={torso:27,neck:9.5,ua:12.5,fa:11.5,th:18.5,sh:18};
+const SHOULDER=3.6, PELVIS=3.0;                 // half-widths either side of the spine
+const FLOOR=94;
+/* Hanging, seated and benched movements are not on the floor and must not be
+   dragged down to it. */
+const AIRBORNE=['bar','machine','bench','dip','trx'];
+const grounded=e=>!(e.eq||[]).some(q=>AIRBORNE.indexOf(q)>=0);
+
+/* Elbows and knees have a hard stop. The data folds several arms flat onto
+   themselves — a curl whose hand lands on its own shoulder — so the joint is
+   opened to its minimum by rotating the child bone away from the parent,
+   keeping the direction the author intended as far as a real joint allows. */
+const ELBOW_MIN=34, KNEE_MIN=30;
+function openJoint(root,joint,d,minDeg){
+  const bx=root.x-joint.x, by=root.y-joint.y, m=Math.hypot(bx,by);
+  if(m<.001)return d;
+  const ux=bx/m, uy=by/m;
+  const a=Math.acos(Math.max(-1,Math.min(1,ux*d.x+uy*d.y)))*57.2958;
+  if(a>=minDeg)return d;
+  const sign=(ux*d.y-uy*d.x)>=0?1:-1;
+  const t=(minDeg-a)*Math.PI/180*sign, c=Math.cos(t), s2=Math.sin(t);
+  return {x:d.x*c-d.y*s2, y:d.x*s2+d.y*c};
+}
+function skeleton(raw,onFloor){
+  const p=[];for(let i=0;i<22;i+=2)p.push({x:raw[i],y:raw[i+1]});
+  const dir=(a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,m=Math.hypot(dx,dy);
+    return m<.001?{x:0,y:1}:{x:dx/m,y:dy/m}};
+  const step=(f,d,L)=>({x:f.x+d.x*L,y:f.y+d.y*L});
+
+  const H={x:p[2].x,y:p[2].y};                       // pelvis is the root
+  const N=step(H,dir(H,p[1]),BONE.torso);
+  const HD=step(N,dir(p[1],p[0]),BONE.neck);
+  const up=dir(H,N), px={x:-up.y,y:up.x};            // across the body
+
+  /* Put each shoulder on the side its own arm actually reaches, and never both
+     on the same side. Same for the hips. */
+  const proj=(q,o)=>(q.x-o.x)*px.x+(q.y-o.y)*px.y;
+  const aSign=proj(p[3],p[1])<=proj(p[7],p[1])?-1:1;
+  const lSign=proj(p[5],p[2])<=proj(p[9],p[2])?-1:1;
+  const at=(o,w)=>({x:o.x+px.x*w,y:o.y+px.y*w});
+  const bSh=at(N,SHOULDER*aSign), fSh=at(N,-SHOULDER*aSign);
+  const bHp=at(H,PELVIS*lSign),   fHp=at(H,-PELVIS*lSign);
+
+  const bE=step(bSh,dir(p[1],p[3]),BONE.ua);
+  const bH=step(bE,openJoint(bSh,bE,dir(p[3],p[4]),ELBOW_MIN),BONE.fa);
+  const fE=step(fSh,dir(p[1],p[7]),BONE.ua);
+  const fH=step(fE,openJoint(fSh,fE,dir(p[7],p[8]),ELBOW_MIN),BONE.fa);
+  const bK=step(bHp,dir(p[2],p[5]),BONE.th);
+  const bF=step(bK,openJoint(bHp,bK,dir(p[5],p[6]),KNEE_MIN),BONE.sh);
+  const fK=step(fHp,dir(p[2],p[9]),BONE.th);
+  const fF=step(fK,openJoint(fHp,fK,dir(p[9],p[10]),KNEE_MIN),BONE.sh);
+
+  const out=[HD,N,H,bE,bH,bK,bF,fE,fH,fK,fF];
+  const sh={bSh,fSh,bHp,fHp};
+
+  /* Plant it. Whatever is lowest is what is bearing weight. */
+  if(onFloor){
+    let lo=-1e9;for(const q of out)lo=Math.max(lo,q.y);
+    const dy=FLOOR-lo;
+    for(const q of out)q.y+=dy;
+    for(const k in sh)sh[k].y+=dy;
+  }
+  /* And keep it on screen — normalising lengths can push a reach past the edge. */
+  let mn=1e9,mx=-1e9;
+  for(const q of out){mn=Math.min(mn,q.x);mx=Math.max(mx,q.x)}
+  let dx=0;
+  if(mn<6)dx=6-mn; else if(mx>94)dx=94-mx;
+  if(dx){for(const q of out)q.x+=dx;for(const k in sh)sh[k].x+=dx}
+  return {p:out,sh};
+}
+
 
 /* A tapered capsule from a to b: half-width w1 at the root, w2 at the tip. */
 function limb(a,b,w1,w2){
@@ -1972,7 +2055,7 @@ function torso(n,h){
   const dx=h.x-n.x,dy=h.y-n.y,L=Math.hypot(dx,dy)||.01;
   const c=dx/L,s=dy/L,px=-s,py=c;
   const P=(t,w)=>`${(n.x+c*L*t+px*w).toFixed(1)} ${(n.y+s*L*t+py*w).toFixed(1)}`;
-  return `M${P(0,-5.6)}Q${P(.38,-6.4)} ${P(1,-4.2)}L${P(1,4.2)}Q${P(.38,6.4)} ${P(0,5.6)}Z`;
+  return `M${P(0,-6.2)}Q${P(.38,-6.6)} ${P(1,-4.4)}L${P(1,4.4)}Q${P(.38,6.6)} ${P(0,6.2)}Z`;
 }
 const FIGW={au:2.6,al:1.9,lu:3.6,ll:2.5};      // arm upper/lower, leg upper/lower
 const FIGB=.78;                                 // far side runs a little thinner
@@ -1995,18 +2078,20 @@ function figSVG(){
       <circle data-p="head" r="6.4"/></g>
     <g class="figeq" data-p="eq"></g></svg>`;
 }
-function paintFig(svg,pose,prop){
-  const p=P2(pose);
+function paintFig(svg,pose,prop,onFloor){
+  const K=skeleton(pose,onFloor!==false);
+  const p=K.p, J=K.sh;
   const A=svg.__f||(svg.__f={});
   const q=k=>A[k]||(A[k]=svg.querySelector(`[data-p="${k}"]`));
   const set=(k,d)=>{const e=q(k);if(e)e.setAttribute('d',d)};
   const N=p[1],H=p[2],HD=p[0];
   const b=FIGB;
-  set('bau',limb(N,p[3],FIGW.au*b,FIGW.al*b)); set('bal',limb(p[3],p[4],FIGW.al*b,FIGW.al*b*.85));
-  set('blu',limb(H,p[5],FIGW.lu*b,FIGW.ll*b)); set('bll',limb(p[5],p[6],FIGW.ll*b,FIGW.ll*b*.8));
+  /* arms from the shoulders, legs from the hips — not all four from the spine */
+  set('bau',limb(J.bSh,p[3],FIGW.au*b,FIGW.al*b)); set('bal',limb(p[3],p[4],FIGW.al*b,FIGW.al*b*.85));
+  set('blu',limb(J.bHp,p[5],FIGW.lu*b,FIGW.ll*b)); set('bll',limb(p[5],p[6],FIGW.ll*b,FIGW.ll*b*.8));
   set('torso',torso(N,H));
-  set('fau',limb(N,p[7],FIGW.au,FIGW.al));     set('fal',limb(p[7],p[8],FIGW.al,FIGW.al*.85));
-  set('flu',limb(H,p[9],FIGW.lu,FIGW.ll));     set('fll',limb(p[9],p[10],FIGW.ll,FIGW.ll*.8));
+  set('fau',limb(J.fSh,p[7],FIGW.au,FIGW.al));     set('fal',limb(p[7],p[8],FIGW.al,FIGW.al*.85));
+  set('flu',limb(J.fHp,p[9],FIGW.lu,FIGW.ll));     set('fll',limb(p[9],p[10],FIGW.ll,FIGW.ll*.8));
   /* Hands and feet: small, oriented along the limb they finish. */
   const cap=(k,at,from,rx,ry)=>{const e=q(k);if(!e)return;
     const ang=Math.atan2(at.y-from.y,at.x-from.x)*57.2958;
@@ -2063,8 +2148,9 @@ let rigs=[];
 const isHold=e=>/hold/i.test(e.d||'');
 const cycleFor=e=>isHold(e)?3600:(e.c==='cardio'?1100:1900);
 function mountFig(svg,e,phase){
-  const r={svg,f:framesFor(e),phase:phase||0,prop:e.p,dur:cycleFor(e),hold:isHold(e)};
-  rigs.push(r);paintFig(svg,r.f[0],r.prop);return r;
+  const r={svg,f:framesFor(e),phase:phase||0,prop:e.p,dur:cycleFor(e),
+           hold:isHold(e),floor:grounded(e)};
+  rigs.push(r);paintFig(svg,r.f[0],r.prop,r.floor);return r;
 }
 /* The figure snaps between a handful of fixed positions rather than gliding
    between them. Smooth interpolation made every limb drift continuously, which
@@ -2086,7 +2172,7 @@ const FIGSTEPS=6;                      // distinct positions between the end pos
     r.k=k;
     const seg=(n-1)*k,i=Math.min(n-2,Math.floor(seg)),u=seg-i,o=[];
     for(let j=0;j<22;j++)o.push(lerp(r.f[i][j],r.f[i+1][j],u));
-    paintFig(r.svg,o,r.prop);
+    paintFig(r.svg,o,r.prop,r.floor);
   }
   requestAnimationFrame(figLoop);
 })(0);
