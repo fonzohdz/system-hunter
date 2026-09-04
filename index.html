@@ -1307,7 +1307,7 @@ const fresh=()=>({
  perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
  /* Milestones earned, the first value of each PR so doubling can be detected,
     which categories have been logged, and whether a travel quest was cleared. */
- ach:[], prFirst:{}, catsLogged:[], travelClear:false
+ ach:[], prFirst:{}, catsLogged:[], travelClear:false, dg:null, dgBest:0
 });
 let S=fresh();
 const need=l=>40+l*30;
@@ -1455,6 +1455,7 @@ function heal(){
   if(!Array.isArray(S.outgrown))S.outgrown=[];
   if(!Array.isArray(S.ach))S.ach=[];
   if(!Array.isArray(S.catsLogged))S.catsLogged=[];
+  if(typeof S.dgBest!=='number')S.dgBest=0;
   if(!S.prFirst||typeof S.prFirst!=='object')S.prFirst={};
   for(const k of ['perf','prog','avoid'])if(!S[k]||typeof S[k]!=='object')S[k]={};
   if(!S.stats||typeof S.stats!=='object')S.stats=f.stats;
@@ -1911,6 +1912,105 @@ function runTicker(){
   },250);
 }
 
+/* ---------------- instant dungeon ----------------
+   Six minutes, three stations, as many rounds as you can. It used to be a
+   paragraph and a button that paid out instantly, which is exactly the problem
+   the guided session was built to fix. Bodyweight on purpose: a dungeon you
+   cannot enter in a hotel room is not instant. */
+const DGLEN=360;
+const dg=()=>{const o=S.dg;return o&&o.d===today()?o:null};
+/* Three stations, picked to match the hunter's rank so it stays hard but doable. */
+function dgStations(){
+  const pick=(...ids)=>{for(const id of ids){const e=EX.find(x=>x.id===id);
+    if(e&&unlocked(e.r)&&fitsLimits(e))return e}
+    return EX.find(x=>x.id===ids[ids.length-1])};
+  const push=pick('pushup','kneepush','incpush','wallpush');
+  const legs=pick('squat','chairsq');
+  const core=pick('plank','kneeplank');
+  return [
+    {e:push,label:'5 reps'},
+    {e:legs, label:'8 reps'},
+    {e:core, label:'20 seconds'}
+  ];
+}
+function dgLeft(){
+  const o=dg(); if(!o||!o.endAt)return 0;
+  if(o.paused)return Math.max(0,Math.round(o.left));
+  return Math.max(0,Math.round((o.endAt-Date.now())/1000));
+}
+function startDungeon(){
+  S.dg={d:today(),st:'run',endAt:Date.now()+DGLEN*1000,paused:0,left:DGLEN,step:0,rounds:0};
+  save();keepAwake(true);dgFired=false;tab='dungeon';render();
+}
+function endDungeon(){
+  const o=dg(); if(!o)return;
+  o.st='done';
+  if(!o.paid){
+    o.paid=1;
+    touchStreak();award(60,40,'END');
+    if((S.dgBest||0)<o.rounds)S.dgBest=o.rounds;
+    checkAch();
+  }
+  keepAwake(false);save();render();
+}
+let dgTicker=null,dgFired=false;
+function runDgTicker(){
+  clearInterval(dgTicker);
+  dgTicker=setInterval(()=>{
+    const o=dg();
+    if(!o||tab!=='dungeon'||o.st!=='run'){clearInterval(dgTicker);dgTicker=null;return}
+    const left=dgLeft();
+    const el=document.querySelector('[data-count]');
+    if(el)el.textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
+    const ring=document.querySelector('[data-ring]');
+    if(ring)ring.style.strokeDashoffset=String(2*Math.PI*52*(1-left/DGLEN));
+    if(left<=0&&!dgFired){dgFired=true;buzz([0,80,60,140]);beep();
+      clearInterval(dgTicker);dgTicker=null;endDungeon()}
+  },250);
+}
+function viewDungeon(){
+  const o=dg(); if(!o)return viewQuest();
+  const st=dgStations();
+  if(o.st==='done'){
+    const best=S.dgBest||0;
+    return `<div class="runwrap"><div class="run center">
+      <p class="runstep">Dungeon cleared</p>
+      <h2 class="runh">${o.rounds} round${o.rounds===1?'':'s'}</h2>
+      <div class="sumgrid">
+        <div><span>Rounds</span><b>${o.rounds}</b></div>
+        <div><span>Best</span><b>${best}</b></div>
+        <div><span>Earned</span><b>+60</b></div>
+      </div>
+      <p class="nextup" style="margin-top:20px"><span>${o.rounds>=best&&o.rounds>0?'New best':'Beat next time'}</span>
+        <b>${o.rounds>=best&&o.rounds>0?'That is the number to beat.':best+' rounds'}</b></p>
+      <button class="btn big" data-dgdone>Done</button>
+    </div></div>`;
+  }
+  const left=dgLeft(), cur=st[o.step%3], nextS=st[(o.step+1)%3];
+  return `<div class="runwrap">
+    <div class="runtop">
+      <button class="runx" data-dgexit aria-label="Leave the dungeon">✕</button>
+      <span class="runpos">Round ${o.rounds+1}</span>
+      <button class="runx" data-dgpause aria-label="${o.paused?'Resume':'Pause'}">${o.paused?'▶':'❚❚'}</button>
+    </div>
+    <div class="run center">
+      <div class="ringwrap">
+        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="52" class="ring-bg"/>
+          <circle cx="60" cy="60" r="52" class="ring-fg" data-ring
+            style="stroke-dasharray:${2*Math.PI*52};stroke-dashoffset:${2*Math.PI*52*(1-left/DGLEN)}"/></svg>
+        <div class="ringnum"><b data-count>${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}</b>
+          <span>remaining</span></div>
+      </div>
+      <p class="runstep" style="margin-top:14px">Station ${(o.step%3)+1} of 3</p>
+      <h2 class="runh">${esc(cur.e.n)}</h2>
+      <p class="bignum" style="font-size:clamp(40px,14vw,68px);margin-top:4px">${cur.label}</p>
+      <button class="btn big" data-dgnext>Station done</button>
+      <p class="nextup"><span>Then</span><b>${esc(nextS.e.n)} · ${nextS.label}</b></p>
+      <button class="btn ghost" data-dgstop>End it here</button>
+    </div></div>`;
+}
+
 /* ---------------- UI ---------------- */
 let tab='quest',filt={r:'all',c:'all',eq:'mine',m:'all'},open=null,ob;
 ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,limits:[],class:'bladebound',weapon:'longsword',palette:'crimson'};
@@ -2332,7 +2432,6 @@ function viewRunDone(o,q){
 function viewQuest(){
   const q=rollQuest(),done=S.questDone,cleared=q.filter(e=>done.includes(e.id)).length;
   const all=q.length&&cleared===q.length;
-  const light=unlocked('D')?'knee push-ups':'wall push-ups';
   return crestBlock()+heroBlock()+statsBlock()+`
   <section class="block">
     <div class="blockhead"><h2>Daily Quest</h2><span class="tally">${cleared} / ${q.length} cleared</span></div>
@@ -2346,8 +2445,8 @@ function viewQuest(){
   </section>
   <section class="block">
     <div class="blockhead"><h2>Instant Dungeon</h2></div>
-    <p class="dgn">Six minutes, no rest. Cycle <b>5 ${light} → 8 squats → 20-second plank</b> until the timer dies. Count your rounds and beat it next time.</p>
-    <button class="btn" data-dungeon>Enter the dungeon · +60 XP · +40 gold</button>
+    <p class="dgn">Six minutes, no rest. Three stations on a loop. The app counts the clock and the rounds — you just move.${S.dgBest?` Your best is <b>${S.dgBest}</b> rounds.`:''}</p>
+    <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +40 gold</button>
   </section>`;
 }
 function viewLib(){
@@ -2596,6 +2695,8 @@ function render(){
     const n=document.getElementById('obname');
     if(n)n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');if(b)b.disabled=!ob.name.trim()};
     return}
+  if(tab==='dungeon'){root.innerHTML=viewDungeon();runDgTicker();
+    if(pendingLevel!==null)showLevelUp();return}
   if(tab==='run'||tab==='kit'){
     root.innerHTML=tab==='run'?viewRun():viewKitCheck();
     if(tab==='run')runTicker();
@@ -2774,7 +2875,7 @@ const TOUR=[
  {sel:'.props',t:'Your stats',x:'STR, END, VIT, AGI and CORE grow from the kind of work you actually do. Level ups raise all five.'},
  {sel:'[data-begin]',t:'Begin Quest',x:'Five movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests.'},
  {sel:'.kitline',t:'What you have today',x:'Travelling, or stuck in a hotel room? Change it here and the quest rebuilds around what you actually have.'},
- {sel:'[data-dungeon]',t:'Instant dungeon',x:'Optional six-minute bonus on days you have extra in the tank.'},
+ {sel:'[data-dungeon]',t:'Instant dungeon',x:'A six-minute timed loop for days you have extra in the tank. Three bodyweight stations, as many rounds as you can. It runs the clock for you.'},
  {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Filter by muscle to find what you want.'},
  {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Milestones live here, and the two cards worth sending to the group chat.'},
  {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — it costs nothing and resets nothing. Spend gold on titles and new palettes. Goal, kit and rest days live here too.'}
@@ -2889,8 +2990,19 @@ document.addEventListener('click',ev=>{
     noteLogged(e);checkAch();
     closeSheet();render();return}
 
-  if(t.closest('[data-dungeon]')){touchStreak();award(60,40,'END');
-    toast('Dungeon cleared · +60 XP · +40 gold');checkAch();render();return}
+  if(t.closest('[data-dungeon]')){
+    if(dg()&&dg().st==='run'){keepAwake(true);dgFired=false;tab='dungeon';render();return}
+    startDungeon();return}
+  if(t.closest('[data-dgnext]')){const o=dg();
+    o.step++; if(o.step%3===0)o.rounds++;
+    buzz([0,35]);save();render();return}
+  if(t.closest('[data-dgpause]')){const o=dg();
+    if(o.paused){o.endAt=Date.now()+o.left*1000;o.paused=0;dgFired=false}
+    else{o.left=dgLeft();o.paused=1}
+    save();render();return}
+  if(t.closest('[data-dgstop]')){endDungeon();return}
+  if(t.closest('[data-dgexit]')){keepAwake(false);tab='quest';save();render();return}
+  if(t.closest('[data-dgdone]')){S.dg=null;keepAwake(false);save();tab='quest';render();return}
 
   const ps=t.closest('[data-prsave]');
   if(ps){const k=ps.dataset.prsave,inp=document.querySelector(`[data-pr="${k}"]`),v=parseInt(inp.value,10);
@@ -3018,6 +3130,7 @@ document.addEventListener('click',ev=>{
     if(n>gapAllowed()){if(S.potions>0)S.potions--;else S.streak=0;save()}
   }
   if(S.sess&&S.sess.d!==today())S.sess=null;      // yesterday's run does not resume
+  if(S.dg&&S.dg.d!==today())S.dg=null;
   checkAch();
   render();
   if(S.refund){const g=S.refund;delete S.refund;save();
