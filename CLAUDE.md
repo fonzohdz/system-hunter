@@ -43,6 +43,11 @@ mus (muscles: {p:[primary], s:[secondary]})`.
 `p`, `pp` and `f` are legacy fields left over from the removed figure system.
 Nothing reads them. Don't add them to new exercises.
 
+`strain` lists which areas a movement loads, from: `knees, shoulders, lower-back,
+wrists`. `sit:1` marks a movement performable from a chair or a machine. Both
+feed the optional "working around" setting, so be honest: an over-tagged `sit`
+produces a quest someone cannot actually do.
+
 Muscle vocabulary — these seventeen and no others:
 `chest, front-delts, side-delts, rear-delts, biceps, triceps, forearms, lats,
 midback, traps, lower-back, abs, obliques, glutes, quads, hamstrings, calves`
