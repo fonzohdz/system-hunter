@@ -20,11 +20,14 @@ with animated figure demos.
   level, gold, streak and records otherwise, and there is no server backup.
 - **The storage shim (`DB`).** It uses `window.storage` inside Claude and falls
   back to `localStorage` everywhere else. Never call `window.storage` directly.
-- **The figure rig.** Each exercise has `f: [poseA, poseB]`, each pose being
-  exactly 22 numbers in this order: head, neck, hip, back elbow, back hand,
-  back knee, back foot, front elbow, front hand, front knee, front foot — as
-  x,y pairs in a 100x100 box. A pose with the wrong length renders a mangled
-  figure and throws no error. Verify counts when editing.
+- **~~The figure rig.~~ Removed.** The animated stick figures are gone. An
+  11-point skeleton could not distinguish 73 similar human movements — a chair
+  squat and a wall sit are the same joint angles differing only in what's behind
+  them — and they failed the "cover the label, name the movement" test at every
+  size. Exercises are identified by their muscle tags now.
+  The `f` pose arrays, and the `p`/`pp` prop fields, are still in `EX` but
+  **nothing reads them**. They're kept only so the removal is a git revert rather
+  than a re-authoring job; delete them once this has settled.
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
   those with fixed pixel padding.
@@ -35,8 +38,18 @@ with animated figure demos.
 Append to the `EX` array. Required fields:
 `id, n (name), r (rank E/D/C/B/A), c (category: push|pull|legs|core|cardio|full),
 st (stat: STR|END|VIT|AGI|CORE), d (dose e.g. '3 × 8'), eq (array of equipment
-codes, [] for bodyweight), cues (4 short strings), f (two poses)`.
-Optional: `p` (equipment prop drawn in the figure), `pp` (static prop, e.g. bench).
+codes, [] for bodyweight), cues (4 short strings),
+mus (muscles: {p:[primary], s:[secondary]})`.
+`p`, `pp` and `f` are legacy fields left over from the removed figure system.
+Nothing reads them. Don't add them to new exercises.
+
+Muscle vocabulary — these seventeen and no others:
+`chest, front-delts, side-delts, rear-delts, biceps, triceps, forearms, lats,
+midback, traps, lower-back, abs, obliques, glutes, quads, hamstrings, calves`
+
+Be honest rather than generous: two or three primaries at most. Almost everything
+hits the core a little — only tag it where it genuinely matters. Every term must
+stay reachable by at least one exercise, or the library filter has a dead option.
 
 Equipment codes: `db kb bb bar bench band machine`.
 
