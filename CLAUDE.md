@@ -1,7 +1,7 @@
 # System Hunter — project instructions
 
 An RPG-styled workout app. Solo Leveling / gamer aesthetic. Users get a hunter
-profile, daily quests, XP, levels, ranks, gold, and a library of 73 movements
+profile, daily quests, XP, levels, ranks, gold, and a library of 155 movements
 with animated figure demos.
 
 ## Shape of the project
@@ -14,7 +14,8 @@ with animated figure demos.
 
 ## Do not break
 
-- **Saved progress.** State lives under the storage key `sh:hunter:v2`.
+- **Saved progress.** State lives under the storage key `asc:hunter:v4`, with
+  migrations from `asc:hunter:v3` and `sh:hunter:v2`.
   Do not rename the key, remove fields, or change the shape of the saved object
   without a migration that reads the old shape and upgrades it. Users lose their
   level, gold, streak and records otherwise, and there is no server backup.
@@ -78,8 +79,9 @@ Append to the `EX` array. Required fields:
 st (stat: STR|END|VIT|AGI|CORE), d (dose e.g. '3 × 8'), eq (array of equipment
 codes, [] for bodyweight), cues (4 short strings),
 mus (muscles: {p:[primary], s:[secondary]})`.
-`p`, `pp` and `f` are legacy fields left over from the removed figure system.
-Nothing reads them. Don't add them to new exercises.
+`f` carries the poses and `p` names the equipment or support drawn with them —
+both are read every frame. A new movement needs either its own `f` or a `ref`
+naming one whose mechanics genuinely match. See the figure rig above.
 
 `strain` lists which areas a movement loads, from: `knees, shoulders, lower-back,
 wrists`. `sit:1` marks a movement performable from a chair or a machine. Both
