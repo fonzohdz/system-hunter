@@ -421,6 +421,7 @@ html,body{margin:0;background:var(--void)}
 /* exercise figures — shaped limbs, a thin void edge so overlaps read, and a
    dimmer far side for depth */
 .fig{width:100%;height:100%;display:block}
+.fig path,.fig ellipse,.fig circle{transition:none}
 .gnd{stroke:var(--line);stroke-width:1}
 .figback{opacity:.5}
 .figback path,.figback ellipse{stroke:var(--void);stroke-width:.8;paint-order:stroke}
@@ -2060,18 +2061,29 @@ let rigs=[];
 /* Holds get a long soft cycle, reps a quicker asymmetric one: slow down, brief
    pause, faster back up. */
 const isHold=e=>/hold/i.test(e.d||'');
-const cycleFor=e=>isHold(e)?2800:(e.c==='cardio'?900:1500);
+const cycleFor=e=>isHold(e)?3600:(e.c==='cardio'?1100:1900);
 function mountFig(svg,e,phase){
   const r={svg,f:framesFor(e),phase:phase||0,prop:e.p,dur:cycleFor(e),hold:isHold(e)};
   rigs.push(r);paintFig(svg,r.f[0],r.prop);return r;
 }
+/* The figure snaps between a handful of fixed positions rather than gliding
+   between them. Smooth interpolation made every limb drift continuously, which
+   read as bubbly — a body breathing rather than a body working. Stepping it
+   gives the mechanical, posed feel of animation held on twos.
+
+   It also means a repaint only happens when the step actually changes, so most
+   animation frames do no work at all. */
+const FIGSTEPS=6;                      // distinct positions between the end poses
 (function figLoop(now){
   if(!REDUCED)for(const r of rigs){
     const n=r.f.length;
-    let t=((now/r.dur)+r.phase)%1;
-    /* asymmetric: 60% of the cycle lowering, 40% coming back */
+    const t=((now/r.dur)+r.phase)%1;
+    /* Still asymmetric — 60% of the cycle lowering, 40% coming back — so the
+       steps are spaced further apart on the way down. */
     let k=t<.6?t/.6:1-(t-.6)/.4;
-    k=k*k*(3-2*k);
+    k=Math.round(k*FIGSTEPS)/FIGSTEPS;               // snap to a fixed position
+    if(k===r.k)continue;                             // nothing moved; draw nothing
+    r.k=k;
     const seg=(n-1)*k,i=Math.min(n-2,Math.floor(seg)),u=seg-i,o=[];
     for(let j=0;j<22;j++)o.push(lerp(r.f[i][j],r.f[i+1][j],u));
     paintFig(r.svg,o,r.prop);
