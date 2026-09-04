@@ -940,17 +940,37 @@ function refundOldCosmetics(s){
   if(back>0){s.gold=(s.gold||0)+back;s.refund=back}
   return back;
 }
+/* Puts any save into a shape the app can run on. Everything here is a container
+   that later code calls a method on — a null `owned` from a half-written save
+   used to throw and take the whole load down with it. */
+function heal(){
+  const f=fresh();
+  if(!Array.isArray(S.owned))S.owned=[];
+  if(!Array.isArray(S.eq))S.eq=[];
+  if(!Array.isArray(S.questDone))S.questDone=[];
+  if(!S.stats||typeof S.stats!=='object')S.stats=f.stats;
+  if(!S.prs||typeof S.prs!=='object')S.prs=f.prs;
+  if(!S.history||typeof S.history!=='object')S.history={};
+  if(!CLASSES[S.class])S.class='bladebound';
+  if(!PALETTES[S.palette])S.palette='crimson';
+  if(!WEAPONS[S.weapon]||!wepOwned(S.weapon))S.weapon=cls().w;
+  if(!wepOwned(S.weapon))S.weapon='longsword';   // class default can itself be locked
+}
 async function load(){
-  try{const r=await DB.get(KEY);if(r&&r.value){S=Object.assign(fresh(),JSON.parse(r.value));
-    if(!CLASSES[S.class])S.class='bladebound';
-    if(!PALETTES[S.palette])S.palette='crimson';
-    if(!WEAPONS[S.weapon]||!wepOwned(S.weapon))S.weapon=cls().w;
-    if(!wepOwned(S.weapon))S.weapon='longsword';   // heals a save pointing at a locked weapon
+  let raw=null;
+  try{const r=await DB.get(KEY);if(r&&r.value)raw=r.value}catch(e){}
+  if(raw!==null){
+    /* A current save exists. Even if it parses badly we must NOT fall through to
+       an older key — that would overwrite good progress with a stale save, and
+       there is no server backup to undo it with. */
+    try{S=Object.assign(fresh(),JSON.parse(raw))}catch(e){console.error('save unreadable',e)}
+    heal();
     if(refundOldCosmetics(S))save();
-    return}}catch(e){}
+    return;
+  }
   for(const k of [KEY3,KEY2]){            // migrate forward so nobody loses progress
     try{const r=await DB.get(k);
-      if(r&&r.value){S=upgradeToV4(JSON.parse(r.value));refundOldCosmetics(S);save();return}
+      if(r&&r.value){S=upgradeToV4(JSON.parse(r.value));heal();refundOldCosmetics(S);save();return}
     }catch(e){}
   }
 }
