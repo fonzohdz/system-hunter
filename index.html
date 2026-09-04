@@ -728,27 +728,33 @@ const PALETTES={
 const FREEPAL=['crimson','ember','frost'];
 const PALPRICE={void:400,verdant:400,radiant:600,ashen:600,abyssal:800};
 
+/* `w` is only the DEFAULT weapon — picking a class sets it, and you can
+   override it afterwards. What a class actually owns is its aura, its tier
+   names and its titles, which is what the picker advertises. */
 const CLASSES={
- bladebound:{n:'Bladebound',w:'longsword',wn:'Longsword',pal:'crimson',aura:'tendrils',
-   d:'A straight blade and an aura that reaches for things.',
+ bladebound:{n:'Bladebound',w:'longsword',an:'Tendrils',pal:'crimson',aura:'tendrils',
+   d:'An aura that reaches outward and curls back on itself.',
    tiers:['Dormant','Stirring','Kindled','Surging','Ascendant']},
- ronin:{n:'Ronin',w:'katana',wn:'Katana',pal:'ember',aura:'embers',
-   d:'One curved edge. Ash falls off it when you are training.',
+ ronin:{n:'Ronin',w:'katana',an:'Embers',pal:'ember',aura:'embers',
+   d:'Embers fall off you the whole time you are training.',
    tiers:['Cold','Smouldering','Lit','Blazing','Infernal']},
- warden:{n:'Warden',w:'hammer',wn:'Greathammer',pal:'radiant',aura:'pulse',
-   d:'Something enormous and slow. It arrives when it arrives.',
+ warden:{n:'Warden',w:'hammer',an:'Pulse',pal:'radiant',aura:'pulse',
+   d:'Slow heavy rings. It arrives when it arrives.',
    tiers:['Still','Rousing','Grounded','Thundering','Immovable']},
- arcanist:{n:'Arcanist',w:'staff',wn:'Staff & Orb',pal:'void',aura:'motes',
-   d:'A staff, an orb, and a glyph that keeps turning over.',
+ arcanist:{n:'Arcanist',w:'staff',an:'Motes',pal:'void',aura:'motes',
+   d:'Orbiting motes around a glyph that keeps turning over.',
    tiers:['Unwritten','Traced','Inscribed','Resonant','Transcendent']},
- stalker:{n:'Stalker',w:'daggers',wn:'Twin Daggers',pal:'verdant',aura:'shards',
-   d:'Two short blades. The aura moves in quick flat lines.',
+ stalker:{n:'Stalker',w:'daggers',an:'Shards',pal:'verdant',aura:'shards',
+   d:'Quick flat shards, low in the frame. Gone before you track them.',
    tiers:['Unseen','Prowling','Marked','Lethal','Apex']},
- ironclad:{n:'Ironclad',w:'gauntlets',wn:'Gauntlets',pal:'frost',aura:'shimmer',
-   d:'No weapon. The aura sits tight against you instead.',
+ ironclad:{n:'Ironclad',w:'gauntlets',an:'Shimmer',pal:'frost',aura:'shimmer',
+   d:'No reaching, no drift. The aura sits tight against you.',
    tiers:['Cold Iron','Warming','Tempered','Forged','Unbreakable']}
 };
 const CLSKEYS=Object.keys(CLASSES);
+const WEAPONNAME={longsword:'Longsword',katana:'Katana',hammer:'Greathammer',
+  staff:'Staff & Orb',daggers:'Twin Daggers',gauntlets:'Gauntlets'};
+const WEPKEYS=Object.keys(WEAPONNAME);
 
 /* Titles are per class. Ids never repeat, so a title you bought stays bought
    and stays wearable even after you switch classes. */
@@ -825,7 +831,7 @@ const fresh=()=>({
  logs:0,questDate:null,questDone:[],questBonus:false,
  owned:[],title:null,blade:null,potions:0,tourSeen:false,
  history:{}, clears:0,
- class:'bladebound', palette:'crimson'
+ class:'bladebound', palette:'crimson', weapon:'longsword'
 });
 let S=fresh();
 const need=l=>40+l*30;
@@ -845,6 +851,7 @@ const auraTier=()=>({n:tierName(auraIdx())});
 function upgradeToV4(o){
   const s=Object.assign(fresh(),o);
   s.class='bladebound';
+  s.weapon=CLASSES.bladebound.w;
   s.palette=BLADEPAL[o.blade]||'crimson';
   s.owned=Array.isArray(o.owned)?o.owned.slice():[];
   for(const id in BLADEPAL){
@@ -858,6 +865,7 @@ async function load(){
   try{const r=await DB.get(KEY);if(r&&r.value){S=Object.assign(fresh(),JSON.parse(r.value));
     if(!CLASSES[S.class])S.class='bladebound';
     if(!PALETTES[S.palette])S.palette='crimson';
+    if(!WEAPONS[S.weapon])S.weapon=cls().w;   // heals saves written before weapon was pickable
     return}}catch(e){}
   for(const k of [KEY3,KEY2]){            // migrate forward so nobody loses progress
     try{const r=await DB.get(k);
@@ -1153,7 +1161,7 @@ function touchStreak(){
 
 /* ---------------- UI ---------------- */
 let tab='quest',filt={r:'all',c:'all',eq:'mine'},open=null,ob;
-ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,class:'bladebound',palette:'crimson'};
+ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,class:'bladebound',weapon:'longsword',palette:'crimson'};
 const root=document.getElementById('root');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;
@@ -1175,6 +1183,13 @@ function palSwatch(id,on,attr){
   return `<button class="palb ${on?'on':''}" ${attr} title="${esc(p.n)}"
     style="--pa:${p.core};--pb:${p.magenta};--pc:${p.deepblade}"><i></i></button>`;
 }
+/* Class, weapon and palette pickers are identical in onboarding and the vault —
+   only the data attribute differs, so the markup lives in one place. */
+const clsGrid=(sel,attr)=>`<div class="clsgrid">${CLSKEYS.map(k=>
+  `<button class="clsb ${sel===k?'on':''}" data-${attr}="${k}">${CLASSES[k].n}<small>${CLASSES[k].an}</small></button>`).join('')}</div>`;
+const wepGrid=(sel,attr)=>`<div class="clsgrid">${WEPKEYS.map(k=>
+  `<button class="clsb ${sel===k?'on':''}" data-${attr}="${k}">${WEAPONNAME[k]}</button>`).join('')}</div>`;
+
 function titleName(){
   const t=ALLTITLES[S.title];
   return t?t.n:RANK_TITLE[rankOf(S.lvl)];
@@ -1199,11 +1214,12 @@ function viewOB(){
     const c=CLASSES[ob.class],free=palList().filter(p=>FREEPAL.includes(p)||p===c.pal);
     return wrap(2,'Choose your class.',
       'Cosmetic only. Class changes your weapon, your aura and what your tiers are called. Every class earns XP, gold and ranks at exactly the same rate — nobody gets an easier curve.',
-      `<div class="wprev">${bladeSVG(c.w)}</div>
+      `<div class="wprev">${bladeSVG(ob.weapon)}</div>
        <p class="picklab">Class</p>
-       <div class="clsgrid">${CLSKEYS.map(k=>`<button class="clsb ${ob.class===k?'on':''}" data-obcls="${k}">
-         ${CLASSES[k].n}<small>${CLASSES[k].wn}</small></button>`).join('')}</div>
+       ${clsGrid(ob.class,'obcls')}
        <p class="clsline"><b>${esc(c.n)}.</b> ${esc(c.d)} Aura tiers run ${esc(c.tiers[0])} to ${esc(c.tiers[4])}.</p>
+       <p class="picklab" style="margin-top:20px">Weapon</p>
+       ${wepGrid(ob.weapon,'obwep')}
        <p class="picklab" style="margin-top:20px">Palette</p>
        <div class="palrow">${free.map(p=>palSwatch(p,ob.palette===p,`data-obpal="${p}"`)).join('')}</div>
        <p class="clsline"><b>${esc(PALETTES[ob.palette].n)}.</b> ${esc(PALETTES[ob.palette].d)} More unlock in the vault.</p>`,
@@ -1241,7 +1257,7 @@ function viewOB(){
 function finishOB(){
   S.setup=true;S.name=ob.name.trim().slice(0,18);S.exp=ob.exp;S.goal=ob.goal;
   S.eq=ob.eq.slice();S.days=ob.days;S.lvl=XPLEVEL[ob.exp]||1;
-  S.class=ob.class;S.palette=ob.palette;
+  S.class=ob.class;S.weapon=ob.weapon;S.palette=ob.palette;
   const bump={new:0,some:2,trained:5,adv:9}[ob.exp]||0;
   for(const k in S.stats)S.stats[k]+=bump;
   save();tab='quest';render();showIntro();
@@ -1369,7 +1385,7 @@ const WEAPONS={
  })()
 };
 function bladeSVG(w){
-  const k=w||cls().w;
+  const k=w||S.weapon||cls().w;
   return `<svg class="blade-svg" viewBox="0 0 120 300" aria-hidden="true">${WEAPONDEFS}${WEAPONS[k]||WEAPONS.longsword}</svg>`;
 }
 function heroBlock(){
@@ -1515,9 +1531,10 @@ function viewVault(){
     <div class="blockhead"><h2>Appearance</h2></div>
     <div class="wprev">${bladeSVG()}</div>
     <p class="picklab">Class</p>
-    <div class="clsgrid">${CLSKEYS.map(k=>`<button class="clsb ${S.class===k?'on':''}" data-setcls="${k}">
-      ${CLASSES[k].n}<small>${CLASSES[k].wn}</small></button>`).join('')}</div>
+    ${clsGrid(S.class,'setcls')}
     <p class="clsline"><b>${esc(cls().n)}.</b> ${esc(cls().d)} Aura tiers run ${esc(cls().tiers[0])} to ${esc(cls().tiers[4])}.</p>
+    <p class="picklab" style="margin-top:20px">Weapon</p>
+    ${wepGrid(S.weapon,'setwep')}
     <p class="picklab" style="margin-top:20px">Palette</p>
     <div class="palrow">${owned.map(p=>palSwatch(p,S.palette===p,`data-setpal="${p}"`)).join('')}</div>
     <p class="clsline"><b>${esc(pal().n)}.</b> ${esc(pal().d)}</p>
@@ -1794,15 +1811,21 @@ document.addEventListener('click',ev=>{
   if(tour.on)return;
 
   const oc=t.closest('[data-obcls]');
-  if(oc){ob.class=oc.dataset.obcls;
+  if(oc){ob.class=oc.dataset.obcls;                 // class sets the weapon/palette defaults
+    ob.weapon=CLASSES[ob.class].w;
     if(!FREEPAL.includes(ob.palette))ob.palette=CLASSES[ob.class].pal;
     render();return}
+  const ow=t.closest('[data-obwep]');
+  if(ow){ob.weapon=ow.dataset.obwep;render();return}
   const op=t.closest('[data-obpal]');
   if(op){ob.palette=op.dataset.obpal;render();return}
   const sc=t.closest('[data-setcls]');
   if(sc){S.class=sc.dataset.setcls;                 // cosmetic swap: progression untouched
+    S.weapon=cls().w;
     if(!palOwned(S.palette))S.palette=cls().pal;
     save();render();return}
+  const sw=t.closest('[data-setwep]');
+  if(sw){S.weapon=sw.dataset.setwep;save();render();return}
   const sp=t.closest('[data-setpal]');
   if(sp){if(palOwned(sp.dataset.setpal)){S.palette=sp.dataset.setpal;save();render()}return}
 
@@ -1871,7 +1894,7 @@ document.addEventListener('click',ev=>{
   if(t.closest('[data-reset]')){
     if(!confirm('Wipe your hunter and start over? This cannot be undone.'))return;
     S=fresh();
-    ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,class:'bladebound',palette:'crimson'};
+    ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,class:'bladebound',weapon:'longsword',palette:'crimson'};
     save();applyLook();render();return}
 });
 
