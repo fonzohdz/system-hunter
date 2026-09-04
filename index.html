@@ -205,7 +205,9 @@ html,body{margin:0;background:var(--void)}
   border-top:1px solid var(--line);backdrop-filter:blur(10px);
   padding:6px calc(6px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(6px + env(safe-area-inset-left))}
 .tabs button{flex:1;background:none;border:0;color:var(--ash);cursor:pointer;position:relative;
-  font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;padding:11px 2px;font-weight:700}
+  font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  padding:11px 1px;font-weight:700;min-height:44px}
+@media(min-width:400px){.tabs button{font-size:13px;letter-spacing:.16em}}
 .tabs button.on{color:var(--magenta)}
 .tabs button.on::after{content:"";position:absolute;top:0;left:24%;right:24%;height:2px;background:var(--magenta)}
 
@@ -364,6 +366,16 @@ html,body{margin:0;background:var(--void)}
 .hc-prs span{display:block;font-size:9px;letter-spacing:.12em;color:var(--ash);text-transform:uppercase}
 .hc-prs b{display:block;font-family:var(--display);font-size:22px;color:var(--gold);font-weight:700;margin-top:3px}
 .hc-foot{text-align:center;font-size:10.5px;color:var(--ash);letter-spacing:.09em;padding-top:14px}
+
+/* provisions */
+.provlist{margin-top:12px}
+.prov{border-bottom:1px solid var(--line);padding:14px 0}
+.prov:first-child{border-top:1px solid var(--line)}
+.prov h4{margin:0;font-size:15px;font-weight:500}
+.prov p{margin:5px 0 0;font-size:13px;color:var(--ash);line-height:1.55}
+.prov i{display:inline-block;font-style:normal;margin-top:7px;font-size:9.5px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--gold);
+  border:1px solid rgba(232,197,131,.35);padding:2px 6px}
 
 /* milestones */
 .achgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px}
@@ -1307,7 +1319,9 @@ const fresh=()=>({
  perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
  /* Milestones earned, the first value of each PR so doubling can be detected,
     which categories have been logged, and whether a travel quest was cleared. */
- ach:[], prFirst:{}, catsLogged:[], travelClear:false, dg:null, dgBest:0
+ ach:[], prFirst:{}, catsLogged:[], travelClear:false, dg:null, dgBest:0,
+ /* Food equipment is deliberately separate from gym equipment. */
+ foodEq:['kettle'], diet:[], provOpen:'gas'
 });
 let S=fresh();
 const need=l=>40+l*30;
@@ -1456,6 +1470,8 @@ function heal(){
   if(!Array.isArray(S.ach))S.ach=[];
   if(!Array.isArray(S.catsLogged))S.catsLogged=[];
   if(typeof S.dgBest!=='number')S.dgBest=0;
+  if(!Array.isArray(S.foodEq))S.foodEq=['kettle'];
+  if(!Array.isArray(S.diet))S.diet=[];
   if(!S.prFirst||typeof S.prFirst!=='object')S.prFirst={};
   for(const k of ['perf','prog','avoid'])if(!S[k]||typeof S[k]!=='object')S[k]={};
   if(!S.stats||typeof S.stats!=='object')S.stats=f.stats;
@@ -1911,6 +1927,128 @@ function runTicker(){
     }
   },250);
 }
+
+/* ---------------- provisions ----------------
+   A reference tab. It connects to nothing: no logging, no scoring, no numbers
+   attached to food, and no link to XP, gold, streaks or progression. Organised
+   by the situation you are actually in rather than by meal or food group.
+
+   `has` lists what an idea contains, and the dietary filters work by exclusion.
+   Halal and kosher screen out the obvious conflicts only — nothing here can
+   certify how something was prepared, and the copy says so. */
+const FOODEQ=[
+ {k:'kettle',n:'Kettle'},{k:'microwave',n:'Microwave'},{k:'fridge',n:'Mini fridge'},
+ {k:'airfryer',n:'Air fryer'},{k:'ricecooker',n:'Rice cooker'}
+];
+const DIETS=[
+ {k:'veg',n:'Vegetarian',no:['meat','pork','fish']},
+ {k:'vegan',n:'Vegan',no:['meat','pork','fish','dairy','egg']},
+ {k:'halal',n:'Halal',no:['pork'],note:1},
+ {k:'kosher',n:'Kosher',no:['pork','shellfish'],note:1},
+ {k:'nopork',n:'No pork',no:['pork']},
+ {k:'nodairy',n:'No dairy',no:['dairy']},
+ {k:'nonuts',n:'No nuts',no:['nuts']},
+ {k:'gf',n:'Gluten free',no:['gluten']}
+];
+const PROV=[
+{k:'gas',n:'Gas station',d:'Petrol stops and corner shops. Better than their reputation if you know where to look.',items:[
+ {n:'Beef jerky and a banana',x:'Keeps in a glovebox for weeks. The banana is the bit people forget.',has:['meat']},
+ {n:'Tuna packet and crackers',x:'Pouches beat tins — no drainage, no smell, no tin opener.',has:['fish','gluten']},
+ {n:'Rotisserie chicken',x:'Most larger stops have one. Eat half, fridge the rest if you have one.',has:['meat']},
+ {n:'Greek yoghurt and honey',x:'Thick ones travel better than the runny ones.',has:['dairy']},
+ {n:'Boiled eggs',x:'Sold in twos by the till in most places now.',has:['egg']},
+ {n:'Trail mix and an apple',x:'Buy the one that is mostly nuts rather than mostly chocolate.',has:['nuts']},
+ {n:'Hummus and pretzel packs',x:'The pre-portioned cups do not need a fridge until they are open.',has:['gluten']},
+ {n:'Chocolate milk',x:'Cold, everywhere, and does not need explaining after a hard session.',has:['dairy']}
+]},
+{k:'room',n:'Hotel room, nothing',d:'No kettle, no fridge, no anything. Just you and a carrier bag.',items:[
+ {n:'Rotisserie chicken and a bagged salad',x:'The whole meal, no equipment, five minutes from a supermarket.',has:['meat']},
+ {n:'Tinned fish, flatbread, lemon',x:'Sardines or mackerel. Ask for a fork at reception.',has:['fish','gluten']},
+ {n:'Peanut butter and a spoon',x:'Not elegant. Solves the problem.',has:['nuts']},
+ {n:'Deli counter: sliced meat, cheese, bread roll',x:'Build it on the desk. Every supermarket in the world has this.',has:['meat','dairy','gluten']},
+ {n:'Cottage cheese and cherry tomatoes',x:'Sold in a tub with a lid, which is the whole trick.',has:['dairy']},
+ {n:'Falafel, pita, tub of hummus',x:'Cold falafel is genuinely fine. Nobody tells you that.',has:['gluten']}
+]},
+{k:'kettle',n:'Kettle only',d:'Every room has one. It does more than tea.',items:[
+ {n:'Instant oats with milk powder',x:'Bring the milk powder. It turns thin oats into something that fills you up.',eq:['kettle'],has:['dairy','gluten']},
+ {n:'Couscous, tinned chickpeas, olive oil',x:'Couscous needs boiling water and five minutes under a plate. That is it.',eq:['kettle'],has:['gluten']},
+ {n:'Instant noodles plus a tuna pouch',x:'Half the seasoning sachet, not all of it. Add the tuna at the end.',eq:['kettle'],has:['fish','gluten']},
+ {n:'Boiled eggs in the kettle',x:'Two eggs, full kettle, boil, leave ten minutes with the lid down. Rinse it after.',eq:['kettle'],has:['egg']},
+ {n:'Instant mashed potato and a rotisserie chicken',x:'Sounds grim, eats well, costs almost nothing.',eq:['kettle'],has:['meat','dairy']},
+ {n:'Miso or bouillon with a handful of spinach',x:'Wilts in the cup. Something green when there is nothing green.',eq:['kettle'],has:[]}
+]},
+{k:'micro',n:'Microwave',d:'Reception usually has one even when the room does not.',items:[
+ {n:'Microwave rice pouch, tinned beans, hot sauce',x:'Ninety seconds. The most reliable meal in this whole list.',eq:['microwave'],has:[]},
+ {n:'Baked potato',x:'Fork it a few times, eight to ten minutes, turn it halfway.',eq:['microwave'],has:[]},
+ {n:'Frozen vegetables and a pouch of lentils',x:'Frozen veg is cheap, keeps, and is no worse than fresh.',eq:['microwave'],has:[]},
+ {n:'Scrambled eggs in a mug',x:'Two eggs, splash of milk, thirty seconds, stir, thirty more.',eq:['microwave'],has:['egg','dairy']},
+ {n:'Rice pouch, rotisserie chicken, frozen peas',x:'All three in one bowl. Two minutes.',eq:['microwave'],has:['meat']},
+ {n:'Porridge pot',x:'Add hot water or milk to the line. Fine on its own, better with fruit.',eq:['microwave'],has:['gluten']}
+]},
+{k:'air',n:'Air fryer',d:'A lot of people travel with one now. It is basically a small oven that heats up fast.',items:[
+ {n:'Chicken thighs, 200°C, 18–20 minutes',x:'Turn once. Thighs forgive bad timing in a way breasts do not.',eq:['airfryer'],has:['meat']},
+ {n:'Salmon fillet, 190°C, 10–12 minutes',x:'Skin down, no oil needed. Done when it flakes.',eq:['airfryer'],has:['fish']},
+ {n:'Frozen chips or wedges, 200°C, 15 minutes',x:'Shake the basket halfway. No oil, straight from frozen.',eq:['airfryer'],has:[]},
+ {n:'Whole peppers and courgette, 200°C, 12 minutes',x:'Chop, oil, salt. The easiest vegetables you will cook all week.',eq:['airfryer'],has:[]},
+ {n:'Tofu cubes, 200°C, 15 minutes',x:'Press the water out with a towel first, or it steams instead of crisping.',eq:['airfryer'],has:[]},
+ {n:'Halloumi, 200°C, 8 minutes',x:'No oil. Comes out better than a pan and there is nothing to wash.',eq:['airfryer'],has:['dairy']},
+ {n:'Reheating yesterday’s chicken, 180°C, 5 minutes',x:'Better than a microwave for anything that was ever crisp.',eq:['airfryer'],has:['meat']}
+]},
+{k:'rice',n:'Rice cooker',d:'More versatile than people expect. It will cook almost anything you can boil or steam.',items:[
+ {n:'Rice with frozen veg thrown in at the start',x:'One pot, one switch, no attention. Stir at the end.',eq:['ricecooker'],has:[]},
+ {n:'Chicken and rice one-pot',x:'Diced thigh, rice, stock, a lid. Twenty-five minutes and it looks after itself.',eq:['ricecooker'],has:['meat']},
+ {n:'Lentils and rice',x:'Equal parts, a bit more water than usual, a stock cube. Keeps for days.',eq:['ricecooker'],has:[]},
+ {n:'Steamed eggs on top of the rice',x:'Crack two on the rice for the last ten minutes and shut the lid.',eq:['ricecooker'],has:['egg']},
+ {n:'Oats overnight in the pot',x:'Steel-cut oats, water, keep-warm setting. Ready when you are.',eq:['ricecooker'],has:['gluten']},
+ {n:'Steamed dumplings from frozen',x:'A splash of water in the bottom, dumplings on top, lid on, twelve minutes.',eq:['ricecooker'],has:['gluten','meat']}
+]},
+{k:'buffet',n:'Hotel breakfast',d:'The free buffet is usually better value than anything else you will eat that day.',items:[
+ {n:'Eggs, whatever form they have',x:'The one thing on the table that is nearly always worth taking.',has:['egg']},
+ {n:'Yoghurt and fruit from the cold section',x:'Skip the flavoured pots if the plain is out. Add the fruit yourself.',has:['dairy']},
+ {n:'Beans on toast',x:'Unglamorous and always there.',has:['gluten']},
+ {n:'Porridge with whatever toppings are on the counter',x:'Usually a jug of it nobody touches.',has:['gluten']},
+ {n:'Take an extra piece of fruit for later',x:'Costs nothing and solves the four o’clock problem.',has:[]},
+ {n:'Cold cuts and cheese if it is a continental spread',x:'Common in Europe, easy to miss because it looks like a garnish.',has:['meat','dairy']}
+]},
+{k:'wrecked',n:'Ten minutes, wrecked',d:'Fourteen-hour day, nothing left. The bar is: eat something, go to bed.',items:[
+ {n:'Rotisserie chicken eaten standing up',x:'No plate. It counts.',has:['meat']},
+ {n:'Rice pouch and a tin of anything',x:'Two minutes, one bowl, no decisions.',eq:['microwave'],has:[]},
+ {n:'Cereal and milk',x:'Perfectly good dinner. Nobody is checking.',has:['dairy','gluten']},
+ {n:'Toast with peanut butter and a banana',x:'Three things you already have.',has:['nuts','gluten']},
+ {n:'Whatever is in the minibar plus a piece of fruit',x:'Genuinely fine for one night.',has:[]},
+ {n:'Order something and eat it slowly',x:'A delivered meal you actually finish beats a good meal you never cook.',has:[]}
+]},
+{k:'out',n:'Eating out',d:'Ordering without overthinking it. These hold up in most chains anywhere.',items:[
+ {n:'Grilled chicken, rice, side of veg',x:'On nearly every menu in some form. Ask for it grilled rather than fried.',has:['meat']},
+ {n:'Burrito bowl, double the meat',x:'Skip the tortilla if you want, keep everything else.',has:['meat','dairy']},
+ {n:'Any curry with a side of plain rice',x:'Ask for the sauce on the side if it looks heavy.',has:['dairy']},
+ {n:'Two breakfast plates at any time of day',x:'Eggs and toast is a fine dinner and most places serve it all day.',has:['egg','gluten']},
+ {n:'Pho or ramen with extra protein',x:'Broth, noodles, meat, herbs. Fast and it travels well as a habit.',has:['meat','gluten']},
+ {n:'A big salad with something grilled on top',x:'Dressing on the side so you decide how much.',has:['meat']}
+]},
+{k:'stock',n:'Restocking',d:'A short list that survives a suitcase and keeps in a room without a fridge.',items:[
+ {n:'Tuna or mackerel pouches',x:'No tin opener, no drainage, no smell.',has:['fish']},
+ {n:'Instant oats and milk powder',x:'The two together make a real breakfast anywhere with a kettle.',eq:['kettle'],has:['dairy','gluten']},
+ {n:'Microwave rice pouches',x:'Buy four. They weigh nothing and keep for a year.',has:[]},
+ {n:'Nuts, in a resealable bag',x:'The one thing here that goes off slowest.',has:['nuts']},
+ {n:'Stock cubes or bouillon',x:'Turns hot water into something. Weighs nothing.',has:[]},
+ {n:'Hot sauce',x:'Makes four repetitive days survivable. This is the real advice.',has:[]},
+ {n:'Beef jerky or biltong',x:'Keeps forever, needs nothing, travels in a pocket.',has:['meat']},
+ {n:'Tinned chickpeas or beans',x:'Heavy, so buy them where you land rather than packing them.',has:[]}
+]}
+];
+const foodEqOn=()=>S.foodEq||[];
+const dietOn=()=>S.diet||[];
+/* An idea shows when you have what it needs and it clears every dietary filter. */
+function provOk(it){
+  for(const q of (it.eq||[]))if(!foodEqOn().includes(q))return false;
+  for(const k of dietOn()){
+    const d=DIETS.find(x=>x.k===k); if(!d)continue;
+    for(const bad of d.no)if((it.has||[]).includes(bad))return false;
+  }
+  return true;
+}
+function provCount(){let n=0;for(const s of PROV)n+=s.items.filter(provOk).length;return n}
 
 /* ---------------- instant dungeon ----------------
    Six minutes, three stations, as many rounds as you can. It used to be a
@@ -2429,6 +2567,38 @@ function viewRunDone(o,q){
     <button class="btn ghost" data-runfinish>Done</button>
   </div></div>`;
 }
+function viewProv(){
+  const open=S.provOpen||'gas';
+  const sec=PROV.find(x=>x.k===open)||PROV[0];
+  const items=sec.items.filter(provOk);
+  const needsNote=dietOn().some(k=>(DIETS.find(x=>x.k===k)||{}).note);
+  return `<section class="block top">
+    <div class="blockhead"><h2>Provisions</h2><span class="tally">${provCount()} ideas</span></div>
+    <p class="note" style="margin-top:0">Food ideas for wherever you are. No tracking, no targets, nothing here talks to your quests.</p>
+
+    <p class="picklab" style="margin-top:18px">What you have</p>
+    <div class="filters">${FOODEQ.map(f=>
+      `<button data-foodeq="${f.k}" class="${foodEqOn().includes(f.k)?'on':''}">${f.n}</button>`).join('')}</div>
+
+    <p class="picklab" style="margin-top:16px">Anything you avoid</p>
+    <div class="filters">${DIETS.map(d=>
+      `<button data-diet="${d.k}" class="${dietOn().includes(d.k)?'on':''}">${d.n}</button>`).join('')}</div>
+    ${needsNote?`<p class="note" style="margin-top:8px">Halal and kosher here only screen out the obvious conflicts. Nothing in an app can tell you how something was prepared or certified — check that yourself.</p>`:''}
+
+    <div class="filters" style="margin-top:20px">${PROV.map(s=>
+      `<button data-provsec="${s.k}" class="${open===s.k?'on':''}">${s.n}</button>`).join('')}</div>
+  </section>
+  <section class="block">
+    <div class="blockhead"><h2>${esc(sec.n)}</h2><span class="tally">${items.length} of ${sec.items.length}</span></div>
+    <p class="note" style="margin-top:0">${esc(sec.d)}</p>
+    ${items.length?`<div class="provlist">${items.map(it=>`<div class="prov">
+      <h4>${esc(it.n)}</h4><p>${esc(it.x)}</p>
+      ${(it.eq||[]).length?`<i>${it.eq.map(q=>(FOODEQ.find(f=>f.k===q)||{}).n).join(' · ')}</i>`:''}
+    </div>`).join('')}</div>`
+    :`<p class="note">Nothing in this section matches your filters. Other sections probably still have something — or loosen a filter above.</p>`}
+  </section>`;
+}
+
 function viewQuest(){
   const q=rollQuest(),done=S.questDone,cleared=q.filter(e=>done.includes(e.id)).length;
   const all=q.length&&cleared===q.length;
@@ -2705,11 +2875,12 @@ function render(){
     if(pendingLevel!==null)showLevelUp();
     return}
   const body=tab==='quest'?viewQuest():tab==='lib'?viewLib():tab==='rec'?viewRecords():
-             tab==='eqedit'?viewEqEdit():tab==='dayeq'?viewDayEq():tab==='limits'?viewLimits():viewVault();
+             tab==='eqedit'?viewEqEdit():tab==='dayeq'?viewDayEq():tab==='limits'?viewLimits():tab==='prov'?viewProv():viewVault();
   root.innerHTML=body+`<nav class="tabs">
     <button data-tab="quest" class="${tab==='quest'||tab==='dayeq'?'on':''}">Quest</button>
     <button data-tab="lib" class="${tab==='lib'?'on':''}">Skills</button>
     <button data-tab="rec" class="${tab==='rec'?'on':''}">Records</button>
+    <button data-tab="prov" class="${tab==='prov'?'on':''}">Food</button>
     <button data-tab="vault" class="${tab==='vault'||tab==='eqedit'?'on':''}">Vault</button></nav>`;
   bindAura();
   if(open)renderSheet();
@@ -2878,6 +3049,7 @@ const TOUR=[
  {sel:'[data-dungeon]',t:'Instant dungeon',x:'A six-minute timed loop for days you have extra in the tank. Three bodyweight stations, as many rounds as you can. It runs the clock for you.'},
  {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Filter by muscle to find what you want.'},
  {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Milestones live here, and the two cards worth sending to the group chat.'},
+ {sel:'[data-tab="prov"]',t:'Provisions',x:'Food ideas sorted by the situation you are in — a petrol station, a hotel room with a kettle, ten minutes after a long shift. Nothing there tracks anything.'},
  {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — it costs nothing and resets nothing. Spend gold on titles and new palettes. Goal, kit and rest days live here too.'}
 ];
 let tour={on:false,i:0,els:null};
@@ -3086,6 +3258,15 @@ document.addEventListener('click',ev=>{
   if(st2){const [a,b]=st2.dataset.swapto.split('|');doSwap(a,b,false);return}
   const shr=t.closest('[data-swaphurt]');
   if(shr){const [a,b]=shr.dataset.swaphurt.split('|');doSwap(a,b,true);return}
+
+  const fq=t.closest('[data-foodeq]');
+  if(fq){const k=fq.dataset.foodeq,i=S.foodEq.indexOf(k);
+    i>=0?S.foodEq.splice(i,1):S.foodEq.push(k);save();render();return}
+  const dt=t.closest('[data-diet]');
+  if(dt){const k=dt.dataset.diet,i=S.diet.indexOf(k);
+    i>=0?S.diet.splice(i,1):S.diet.push(k);save();render();return}
+  const pv=t.closest('[data-provsec]');
+  if(pv){S.provOpen=pv.dataset.provsec;save();render();return}
 
   const kb=t.closest('[data-kit]');
   if(kb){const k=kb.dataset.kit;
