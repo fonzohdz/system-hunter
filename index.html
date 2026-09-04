@@ -378,16 +378,12 @@ html,body{margin:0;background:var(--void)}
   pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
 @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 
-/* figure strokes — widths live on each path so depth is baked into the markup.
-   .figout is the separating layer: the same near-side paths, fattened and in
-   --void, sitting behind the fills so overlaps read as edges. Group opacity on
-   .back drops the far side to ~45% so it recedes instead of competing. */
+/* figure strokes — stroke widths live per segment in the markup so limbs taper.
+   The far side is the same shape, only thinner and dimmed, which is all the
+   depth a pictogram needs. */
 .gnd{stroke:var(--line);stroke-width:1}
-.back{opacity:.45}
-.back path{stroke:var(--deepblade);fill:none;stroke-linecap:round;stroke-linejoin:round}
-.back ellipse{fill:var(--deepblade)}
-.figout path{stroke:var(--void);fill:none;stroke-linecap:round;stroke-linejoin:round}
-.front path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.back{opacity:.5}
+.back polyline{stroke:var(--deepblade)}
 .eqf{fill:#D8C2CC}
 .eqo{fill:none;stroke:#D8C2CC;stroke-width:1.6}
 .eqb{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 2.5}
@@ -993,92 +989,33 @@ function figSVG(prop,pprop){
   if(prop==='plate')stat+='<rect x="84" y="30" width="14" height="40" rx="2" class="eqs"/>';
   if(prop==='db'||prop==='band')dyn+='<g data-p="h0"></g><g data-p="h1"></g>';
   if(prop==='db1'||prop==='kb'||prop==='kb1'||prop==='kb2')dyn+='<g data-p="h1"></g>';
-  /* A body, not a stick. Limb segments are stroked paths whose width is baked
-     into the markup — upper thicker than lower, far side thinner than near —
-     so the per-frame work stays down to setting `d`. Draw order is far limbs,
-     torso, near limbs, head, which is what gives the depth. */
-  /* Widths, near side. The far side runs at the same proportions but thinner,
-     and the outline layer repeats the near paths fattened by twice HALO so
-     every overlap shows a hard edge instead of welding into one mass. */
-  const W={nk:2.8,fau:3.6,fal:2.6,flu:4.4,fll:3.2};
-  const HALO=1.2;
-  const seg=(k,w)=>`<path data-s="${k}" stroke-width="${w}"/>`;
-  const near=k=>seg(k,W[k]), halo=k=>seg(k,W[k]+HALO*2);
-  const cap=k=>`<ellipse data-c="${k}"/>`;
-  const edge=`stroke="var(--void)" stroke-width="${HALO*2}" paint-order="stroke"`;
+  /* A pictogram, not an illustration. Four bright strokes and a head, exactly as
+     before: nothing filled, nothing outlined, no hands or feet as their own
+     shapes. The only addition is taper — each limb is split into two segments so
+     the upper can be thicker than the lower — and the far side runs thinner and
+     dimmer for depth without changing shape. Legibility at 52px beats detail. */
+  const L=(l,w)=>`<polyline data-l="${l}" stroke-width="${w}"/>`;
   return `<svg viewBox="0 0 100 100" aria-hidden="true">
     <defs><linearGradient id="mn${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--crimson)"/>
     </linearGradient></defs>
     <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
     ${stat}
-    <g class="back">
-      ${seg('bau',3)}${seg('bal',2.1)}${seg('blu',3.6)}${seg('bll',2.6)}
-      ${cap('bh')}${cap('bf')}</g>
-    <path data-torso fill="url(#mn${id})" ${edge}/>
-    <g class="figout">${halo('nk')}${halo('fau')}${halo('fal')}${halo('flu')}${halo('fll')}</g>
-    <g class="front" stroke="url(#mn${id})">
-      ${near('nk')}${near('fau')}${near('fal')}${near('flu')}${near('fll')}</g>
-    <g class="front" fill="url(#mn${id})" ${edge}>${cap('fh')}${cap('ff')}</g>
-    <circle data-head r="5.2" fill="url(#mn${id})" ${edge}/>
+    <g class="back" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      ${L('1,3',4.2)}${L('3,4',3.2)}${L('2,5',4.8)}${L('5,6',3.6)}</g>
+    <g class="front" fill="none" stroke-linecap="round" stroke-linejoin="round"
+       stroke="url(#mn${id})">
+      ${L('1,2',6)}
+      ${L('1,7',5.4)}${L('7,8',4.2)}
+      ${L('2,9',6.2)}${L('9,10',4.8)}</g>
+    <circle data-head r="7.5" fill="url(#mn${id})"/>
     <g class="eq">${dyn}</g></svg>`;
 }
-const DEG=57.2957795;
 function paintFig(svg,pose,prop){
   const p=pts(pose);
-  const A=svg.__fig||(svg.__fig={});                    // cache lookups; this runs every frame
-  const q=k=>A[k]||(A[k]=svg.querySelector(`[data-${k}]`));
-  /* A near-side limb is two elements — the void halo and the fill — sharing one
-     key, so this writes the geometry to every copy. */
-  const qs=k=>A['s'+k]||(A['s'+k]=svg.querySelectorAll(`[data-s="${k}"]`));
-  const qc=k=>A['c'+k]||(A['c'+k]=svg.querySelector(`[data-c="${k}"]`));
-  const line=(k,a,b)=>{const d=`M${a.x} ${a.y}L${b.x} ${b.y}`;
-    const es=qs(k);for(let i=0;i<es.length;i++)es[i].setAttribute('d',d)};
-  const N=p[1],H=p[2],HD=p[0];
-
-  /* Facing: perpendicular to the spine, flipped toward wherever the author put
-     the head relative to the neck. When the head sits straight up the spine
-     that tells us nothing, so fall back to where the hands are. */
-  let sx=N.x-H.x, sy=N.y-H.y; const sl=Math.hypot(sx,sy)||1; sx/=sl; sy/=sl;
-  let fx=sy, fy=-sx;
-  let tx=HD.x-N.x, ty=HD.y-N.y, d=fx*tx+fy*ty;
-  if(Math.abs(d)<.8){tx=(p[4].x+p[8].x)/2-N.x; ty=(p[4].y+p[8].y)/2-N.y; d=fx*tx+fy*ty}
-  /* A dead-symmetric standing pose gives us nothing to go on either way. Face
-     right rather than leaving it to float on rounding noise. */
-  if(Math.abs(d)<.05)d=fx;
-  if(d<0){fx=-fx;fy=-fy}
-  const fang=Math.atan2(fy,fx)*DEG;
-
-  /* Torso: a filled shape with shoulder, ribcage and waist widths rather than
-     a line from neck to hip. */
-  const ux=H.x-N.x, uy=H.y-N.y, tl=Math.hypot(ux,uy)||1;
-  const nx=-uy/tl, ny=ux/tl;
-  const T=(t,w)=>`${(N.x+ux*t+nx*w).toFixed(1)} ${(N.y+uy*t+ny*w).toFixed(1)}`;
-  const to=q('torso');
-  if(to)to.setAttribute('d',
-    `M${T(0,5.4)}Q${T(.42,6)} ${T(1,4)}L${T(1,-4)}Q${T(.42,-6)} ${T(0,-5.4)}Z`);
-
-  line('nk',N,HD);
-  line('bau',N,p[3]); line('bal',p[3],p[4]);          // far arm
-  line('blu',H,p[5]); line('bll',p[5],p[6]);          // far leg
-  line('fau',N,p[7]); line('fal',p[7],p[8]);          // near arm
-  line('flu',H,p[9]); line('fll',p[9],p[10]);         // near leg
-
-  /* Hands lie along the forearm, feet along the facing direction — a foot
-     pointing down the shin is the thing that reads as a stick. */
-  const cap=(k,at,ang,rx,ry)=>{const e=qc(k);if(!e)return;
-    e.setAttribute('cx',at.x);e.setAttribute('cy',at.y);
-    e.setAttribute('rx',rx);e.setAttribute('ry',ry);
-    e.setAttribute('transform',`rotate(${ang.toFixed(1)} ${at.x} ${at.y})`)};
-  const ang=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x)*DEG;
-  cap('fh',p[8],ang(p[7],p[8]),3.1,2.4); cap('bh',p[4],ang(p[3],p[4]),2.6,2);
-  cap('ff',p[10],fang,4.2,2.4);          cap('bf',p[6],fang,3.5,2.1);
-
-  /* A plain circle. The nub that used to mark facing read as a lump at 52px, so
-     facing now only steers the feet. */
-  const hd=q('head');
-  if(hd){hd.setAttribute('cx',HD.x);hd.setAttribute('cy',HD.y)}
-
+  svg.querySelectorAll('polyline').forEach(pl=>pl.setAttribute('points',
+    pl.dataset.l.split(',').map(i=>p[+i].x+','+p[+i].y).join(' ')));
+  const h=svg.querySelector('[data-head]');h.setAttribute('cx',p[0].x);h.setAttribute('cy',p[0].y);
   if(!prop)return;
   const bH=p[4],fH=p[8];
   const set=(s,html)=>{const g=svg.querySelector(s);if(g)g.innerHTML=html};
