@@ -11,6 +11,15 @@
         ],
         "createdAt": "2026-09-04T14:47:20.392Z",
         "reason": "Pre-existing committed art direction: Solo Leveling / RPG aura aesthetic. Colored glow on the blade, level badge and aura canvas IS the product's visual identity per CLAUDE.md; MISSION_customization.md extends it across six classes."
+      },
+      {
+        "rule": "marquee",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-09-04T16:17:24.317Z",
+        "reason": "False positive: the only continuous animation is .sigil, a decorative 42s rotating summoning ring behind the weapon. It carries no content, hides nothing, and is disabled under prefers-reduced-motion. Pre-existing art direction from commit a3a19ff."
       }
     ]
   }
