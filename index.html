@@ -397,6 +397,8 @@ html,body{margin:0;background:var(--void)}
 .mp{fill:var(--magenta)}
 .muslist{margin:0 0 14px;font-size:12px;color:var(--ash);line-height:1.7}
 .muslist b{color:var(--bone);font-weight:600}
+.doseup{font-size:9px;letter-spacing:.14em;color:var(--magenta);border:1px solid var(--line);
+  padding:1px 5px;margin-left:6px;text-transform:uppercase;font-family:var(--body)}
 .mustag{font-size:11px;color:var(--magenta);letter-spacing:.06em}
 .wmus{margin:3px 0 0;font-size:11px;color:var(--magenta);letter-spacing:.05em}
 .cardmus{margin:3px 0 0;font-size:10.5px;color:var(--magenta);letter-spacing:.04em;line-height:1.3}
@@ -433,15 +435,15 @@ const BENCH_L= P(24,58, 34,58, 62,58, 34,48, 34,36, 70,60, 84,64, 36,50, 36,38, 
 /* eq: [] = nothing needed. Codes: db kb bb bar bench band machine */
 const EX=[
 /* ================= BODYWEIGHT ================= */
-{id:'wallpush',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts']},p:'wall',nf:1,n:'Wall Push-Up',r:'E',c:'push',st:'STR',d:'3 × 10',eq:[],
+{id:'wallpush',next:'incpush',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts']},p:'wall',nf:1,n:'Wall Push-Up',r:'E',c:'push',st:'STR',d:'3 × 10',eq:[],
  cues:['Stand an arm-length from a wall, hands at chest height.','Lower your chest toward the wall over 3 slow seconds.','Push back until your arms are straight, body in one line.','Too easy? Walk your feet further back.'],
  f:[P(60,22,60,32,57,60,70,34,84,36,54,76,51,92,71,35,84,38,55,76,52,92),
     P(68,22,68,32,61,60,74,40,84,36,57,76,51,92,75,41,84,38,58,76,52,92)]},
-{id:'incpush',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},p:'ledge',nf:1,n:'Incline Push-Up',r:'E',c:'push',st:'STR',d:'3 × 8',eq:[],
+{id:'incpush',next:'kneepush',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},p:'ledge',nf:1,n:'Incline Push-Up',r:'E',c:'push',st:'STR',d:'3 × 8',eq:[],
  cues:['Hands on a bed, counter, or couch arm.','Lower until your chest is near the surface.','Squeeze your glutes so the hips don\'t sag.','Use a lower surface as you get stronger.'],
  f:[P(62,44,58,49,42,68,66,52,76,58,32,80,20,92,67,53,77,59,33,80,21,92),
     P(68,52,64,56,45,72,68,60,76,58,34,82,20,92,69,61,77,59,35,82,21,92)]},
-{id:'chairsq',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},p:'chair',nf:1,n:'Chair Squat',r:'E',c:'legs',st:'STR',d:'3 × 10',eq:[],
+{id:'chairsq',next:'squat',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},p:'chair',nf:1,n:'Chair Squat',r:'E',c:'legs',st:'STR',d:'3 × 10',eq:[],
  cues:['Stand in front of a chair, feet shoulder width.','Sit back and touch the seat — don\'t collapse into it.','Drive through your heels to stand tall.','The best beginner leg move there is.'],
  f:[P(50,16,50,28,50,58,41,42,40,58,45,76,45,90,59,42,60,58,55,76,55,90),
     P(48,28,48,40,48,66,38,52,34,64,40,76,43,90,58,52,62,64,58,76,57,90)]},
@@ -449,20 +451,20 @@ const EX=[
  cues:['Back flat on a wall, slide down until your knees bend.','Start shallow. Shins as vertical as you can manage.','Breathe. Do not hold your breath.','Add 5 seconds a week.'],
  f:[P(84,30,84,40,84,64,78,50,70,62,56,64,56,90,79,51,71,63,55,64,55,90),
     P(84,32,84,42,84,66,78,52,70,64,56,66,56,90,79,53,71,65,55,66,55,90)]},
-{id:'kneeplank',strain:['shoulders'],mus:{p:['abs'],s:['front-delts']},n:'Knee Plank',r:'E',c:'core',st:'CORE',d:'3 × 20s hold',eq:[],
+{id:'kneeplank',next:'plank',strain:['shoulders'],mus:{p:['abs'],s:['front-delts']},n:'Knee Plank',r:'E',c:'core',st:'CORE',d:'3 × 20s hold',eq:[],
  cues:['Forearms down, knees down, straight line head to knees.','Pull your belly in, squeeze your glutes.','Low back aching means your hips sagged. Lift them.','Stop when form breaks, not when it burns.'],
  f:[P(22,58,30,61,58,70,30,84,14,86,72,88,88,78,31,85,15,86,73,88,89,78),
     P(22,57,30,60,58,69,30,83,14,86,72,88,88,78,31,84,15,86,73,88,89,78)]},
-{id:'bridge',strain:['knees','lower-back'],mus:{p:['glutes'],s:['hamstrings','lower-back']},n:'Glute Bridge',r:'E',c:'legs',st:'STR',d:'3 × 12',eq:[],
+{id:'bridge',next:'slbridge',strain:['knees','lower-back'],mus:{p:['glutes'],s:['hamstrings','lower-back']},n:'Glute Bridge',r:'E',c:'legs',st:'STR',d:'3 × 12',eq:[],
  cues:['On your back, knees bent, feet flat and close to your butt.','Push through your heels and lift your hips into a ramp.','Squeeze hard at the top for a full second.','Wakes up what sitting all day puts to sleep.'],
  hi:'legs',
  f:[P(18,74,27,74,52,78,32,82,41,86,66,66,62,88,33,81,42,85,68,64,64,88),
     P(18,74,27,74,52,64,32,82,41,86,66,64,62,88,33,81,42,85,68,62,64,88)]},
-{id:'march',strain:['knees'],mus:{p:['quads'],s:['calves','abs']},n:'Standing March',r:'E',c:'cardio',st:'END',d:'3 × 45s',eq:[],
+{id:'march',next:'jack',strain:['knees'],mus:{p:['quads'],s:['calves','abs']},n:'Standing March',r:'E',c:'cardio',st:'END',d:'3 × 45s',eq:[],
  cues:['Stand tall, drive one knee to hip height.','Swing the opposite arm like a fast walk.','Stay light and rhythmic.','Hold a wall if your balance is shaky.'],
  f:[P(50,14,50,26,50,56,38,40,34,52,45,74,45,90,62,40,66,52,58,66,60,80),
     P(50,14,50,26,50,56,38,40,32,48,40,60,36,74,62,40,68,54,58,74,58,90)]},
-{id:'calf',strain:['knees'],mus:{p:['calves'],s:[]},n:'Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:[],
+{id:'calf',next:'db_calf',strain:['knees'],mus:{p:['calves'],s:[]},n:'Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:[],
  cues:['Near a wall for balance, feet hip width.','Rise onto the balls of your feet as high as possible.','Lower over 3 seconds — that\'s where the work is.','Do them while brushing your teeth. Free reps.'],
  hi:'legs',
  f:[P(50,16,50,28,50,58,40,44,38,60,45,76,45,90,60,44,62,60,55,76,55,90),
@@ -475,11 +477,11 @@ const EX=[
  cues:['On your back, arms up, knees over hips.','Lower one arm and the opposite leg toward the floor.','Keep your lower back pressed flat the whole time.','Stop the moment your back arches.'],
  f:[P(20,74,29,74,56,76,32,64,34,52,58,62,72,60,33,63,35,51,60,62,74,60),
     P(20,74,29,74,56,76,24,68,13,66,58,62,72,60,33,63,35,51,70,72,86,76)]},
-{id:'kneepush',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Knee Push-Up',r:'D',c:'push',st:'STR',d:'3 × 8',eq:[],
+{id:'kneepush',next:'pushup',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Knee Push-Up',r:'D',c:'push',st:'STR',d:'3 × 8',eq:[],
  cues:['Knees down, hands slightly wider than shoulders.','Straight line head to knees — no piking the hips.','Elbows travel back around 45°, not flared straight out.','The bridge between incline and full push-ups.'],
  f:[P(22,62,30,65,56,74,28,76,26,90,70,90,86,80,29,77,27,90,71,90,87,80),
     P(20,74,28,76,56,80,34,84,26,90,70,90,86,82,35,85,27,90,71,90,87,82)]},
-{id:'squat',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','abs']},n:'Bodyweight Squat',r:'D',c:'legs',st:'STR',d:'3 × 12',eq:[],
+{id:'squat',next:'split',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','abs']},n:'Bodyweight Squat',r:'D',c:'legs',st:'STR',d:'3 × 12',eq:[],
  cues:['Feet shoulder width, toes turned out slightly.','Sit down and back, chest proud, knees over toes.','Go as deep as you can without the low back rounding.','Arms straight out front work as a counterweight.'],
  f:[P(50,16,50,28,50,58,41,42,39,58,45,76,45,90,59,42,61,58,55,76,55,90),
     P(50,26,50,38,50,66,38,44,32,38,38,74,42,90,62,44,68,38,62,74,58,90)]},
@@ -487,7 +489,7 @@ const EX=[
  cues:['Step backward — kinder to the knees than stepping forward.','Drop the back knee toward the floor, front shin vertical.','Push through the front heel to stand.','Hold a wall until balance catches up.'],
  f:[P(50,16,50,28,50,58,41,42,40,58,46,76,46,90,59,42,60,58,54,76,54,90),
     P(50,24,50,36,50,62,40,48,38,62,34,84,24,90,60,48,62,62,66,72,66,90)]},
-{id:'plank',strain:['shoulders'],mus:{p:['abs'],s:['front-delts','glutes']},n:'Plank',r:'D',c:'core',st:'CORE',d:'3 × 30s hold',eq:[],
+{id:'plank',next:'sideplank',strain:['shoulders'],mus:{p:['abs'],s:['front-delts','glutes']},n:'Plank',r:'D',c:'core',st:'CORE',d:'3 × 30s hold',eq:[],
  cues:['Forearms and toes, body one hard straight line.','Brace your abs like you\'re about to take a punch.','Look at the floor to keep your neck neutral.','30 solid seconds beats 90 sloppy ones.'],
  f:[P(18,62,26,64,54,70,26,84,10,86,74,74,92,82,27,85,11,86,75,74,93,82),
     P(18,61,26,63,54,69,26,83,10,86,74,73,92,81,27,84,11,86,75,73,93,81)]},
@@ -495,7 +497,7 @@ const EX=[
  cues:['A stair, a bench, or a low sturdy box.','Plant the whole foot and drive up through that heel.','Lower yourself slowly instead of dropping.','Stairs exist everywhere. No excuse.'],
  f:[P(44,18,44,30,44,58,36,42,34,56,40,74,38,90,52,42,54,56,64,66,68,72),
     P(56,8,56,20,58,48,48,32,46,46,54,62,50,78,64,32,66,46,68,58,70,72)]},
-{id:'hinge',strain:['lower-back'],mus:{p:['hamstrings','glutes'],s:['lower-back']},n:'Hip Hinge',r:'D',c:'pull',st:'STR',d:'3 × 10',eq:[],
+{id:'hinge',next:'db_rdl',strain:['lower-back'],mus:{p:['hamstrings','glutes'],s:['lower-back']},n:'Hip Hinge',r:'D',c:'pull',st:'STR',d:'3 × 10',eq:[],
  cues:['Soft knees. Push your hips back like closing a car door with your butt.','Back flat, chest pointing down, not curled over.','Hamstrings should feel it, not your lower back.','Teaches you how to pick things up without wrecking yourself.'],
  f:[P(46,16,46,28,46,58,38,42,37,58,44,76,44,90,54,42,55,58,50,76,50,90),
     P(26,38,34,40,58,52,34,54,32,68,56,70,54,90,35,55,33,69,60,70,58,90)]},
@@ -508,15 +510,15 @@ const EX=[
  f:[P(22,40,30,43,58,50,28,54,26,70,70,56,84,70,30,55,27,70,52,58,44,62),
     P(22,40,30,43,58,50,28,54,26,70,70,56,84,70,30,55,27,70,68,58,82,72),
     P(22,40,30,43,58,50,28,54,26,70,52,56,44,60,30,55,27,70,70,58,84,70)]},
-{id:'pushup',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Full Push-Up',r:'C',c:'push',st:'STR',d:'4 × 6',eq:[],
+{id:'pushup',next:'diamond',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Full Push-Up',r:'C',c:'push',st:'STR',d:'4 × 6',eq:[],
  cues:['Hands under shoulders, body rigid head to heels.','Lower until your chest is a fist off the floor.','Push the floor away — whole body moves as one plank.','The rep you\'ll measure yourself by for years.'],
  f:[P(16,56,24,59,54,64,24,70,22,84,74,68,92,74,25,71,23,84,75,68,93,74),
     P(14,70,22,72,54,74,32,80,22,84,74,76,92,80,33,81,23,84,75,76,93,80)]},
-{id:'split',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},n:'Split Squat',r:'C',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
+{id:'split',next:'db_bulg',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},n:'Split Squat',r:'C',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['One foot forward, one back, split stance the whole set.','Drop straight down, back knee toward the floor.','Front heel stays glued down.','Harder than it looks. Respect it.'],
  f:[P(50,18,50,30,50,58,41,44,40,58,34,74,26,88,59,44,60,58,66,72,70,90),
     P(50,30,50,42,50,68,41,56,40,70,34,84,26,90,59,56,60,70,64,78,70,90)]},
-{id:'sideplank',strain:['shoulders'],mus:{p:['obliques'],s:['abs','side-delts','glutes']},n:'Side Plank',r:'C',c:'core',st:'CORE',d:'3 × 30s each side',eq:[],
+{id:'sideplank',next:'hollow',strain:['shoulders'],mus:{p:['obliques'],s:['abs','side-delts','glutes']},n:'Side Plank',r:'C',c:'core',st:'CORE',d:'3 × 30s each side',eq:[],
  cues:['Elbow under shoulder, legs straight and stacked.','Drive the hips up and hold the line.','Don\'t let the top shoulder roll forward.','Struggling? Drop the bottom knee, keep the clock going.'],
  f:[P(18,42,26,48,56,62,22,60,18,74,76,72,92,82,28,38,30,26,78,72,94,82),
     P(18,41,26,47,56,61,22,59,18,74,76,71,92,82,28,37,30,25,78,71,94,82)]},
@@ -524,11 +526,11 @@ const EX=[
  cues:['On your back, press your low back flat into the floor.','Lift shoulders and legs a few inches up.','Back lifts off? Legs go higher, or bend the knees.','Gymnasts build their entire core on this.'],
  f:[P(22,60,30,63,56,72,22,54,12,48,68,66,84,56,24,55,14,49,70,66,86,56),
     P(22,62,30,65,56,73,22,56,12,50,68,68,84,58,24,57,14,51,70,68,86,58)]},
-{id:'jack',strain:['knees','shoulders'],mus:{p:['calves'],s:['side-delts','quads']},n:'Jumping Jack',r:'C',c:'cardio',st:'AGI',d:'4 × 40s',eq:[],
+{id:'jack',next:'burpee_s',strain:['knees','shoulders'],mus:{p:['calves'],s:['side-delts','quads']},n:'Jumping Jack',r:'C',c:'cardio',st:'AGI',d:'4 × 40s',eq:[],
  cues:['Arms and legs out, then back in.','Bad knees? Step one foot out at a time instead.','Land soft, toes then heel.','Best 40-second heart-rate spike in the game.'],
  f:[P(50,14,50,26,50,56,46,40,44,56,47,74,47,90,54,40,56,56,53,74,53,90),
     P(50,12,50,24,50,54,34,32,24,18,38,72,30,90,66,32,76,18,62,72,70,90)]},
-{id:'row_table',strain:['shoulders'],mus:{p:['midback','lats'],s:['biceps','rear-delts']},p:'table',nf:1,n:'Table Row',r:'C',c:'pull',st:'STR',d:'3 × 8',eq:[],
+{id:'row_table',next:'trx_row',strain:['shoulders'],mus:{p:['midback','lats'],s:['biceps','rear-delts']},p:'table',nf:1,n:'Table Row',r:'C',c:'pull',st:'STR',d:'3 × 8',eq:[],
  cues:['Lie under a sturdy table, grab the edge, body straight.','Pull your chest to the edge, squeeze the shoulder blades.','Bend the knees to make it easier, straighten to make it harder.','Push-ups alone build a hunchback. Pull something.'],
  f:[P(30,60,38,62,64,68,40,52,44,42,78,70,92,74,41,53,45,43,79,70,93,74),
     P(32,52,40,54,64,62,34,48,44,42,78,64,92,68,35,49,45,43,79,64,93,68)]},
@@ -540,7 +542,7 @@ const EX=[
  cues:['Hands and knees, hover the knees an inch off the floor.','Flat back — you could balance a cup on it.','Breathe normally while your abs scream.','Add small steps once holding is easy.'],
  f:[P(24,52,32,56,62,62,30,70,28,88,70,76,84,86,31,71,29,88,71,76,85,86),
     P(24,51,32,55,62,61,30,69,28,88,70,75,84,86,31,70,29,88,71,75,85,86)]},
-{id:'diamond',strain:['shoulders','wrists'],mus:{p:['triceps','chest'],s:['front-delts']},n:'Diamond Push-Up',r:'B',c:'push',st:'STR',d:'3 × 6',eq:[],
+{id:'diamond',next:'archer',strain:['shoulders','wrists'],mus:{p:['triceps','chest'],s:['front-delts']},n:'Diamond Push-Up',r:'B',c:'push',st:'STR',d:'3 × 6',eq:[],
  cues:['Hands together under your chest, thumbs and fingers making a triangle.','Elbows tucked tight to your ribs.','Lower until your chest touches your hands.','Triceps assassin. Expect the rep count to crater.'],
  f:[P(18,54,26,57,56,62,34,68,38,86,76,66,94,72,35,69,39,86,77,66,95,72),
     P(16,68,24,70,56,70,48,78,38,86,76,74,94,80,49,79,39,86,77,74,95,80)]},
@@ -548,12 +550,12 @@ const EX=[
  cues:['Push-up position, walk the feet in so your hips point at the ceiling.','Lower the top of your head toward the floor between your hands.','This is your overhead press without a barbell.','Feet on a chair makes it brutal.'],
  f:[P(24,54,30,50,62,26,24,64,20,78,76,54,88,76,25,65,21,78,77,54,89,76),
     P(20,70,28,64,62,28,26,74,20,78,76,56,88,78,27,75,21,78,77,56,89,78)]},
-{id:'burpee_s',strain:['knees','shoulders','wrists'],mus:{p:['quads','chest'],s:['abs','front-delts']},n:'Step-Back Burpee',r:'B',c:'cardio',st:'AGI',d:'4 × 8',eq:[],
+{id:'burpee_s',next:'burpee_f',strain:['knees','shoulders','wrists'],mus:{p:['quads','chest'],s:['abs','front-delts']},n:'Step-Back Burpee',r:'B',c:'cardio',st:'AGI',d:'4 × 8',eq:[],
  cues:['Squat down, hands on the floor, step the feet back one at a time.','Step them in, then stand tall.','No jumping needed — stepping keeps joints happy, heart rate high.','Add the jump only when stepping feels easy.'],
  f:[ST,
     P(38,30,42,38,52,60,44,52,46,72,46,70,46,88,46,53,48,72,56,70,50,88),
     PLK_UP]},
-{id:'slbridge',strain:['knees','lower-back'],mus:{p:['glutes'],s:['hamstrings','lower-back']},n:'Single-Leg Glute Bridge',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
+{id:'slbridge',next:'bb_thrust',strain:['knees','lower-back'],mus:{p:['glutes'],s:['hamstrings','lower-back']},n:'Single-Leg Glute Bridge',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['Bridge position, then extend one leg straight out.','Push the planted heel down and lift the hips level.','Don\'t let the free hip drop.','Fixes the strength gap between your left and right side.'],
  f:[P(18,74,27,74,52,78,32,82,41,86,66,66,62,88,33,81,42,85,74,70,90,64),
     P(18,74,27,74,52,64,32,82,41,86,66,64,62,88,33,81,42,85,78,58,94,50)]},
@@ -613,7 +615,7 @@ const EX=[
  cues:['Lie back, arms above your chest with a soft elbow bend.','Open your arms wide like a hug in reverse, then bring them back together.','Go light. This is a stretch move, not an ego move.','Stop when your upper arms are level with your chest.'],
  f:[m(LIE,{6:26,7:52,8:26,9:40,14:28,15:52,16:28,17:40}),
     m(LIE,{6:18,7:56,8:8,9:58,14:20,15:58,16:10,17:60})]},
-{id:'db_rdl',strain:['knees','lower-back','wrists'],mus:{p:['hamstrings','glutes'],s:['lower-back','forearms']},n:'Dumbbell Romanian Deadlift',r:'C',c:'legs',st:'STR',d:'3 × 10',eq:['db'],p:'db',
+{id:'db_rdl',next:'bb_rdl',strain:['knees','lower-back','wrists'],mus:{p:['hamstrings','glutes'],s:['lower-back','forearms']},n:'Dumbbell Romanian Deadlift',r:'C',c:'legs',st:'STR',d:'3 × 10',eq:['db'],p:'db',
  cues:['Dumbbells in front of your thighs, soft knees.','Push your hips straight back, letting the weights slide down your legs.','Stop when you feel the hamstring stretch — back stays flat.','Stand up by squeezing your glutes, not by yanking with your back.'],
  f:[m(ST,{8:44,9:50,16:56,17:50}),
     P(30,34,38,36,60,48,40,48,42,64,60,68,58,88,42,49,44,64,62,68,60,88)]},
@@ -634,7 +636,7 @@ const EX=[
  f:[m(SQ,{6:42,7:44,8:44,9:40,14:58,15:44,16:56,17:40}),
     m(ST,{6:42,7:36,8:44,9:32,14:58,15:36,16:56,17:32}),
     m(ST,{6:42,7:20,8:44,9:6,14:58,15:20,16:56,17:6})]},
-{id:'db_bulg',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},n:'Bulgarian Split Squat',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:['db','bench'],p:'db',
+{id:'db_bulg',next:'pistol',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},n:'Bulgarian Split Squat',r:'B',c:'legs',st:'STR',d:'3 × 8 each leg',eq:['db','bench'],p:'db',
  cues:['Back foot up on a bench, front foot two feet out.','Drop straight down, torso slightly forward.','Front heel stays down the entire rep.','One of the hardest things you can do with two dumbbells.'],
  f:[P(46,16,47,26,50,54,42,39,41,54,66,60,76,64,52,39,53,54,44,72,42,88),
     P(44,26,45,36,50,62,40,48,39,62,68,68,78,66,50,48,51,62,42,76,40,88)]},
@@ -644,12 +646,12 @@ const EX=[
  cues:['Hold the bell upside down by the horns at chest height.','Circle it around your head, staying close.','Ribs stay down, no leaning back.','Best shoulder warm-up before any pressing.'],
  f:[m(ST,{6:46,7:30,8:48,9:30,14:54,15:30,16:52,17:30}),
     m(ST,{6:42,7:22,8:38,9:16,14:58,15:22,16:62,17:16})]},
-{id:'kb_swing',strain:['lower-back','wrists'],mus:{p:['glutes','hamstrings'],s:['lower-back','forearms']},n:'Kettlebell Swing',r:'C',c:'full',st:'END',d:'5 × 15',eq:['kb'],p:'kb2',
+{id:'kb_swing',next:'kb_cp',strain:['lower-back','wrists'],mus:{p:['glutes','hamstrings'],s:['lower-back','forearms']},n:'Kettlebell Swing',r:'C',c:'full',st:'END',d:'5 × 15',eq:['kb'],p:'kb2',
  cues:['This is a hip snap, not a squat and not a front raise.','Hike the bell back between your legs, then snap your hips forward.','The bell floats to chest height on its own. Arms are ropes.','Squeeze your glutes hard at the top and stand fully upright.'],
  f:[P(34,34,40,38,58,50,40,48,42,62,60,66,58,88,42,49,44,62,62,66,60,88),
     P(42,26,46,32,54,48,46,42,48,54,56,66,54,88,48,43,50,54,58,66,56,88),
     m(ST,{6:44,7:36,8:42,9:34,14:56,15:36,16:58,17:34})]},
-{id:'kb_cp',strain:['knees','shoulders','wrists'],mus:{p:['front-delts','quads'],s:['traps','forearms','glutes']},n:'Kettlebell Clean & Press',r:'B',c:'full',st:'STR',d:'4 × 6 each arm',eq:['kb'],p:'kb1',
+{id:'kb_cp',next:'kb_snatch',strain:['knees','shoulders','wrists'],mus:{p:['front-delts','quads'],s:['traps','forearms','glutes']},n:'Kettlebell Clean & Press',r:'B',c:'full',st:'STR',d:'4 × 6 each arm',eq:['kb'],p:'kb1',
  cues:['Swing the bell up and catch it in the rack position at your shoulder.','Catch it soft — it shouldn\'t bang your forearm.','From the rack, press it straight overhead.','Learn the clean before you add the press.'],
  f:[m(ST,{14:58,15:32,16:54,17:34}),m(ST,{14:56,15:20,16:54,17:6})]},
 {id:'kb_tgu',strain:['knees','shoulders'],mus:{p:['abs','obliques'],s:['front-delts','glutes','quads']},n:'Turkish Get-Up',r:'A',c:'full',st:'CORE',d:'3 × 3 each side',eq:['kb'],p:'kb1',
@@ -693,15 +695,15 @@ const EX=[
     m(SQ,{0:48,1:24,2:49,3:34,4:50,5:58,6:42,7:38,8:44,9:38,14:58,15:38,16:56,17:38})]},
 
 /* ================= PULL-UP BAR ================= */
-{id:'hang',strain:['shoulders','wrists'],mus:{p:['forearms'],s:['lats','traps']},n:'Dead Hang',r:'D',c:'pull',st:'END',d:'4 × 25s',eq:['bar'],p:'fixbar',
+{id:'hang',next:'kneeraise',strain:['shoulders','wrists'],mus:{p:['forearms'],s:['lats','traps']},n:'Dead Hang',r:'D',c:'pull',st:'END',d:'4 × 25s',eq:['bar'],p:'fixbar',
  cues:['Just hang from the bar with straight arms.','Relax and let your shoulders decompress.','Builds the grip you\'ll need for everything else.','Accumulate two minutes total. However you split it.'],
  f:[P(50,26,50,34,50,60,47,22,46,10,48,76,48,92,53,22,54,10,52,76,52,92),
     P(50,27,50,35,50,61,47,23,46,10,48,77,48,93,53,23,54,10,52,77,52,93)]},
-{id:'kneeraise',strain:['shoulders','wrists'],mus:{p:['abs'],s:['forearms','lats']},n:'Hanging Knee Raise',r:'C',c:'core',st:'CORE',d:'3 × 10',eq:['bar'],p:'fixbar',
+{id:'kneeraise',next:'chinup',strain:['shoulders','wrists'],mus:{p:['abs'],s:['forearms','lats']},n:'Hanging Knee Raise',r:'C',c:'core',st:'CORE',d:'3 × 10',eq:['bar'],p:'fixbar',
  cues:['Hang from the bar, no swinging.','Pull your knees up toward your chest using your abs.','Lower slowly. If you swing, you\'re using momentum.','Straighten the legs to level it up.'],
  f:[P(50,26,50,34,50,60,47,22,46,10,48,76,48,92,53,22,54,10,52,76,52,92),
     P(50,26,50,34,50,58,47,22,46,10,44,44,36,54,53,22,54,10,56,44,64,54)]},
-{id:'chinup',strain:['shoulders','wrists'],mus:{p:['lats','biceps'],s:['midback','forearms']},n:'Chin-Up / Pull-Up',r:'B',c:'pull',st:'STR',d:'4 × 3-6',eq:['bar'],p:'fixbar',
+{id:'chinup',next:'ttb',strain:['shoulders','wrists'],mus:{p:['lats','biceps'],s:['midback','forearms']},n:'Chin-Up / Pull-Up',r:'B',c:'pull',st:'STR',d:'4 × 3-6',eq:['bar'],p:'fixbar',
  cues:['Can\'t do one? Jump to the top and lower as slowly as possible.','From a dead hang, pull your chest toward the bar.','Shoulder blades pull down before the arms bend.','Five slow negatives a day and one day the real rep shows up.'],
  f:[P(50,26,50,34,50,60,47,22,46,10,48,76,48,92,53,22,54,10,52,76,52,92),
     P(50,16,50,26,50,52,42,20,46,10,46,66,44,82,58,20,54,10,54,66,56,82)]},
@@ -715,7 +717,7 @@ const EX=[
  cues:['Hold a band in front of you at chest height, arms straight.','Pull it apart until it touches your chest, squeezing your shoulder blades.','Slow on the way back. Don\'t let it snap you.','Do these before every push workout. Your shoulders will thank you.'],
  f:[m(ST,{6:44,7:34,8:44,9:36,14:56,15:34,16:56,17:36}),
     m(ST,{6:38,7:34,8:26,9:34,14:62,15:34,16:74,17:34})]},
-{id:'band_row',strain:['shoulders'],sit:1,mus:{p:['midback','lats'],s:['biceps','rear-delts']},n:'Band Row',r:'D',c:'pull',st:'STR',d:'3 × 15',eq:['band'],p:'band',
+{id:'band_row',next:'row_table',strain:['shoulders'],sit:1,mus:{p:['midback','lats'],s:['biceps','rear-delts']},n:'Band Row',r:'D',c:'pull',st:'STR',d:'3 × 15',eq:['band'],p:'band',
  cues:['Anchor the band at chest height — a door, a pole, whatever holds.','Pull the handles to your ribs, elbows driving back.','Squeeze for a second, then let it back out slowly.','Pack a band in your bag. Instant back workout anywhere.'],
  f:[m(ST,{6:44,7:36,8:34,9:36,14:56,15:36,16:66,17:36}),
     m(ST,{6:40,7:36,8:48,9:38,14:60,15:36,16:52,17:38})]},
@@ -832,7 +834,7 @@ const EX=[
  mus:{p:['glutes'],s:['hamstrings']},
  cues:['Ankle strap on, face the stack, hold on for balance.','Drive the leg straight back and squeeze at the end.','Keep the low back still — the movement is at the hip.','One leg at a time finds the side that has been coasting.']},
 /* ================= LEGS: FREE WEIGHTS ================= */
-{id:'db_calf',strain:['knees'],n:'Standing Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:['db'],
+{id:'db_calf',next:'mch_calf',strain:['knees'],n:'Standing Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:['db'],
  mus:{p:['calves'],s:[]},
  cues:['A dumbbell in one hand, the other on a wall for balance.','Rise onto the balls of your feet as high as you can.','Lower over three seconds until you feel the stretch.','Straight legs hit the big calf muscle the seated version misses.']},
 {id:'db_walklunge',strain:['knees','lower-back'],n:'Walking Lunge',r:'D',c:'legs',st:'STR',d:'3 × 10 each leg',eq:['db'],
@@ -933,7 +935,7 @@ const EX=[
 {id:'bb_pendlay',strain:['lower-back','shoulders'],n:'Pendlay Row',r:'B',c:'pull',st:'STR',d:'4 × 6',eq:['bb'],
  mus:{p:['lats','midback'],s:['biceps','rear-delts','lower-back']},
  cues:['Torso parallel to the floor, bar resting on the ground each rep.','Pull explosively to your lower ribs, then set it back down.','Back stays flat and still — only the arms move.','Starting from a dead stop removes all the bounce and cheating.']},
-{id:'bb_rdl',strain:['lower-back','wrists'],n:'Barbell Romanian Deadlift',r:'B',c:'pull',st:'STR',d:'4 × 8',eq:['bb'],
+{id:'bb_rdl',next:'bb_dl',strain:['lower-back','wrists'],n:'Barbell Romanian Deadlift',r:'B',c:'pull',st:'STR',d:'4 × 8',eq:['bb'],
  mus:{p:['hamstrings','glutes'],s:['lower-back','forearms','traps']},
  cues:['Start standing, soft knees, bar against your thighs.','Push the hips back and slide the bar down your legs.','Stop when the hamstrings say stop, not when the bar hits the floor.','Back rounding means you went too far. Shorten the range.']},
 {id:'bb_pause_squat',strain:['knees','lower-back'],n:'Pause Squat',r:'A',c:'legs',st:'STR',d:'4 × 4',eq:['bb'],
@@ -973,10 +975,10 @@ const EX=[
 {id:'kb_carry_rack',strain:['lower-back','shoulders'],n:'Racked Carry',r:'D',c:'full',st:'CORE',d:'3 × 30 m each side',eq:['kb'],
  mus:{p:['abs','obliques'],s:['traps','front-delts','glutes']},
  cues:['One bell racked at the shoulder, walk tall and level.','Do not let the bell pull you sideways or round your upper back.','Breathe normally. If you cannot, the bell is too heavy.','Teaches you to brace while moving, which is most of real life.']},
-{id:'dip_assist',strain:['shoulders','wrists'],n:'Assisted Dip',r:'D',c:'push',st:'STR',d:'3 × 8',eq:['dip'],
+{id:'dip_assist',next:'dip',strain:['shoulders','wrists'],n:'Assisted Dip',r:'D',c:'push',st:'STR',d:'3 × 8',eq:['dip'],
  mus:{p:['chest','triceps'],s:['front-delts']},
  cues:['Band under the knees or a machine taking part of your weight.','Lower until your upper arms are about parallel with the floor.','Stop there. Deeper is where shoulders get angry.','Take the assistance away a little at a time, not all at once.']},
-{id:'dip',strain:['shoulders','wrists'],n:'Parallel Bar Dip',r:'B',c:'push',st:'STR',d:'3 × 8',eq:['dip'],
+{id:'dip',next:'dip_weight',strain:['shoulders','wrists'],n:'Parallel Bar Dip',r:'B',c:'push',st:'STR',d:'3 × 8',eq:['dip'],
  mus:{p:['chest','triceps'],s:['front-delts']},
  cues:['Start at the top with straight arms and shoulders pulled down.','Lower under control until the upper arms are parallel.','Lean forward for chest, stay upright for triceps.','Any pinching at the front of the shoulder means stop the set.']},
 {id:'dip_weight',strain:['shoulders','wrists'],n:'Weighted Dip',r:'A',c:'push',st:'STR',d:'4 × 5',eq:['dip'],
@@ -1170,10 +1172,68 @@ const fresh=()=>({
  owned:[],title:null,blade:null,potions:0,tourSeen:false,
  history:{}, clears:0,
  class:'bladebound', palette:'crimson', weapon:'longsword',
- dayEq:null, limits:[]
+ dayEq:null, limits:[],
+ /* Mission 3. perf: last few logged results per movement. prog: how far a
+    movement's target has stepped up and how many hits toward the next step.
+    outgrown: movements already announced, so we only say it once. */
+ perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null
 });
 let S=fresh();
 const need=l=>40+l*30;
+
+/* A movement's TARGET scales with what you have actually done. Its reward never
+   does — that stays flat so the numbers on a shared card mean the same thing for
+   everyone. `d` stays the base string; this derives what to show today. */
+const PROGCAP=6;                       // steps, so a target roughly doubles at most
+function progStep(id){
+  const p=S.prog[id];
+  const earned=p?Math.min(PROGCAP,p.step||0):0;
+  /* A gentle nudge from level on top, so a returning trainee is not stuck on
+     beginner numbers, but never enough to be scary: +2 steps at most. */
+  return Math.min(PROGCAP,earned+Math.min(2,Math.floor(S.lvl/15)));
+}
+/* Splits '3 × 12 each leg' into its parts. Anything that is not sets-by-number
+   ('20 min', '5 × 3 min') is left exactly as authored. */
+function doseParts(e){
+  const m=(e.d||'').match(/^(\d+) × (\d+)(s)?( .*)?$/);
+  if(!m)return null;
+  return {sets:+m[1],reps:+m[2],time:!!m[3],suffix:m[4]||''};
+}
+function scaledDose(e){
+  const p=doseParts(e); if(!p)return e.d;
+  const st=progStep(e.id);
+  const reps=p.time?p.reps+st*5:p.reps+st*2;   // holds grow in seconds, reps in reps
+  return `${p.sets} × ${reps}${p.time?'s':''}${p.suffix}`;
+}
+/* Target reps for one set, used by the session to judge a logged result. */
+function targetReps(e){const p=doseParts(e);if(!p)return null;
+  const st=progStep(e.id);return p.time?p.reps+st*5:p.reps+st*2}
+const isTimed=e=>{const p=doseParts(e);return !!(p&&p.time)};
+
+/* ---- 3b. record what actually happened, and step the target when it is earned. ---- */
+function recordPerf(e,actual){
+  if(!Number.isFinite(actual)||actual<=0)return;
+  const a=S.perf[e.id]||(S.perf[e.id]=[]);
+  a.push(actual); while(a.length>5)a.shift();      // capped; this never grows
+  const t=targetReps(e); if(t===null)return;
+  const p=S.prog[e.id]||(S.prog[e.id]={step:0,hits:0});
+  if(actual>=t){p.hits=(p.hits||0)+1;
+    if(p.hits>=2&&p.step<PROGCAP){p.step++;p.hits=0;
+      toast('Target up · '+e.n+' is now '+scaledDose(e))}}
+  else p.hits=0;
+}
+/* Outgrowing a movement is a real milestone, so it pays. Announced once. */
+function checkOutgrown(e){
+  if(!e.next||S.outgrown.includes(e.id))return null;
+  const nx=EX.find(x=>x.id===e.next);
+  if(!nx||!unlocked(nx.r)||!hasEq(nx)||!fitsLimits(nx))return null;
+  const p=S.prog[e.id];
+  if(!p||p.step<3)return null;
+  S.outgrown.push(e.id);
+  award(40,0,null);
+  save();
+  return nx;
+}
 const rankOf=l=>l>=40?'S':l>=26?'A':l>=16?'B':l>=9?'C':l>=4?'D':'E';
 const unlocked=r=>S.lvl>=(RANK_LV[r]||1);
 /* Travel mode. Equipment is a profile setting, but "I have nothing today" is a
@@ -1261,6 +1321,8 @@ function heal(){
   if(!Array.isArray(S.eq))S.eq=[];
   if(!Array.isArray(S.questDone))S.questDone=[];
   if(!Array.isArray(S.limits))S.limits=[];
+  if(!Array.isArray(S.outgrown))S.outgrown=[];
+  for(const k of ['perf','prog','avoid'])if(!S[k]||typeof S[k]!=='object')S[k]={};
   if(!S.stats||typeof S.stats!=='object')S.stats=f.stats;
   if(!S.prs||typeof S.prs!=='object')S.prs=f.prs;
   if(!S.history||typeof S.history!=='object')S.history={};
@@ -1496,8 +1558,16 @@ function auraLoop(now){
 /* ---------------- quest ---------------- */
 function seeded(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
   return()=>{h=Math.imul(h^h>>>15,2246822507);h^=h>>>13;return(h>>>0)/4294967296}}
+/* Quietly stepped past for two weeks after someone said a movement hurt. */
+const avoided=e=>{const d=S.avoid[e.id];return !!d&&d>today()};
+/* Already outgrown, and the successor is available — prefer the successor. */
+function supersededy(e){
+  if(!S.outgrown.includes(e.id)||!e.next)return false;
+  const nx=EX.find(x=>x.id===e.next);
+  return !!(nx&&unlocked(nx.r)&&hasEq(nx)&&fitsLimits(nx));
+}
 function pool(){
-  const p=EX.filter(e=>unlocked(e.r)&&hasEq(e)&&fitsLimits(e));
+  const p=EX.filter(e=>unlocked(e.r)&&hasEq(e)&&fitsLimits(e)&&!avoided(e)&&!supersededy(e));
   if(p.length)return p;
   /* Last resort: never hand back an empty quest. Relax equipment before
      relaxing what someone told us to work around. */
@@ -1882,8 +1952,8 @@ function viewQuest(){
     <ul class="work">
       ${q.map((e,i)=>{const dn=done.includes(e.id);return `<li>
         <button class="w ${dn?'done':''}" data-q="${e.id}"
-          aria-label="${esc(e.n)}, ${esc(e.d)}, works ${e.mus.p.map(musName).join(' and ')}. ${dn?'Logged today':'Not yet logged'}">
-        <span class="wmeta"><span class="wtitle">${esc(e.n)}</span><span class="wdose">${esc(e.d)}</span>
+          aria-label="${esc(e.n)}, ${esc(scaledDose(e))}, works ${e.mus.p.map(musName).join(' and ')}. ${dn?'Logged today':'Not yet logged'}">
+        <span class="wmeta"><span class="wtitle">${esc(e.n)}</span><span class="wdose">${esc(scaledDose(e))}</span>
           <span class="wmus">${e.mus.p.map(musName).join(" · ")}</span></span>
         <span class="wmark" aria-hidden="true">${dn?'✦':''}</span></button></li>`}).join('')}
     </ul>
@@ -1926,7 +1996,7 @@ function viewLib(){
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
         ${e.eq.length?`<span class="gearlab">${e.eq.map(x=>EQNAME[x].split(' ')[0]).join('+')}</span>`:''}
-        <h4>${esc(e.n)}</h4><p>${esc(e.d)}</p>
+        <h4>${esc(e.n)}</h4><p>${esc(scaledDose(e))}</p>
         <p class="cardmus">${e.mus.p.map(musName).join(" · ")}</p></button>`).join('')}
     </div>
     ${list.length?'':'<p class="note">Nothing matches those filters. Widen the muscle or rank filter, or try "Everything".</p>'}
@@ -2105,7 +2175,7 @@ function renderSheet(){
     <p class="muslist"><b>Works</b> ${e.mus.p.map(musName).join(', ')}${
       e.mus.s.length?`<br><b>Also</b> ${e.mus.s.map(musName).join(', ')}`:''}</p>
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
-    <div class="dose">Target for now <b>${esc(e.d)}</b></div>
+    <div class="dose">Target for now <b>${esc(scaledDose(e))}</b>${progStep(e.id)?' <span class="doseup">stepped up</span>':''}</div>
     ${lockedRank?`<button class="btn" disabled>Unlocks at level ${RANK_LV[e.r]}</button>`
      :lockedEq?`<button class="btn" disabled>Needs ${esc(kit)}</button>`
      :`<button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
