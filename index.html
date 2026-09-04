@@ -253,6 +253,11 @@ html,body{margin:0;background:var(--void)}
 .clsb.on{border-color:var(--crimson);color:var(--magenta);background:rgba(var(--c1),.08)}
 .clsb small{display:block;font-size:9.5px;color:#6B5561;margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
 .clsb.on small{color:var(--ash)}
+.clsb.lock{border-style:dashed;opacity:.72}
+.clsb.lock small{color:var(--gold);letter-spacing:.04em;display:flex;align-items:center;
+  justify-content:center;gap:4px;text-transform:none;font-size:11px}
+.clsb.lock .coin{width:9px;height:9px}
+.clsb:disabled{opacity:.34;cursor:default}
 .palrow{display:flex;flex-wrap:wrap;gap:8px}
 .palb{width:40px;height:40px;flex:0 0 40px;border:1px solid var(--line);background:#060309;
   padding:0;cursor:pointer;position:relative}
@@ -281,9 +286,12 @@ html,body{margin:0;background:var(--void)}
 
 /* tour */
 .tourblock{position:fixed;inset:0;z-index:99}
-.spot{position:fixed;z-index:100;border:2px solid var(--magenta);pointer-events:none;
+/* Position is a transform so gliding between targets never relayouts. Size is set
+   directly and not transitioned — scaling the box would smear the 2px border. */
+.spot{position:fixed;top:0;left:0;z-index:100;
+  border:2px solid var(--magenta);pointer-events:none;will-change:transform;
   box-shadow:0 0 0 9999px rgba(1,0,2,.88),0 0 26px -2px var(--magenta);
-  transition:top .3s cubic-bezier(.3,.8,.3,1),left .3s cubic-bezier(.3,.8,.3,1),width .3s,height .3s}
+  transition:transform .3s cubic-bezier(.3,.8,.3,1)}
 .tip{position:fixed;z-index:101;width:min(330px,calc(100vw - 28px));background:#0A0509;
   border:1px solid var(--crimson);padding:15px;font-family:var(--body);color:var(--bone);transition:top .3s,left .3s}
 .tip h4{margin:0 0 7px;font-family:var(--display);font-size:17px;letter-spacing:.09em;color:var(--magenta);font-weight:700}
@@ -724,9 +732,15 @@ const PALETTES={
    crimson:'#12A0A6',magenta:'#4FE3DF',core:'#E6FEFD',line:'#06262A',
    deepblade:'#0A5F64',guard:'#0D3B40',grip:'#07262A',pommel:'#0D4F54'}
 };
-/* Free at creation. A class's own default palette is always free on top of these. */
-const FREEPAL=['crimson','ember','frost'];
-const PALPRICE={void:400,verdant:400,radiant:600,ashen:600,abyssal:800};
+/* Every palette is free to everyone, always. Nobody gets locked out of a colour
+   they like — the vault sells weapons instead. */
+const PALFREE=true;
+/* What palettes used to cost, kept only to refund saves that bought one. */
+const PALREFUND={void:400,verdant:400,radiant:600,ashen:600,abyssal:800};
+const BLADEREFUND={bl_ember:400,bl_frost:400,bl_void:700};
+
+/* Weapons carry the cost now. Three free, three bought. */
+const WEAPONPRICE={hammer:400,daggers:500,staff:700};
 
 /* `w` is only the DEFAULT weapon — picking a class sets it, and you can
    override it afterwards. What a class actually owns is its aura, its tier
@@ -852,24 +866,36 @@ function upgradeToV4(o){
   const s=Object.assign(fresh(),o);
   s.class='bladebound';
   s.weapon=CLASSES.bladebound.w;
-  s.palette=BLADEPAL[o.blade]||'crimson';
+  s.palette=BLADEPAL[o.blade]||'crimson';   // their colour is unchanged, and now free
   s.owned=Array.isArray(o.owned)?o.owned.slice():[];
-  for(const id in BLADEPAL){
-    const pid='pal_'+BLADEPAL[id];
-    if(s.owned.includes(id)&&!s.owned.includes(pid))s.owned.push(pid);
-  }
   delete s.theme;
   return s;
+}
+/* Palettes used to cost gold and no longer do. Anyone who bought one — as a v3
+   blade or a v4 palette — gets the price back and the dead entry dropped, so the
+   gold isn't stranded in something that's now free. Runs once: the entry is
+   removed, so a second pass finds nothing. */
+function refundOldCosmetics(s){
+  let back=0;
+  s.owned=(s.owned||[]).filter(id=>{
+    if(BLADEREFUND[id]){back+=BLADEREFUND[id];return false}
+    if(id.indexOf('pal_')===0){back+=PALREFUND[id.slice(4)]||0;return false}
+    return true;
+  });
+  if(back>0){s.gold=(s.gold||0)+back;s.refund=back}
+  return back;
 }
 async function load(){
   try{const r=await DB.get(KEY);if(r&&r.value){S=Object.assign(fresh(),JSON.parse(r.value));
     if(!CLASSES[S.class])S.class='bladebound';
     if(!PALETTES[S.palette])S.palette='crimson';
-    if(!WEAPONS[S.weapon])S.weapon=cls().w;   // heals saves written before weapon was pickable
+    if(!WEAPONS[S.weapon]||!wepOwned(S.weapon))S.weapon=cls().w;
+    if(!wepOwned(S.weapon))S.weapon='longsword';   // heals a save pointing at a locked weapon
+    if(refundOldCosmetics(S))save();
     return}}catch(e){}
   for(const k of [KEY3,KEY2]){            // migrate forward so nobody loses progress
     try{const r=await DB.get(k);
-      if(r&&r.value){S=upgradeToV4(JSON.parse(r.value));save();return}
+      if(r&&r.value){S=upgradeToV4(JSON.parse(r.value));refundOldCosmetics(S);save();return}
     }catch(e){}
   }
 }
@@ -1175,9 +1201,8 @@ function applyLook(id){
 }
 /* A palette is usable if it's one of the free three, your class's own colour,
    or something you bought. Cosmetic only — none of this touches progression. */
-const palFree=id=>FREEPAL.includes(id)||id===cls().pal;
-const palOwned=id=>palFree(id)||S.owned.includes('pal_'+id);
 const palList=()=>Object.keys(PALETTES);
+const wepOwned=id=>!WEAPONPRICE[id]||S.owned.includes('wep_'+id);
 function palSwatch(id,on,attr){
   const p=PALETTES[id];
   return `<button class="palb ${on?'on':''}" ${attr} title="${esc(p.n)}"
@@ -1187,8 +1212,14 @@ function palSwatch(id,on,attr){
    only the data attribute differs, so the markup lives in one place. */
 const clsGrid=(sel,attr)=>`<div class="clsgrid">${CLSKEYS.map(k=>
   `<button class="clsb ${sel===k?'on':''}" data-${attr}="${k}">${CLASSES[k].n}<small>${CLASSES[k].an}</small></button>`).join('')}</div>`;
-const wepGrid=(sel,attr)=>`<div class="clsgrid">${WEPKEYS.map(k=>
-  `<button class="clsb ${sel===k?'on':''}" data-${attr}="${k}">${WEAPONNAME[k]}</button>`).join('')}</div>`;
+/* Locked weapons still show — you can see what you're saving for. In the vault
+   they're buyable in place; during onboarding you have no gold, so they read
+   as locked and nothing more. */
+const wepGrid=(sel,attr,buy)=>`<div class="clsgrid">${WEPKEYS.map(k=>{
+  const own=wepOwned(k),p=WEAPONPRICE[k];
+  return `<button class="clsb ${sel===k&&own?'on':''} ${own?'':'lock'}"
+    data-${attr}="${k}" ${own||buy?'':'disabled'}>${WEAPONNAME[k]}${
+    own?'':`<small><span class="coin"></span>${p}</small>`}</button>`}).join('')}</div>`;
 
 function titleName(){
   const t=ALLTITLES[S.title];
@@ -1211,9 +1242,9 @@ function viewOB(){
     `<input class="namein" id="obname" maxlength="18" placeholder="Enter your name" value="${esc(ob.name)}" autocomplete="off">`,
     'Begin',ob.name.trim().length>0);
   if(s===1){
-    const c=CLASSES[ob.class],free=palList().filter(p=>FREEPAL.includes(p)||p===c.pal);
+    const c=CLASSES[ob.class];
     return wrap(2,'Choose your class.',
-      'Cosmetic only. Class changes your weapon, your aura and what your tiers are called. Every class earns XP, gold and ranks at exactly the same rate — nobody gets an easier curve.',
+      'Cosmetic only. Class sets your aura and what your tiers are called. Every class earns XP, gold and ranks at exactly the same rate — nobody gets an easier curve.',
       `<div class="wprev">${bladeSVG(ob.weapon)}</div>
        <p class="picklab">Class</p>
        ${clsGrid(ob.class,'obcls')}
@@ -1221,8 +1252,8 @@ function viewOB(){
        <p class="picklab" style="margin-top:20px">Weapon</p>
        ${wepGrid(ob.weapon,'obwep')}
        <p class="picklab" style="margin-top:20px">Palette</p>
-       <div class="palrow">${free.map(p=>palSwatch(p,ob.palette===p,`data-obpal="${p}"`)).join('')}</div>
-       <p class="clsline"><b>${esc(PALETTES[ob.palette].n)}.</b> ${esc(PALETTES[ob.palette].d)} More unlock in the vault.</p>`,
+       <div class="palrow">${palList().map(p=>palSwatch(p,ob.palette===p,`data-obpal="${p}"`)).join('')}</div>
+       <p class="clsline"><b>${esc(PALETTES[ob.palette].n)}.</b> ${esc(PALETTES[ob.palette].d)} All eight are yours from the start.</p>`,
       'Continue',true);
   }
   if(s===2)return wrap(3,'How much have you trained?',
@@ -1513,7 +1544,7 @@ function heatmap(){
     <div class="heatkey"><span>10 weeks ago</span><span>today</span></div>`;
 }
 /* The vault shows your class's titles plus anything you already own from a class
-   you used to be. Palettes you haven't unlocked show up as buyable. */
+   you used to be. Weapons are bought in the Appearance section, not here. */
 function shopItems(){
   const out=[];
   const mine=TITLES[S.class]||TITLES.bladebound;
@@ -1521,24 +1552,25 @@ function shopItems(){
   for(const k in TITLES)if(k!==S.class)for(const t of TITLES[k])
     if(S.owned.includes(t.id))out.push(Object.assign({k:'title',old:CLASSES[k].n},t));
   out.push(POTION);
-  for(const id of palList())if(!palOwned(id))
-    out.push({id:'pal_'+id,k:'pal',pal:id,n:PALETTES[id].n+' palette',p:PALPRICE[id],ico:'◆',d:PALETTES[id].d});
   return out;
 }
 function viewVault(){
-  const owned=palList().filter(palOwned);
+  const locked=WEPKEYS.filter(k=>!wepOwned(k));
   return `<section class="block top">
-    <div class="blockhead"><h2>Appearance</h2></div>
+    <div class="blockhead"><h2>Appearance</h2><span class="tally"><span class="coin"></span> ${S.gold.toLocaleString()}</span></div>
     <div class="wprev">${bladeSVG()}</div>
     <p class="picklab">Class</p>
     ${clsGrid(S.class,'setcls')}
     <p class="clsline"><b>${esc(cls().n)}.</b> ${esc(cls().d)} Aura tiers run ${esc(cls().tiers[0])} to ${esc(cls().tiers[4])}.</p>
     <p class="picklab" style="margin-top:20px">Weapon</p>
-    ${wepGrid(S.weapon,'setwep')}
+    ${wepGrid(S.weapon,'setwep',1)}
+    <p class="clsline"><b>${esc(WEAPONNAME[S.weapon])}.</b> ${locked.length
+      ? 'Tap a locked weapon to buy it. Gold comes from clearing quests — there is no other way to get it.'
+      : 'Every weapon unlocked.'}</p>
     <p class="picklab" style="margin-top:20px">Palette</p>
-    <div class="palrow">${owned.map(p=>palSwatch(p,S.palette===p,`data-setpal="${p}"`)).join('')}</div>
-    <p class="clsline"><b>${esc(pal().n)}.</b> ${esc(pal().d)}</p>
-    <p class="note">Switching class or palette changes nothing but the look. Your level, gold, streak and records stay exactly where they are.</p>
+    <div class="palrow">${palList().map(p=>palSwatch(p,S.palette===p,`data-setpal="${p}"`)).join('')}</div>
+    <p class="clsline"><b>${esc(pal().n)}.</b> ${esc(pal().d)} All eight are free.</p>
+    <p class="note">Switching class, weapon or palette changes nothing but the look. Your level, gold, streak and records stay exactly where they are.</p>
   </section>
   <section class="block">
     <div class="blockhead"><h2>The Vault</h2><span class="tally"><span class="coin"></span> ${S.gold.toLocaleString()}</span></div>
@@ -1785,7 +1817,7 @@ function placeTour(){
   if(!el){spot.style.opacity=0;return}
   spot.style.opacity=1;
   const r=el.getBoundingClientRect(),pad=7;
-  spot.style.top=(r.top-pad)+'px';spot.style.left=(r.left-pad)+'px';
+  spot.style.transform=`translate3d(${r.left-pad}px,${r.top-pad}px,0)`;
   spot.style.width=(r.width+pad*2)+'px';spot.style.height=(r.height+pad*2)+'px';
   const th=tip.offsetHeight||150,tw=tip.offsetWidth||320;
   let top=r.bottom+16;
@@ -1812,22 +1844,28 @@ document.addEventListener('click',ev=>{
 
   const oc=t.closest('[data-obcls]');
   if(oc){ob.class=oc.dataset.obcls;                 // class sets the weapon/palette defaults
-    ob.weapon=CLASSES[ob.class].w;
-    if(!FREEPAL.includes(ob.palette))ob.palette=CLASSES[ob.class].pal;
+    const dw=CLASSES[ob.class].w;
+    ob.weapon=WEAPONPRICE[dw]?'longsword':dw;       // you can't start with a weapon you'd have to buy
+    ob.palette=CLASSES[ob.class].pal;
     render();return}
   const ow=t.closest('[data-obwep]');
-  if(ow){ob.weapon=ow.dataset.obwep;render();return}
+  if(ow){if(!WEAPONPRICE[ow.dataset.obwep]){ob.weapon=ow.dataset.obwep;render()}return}
   const op=t.closest('[data-obpal]');
   if(op){ob.palette=op.dataset.obpal;render();return}
   const sc=t.closest('[data-setcls]');
   if(sc){S.class=sc.dataset.setcls;                 // cosmetic swap: progression untouched
-    S.weapon=cls().w;
-    if(!palOwned(S.palette))S.palette=cls().pal;
+    if(wepOwned(cls().w))S.weapon=cls().w;
+    S.palette=cls().pal;
     save();render();return}
   const sw=t.closest('[data-setwep]');
-  if(sw){S.weapon=sw.dataset.setwep;save();render();return}
+  if(sw){const k=sw.dataset.setwep;
+    if(wepOwned(k)){S.weapon=k;save();render();return}
+    const p=WEAPONPRICE[k];
+    if(S.gold<p){toast('Not enough gold · '+WEAPONNAME[k]+' costs '+p);return}
+    S.gold-=p;S.owned.push('wep_'+k);S.weapon=k;    // buy and equip in one tap
+    toast(WEAPONNAME[k]+' acquired');save();render();return}
   const sp=t.closest('[data-setpal]');
-  if(sp){if(palOwned(sp.dataset.setpal)){S.palette=sp.dataset.setpal;save();render()}return}
+  if(sp){S.palette=sp.dataset.setpal;save();render();return}
 
   const o=t.closest('[data-ob]');
   if(o){const [k,v]=o.dataset.ob.split(':');
@@ -1906,6 +1944,8 @@ document.addEventListener('click',ev=>{
     if(n>gapAllowed()){if(S.potions>0)S.potions--;else S.streak=0;save()}
   }
   render();
+  if(S.refund){const g=S.refund;delete S.refund;save();
+    setTimeout(()=>toast('Palettes are free now · '+g+' gold refunded'),700)}
   if(S.setup&&!S.tourSeen)setTimeout(startTour,400);
 })();
 
