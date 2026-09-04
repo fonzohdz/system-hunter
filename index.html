@@ -1015,12 +1015,12 @@ function figSVG(prop,pprop){
     <g class="back">
       ${seg('bau',3)}${seg('bal',2.1)}${seg('blu',3.6)}${seg('bll',2.6)}
       ${cap('bh')}${cap('bf')}</g>
-    <path data-torso fill="url(#mn${id})"/>
+    <path data-torso fill="url(#mn${id})" ${edge}/>
     <g class="figout">${halo('nk')}${halo('fau')}${halo('fal')}${halo('flu')}${halo('fll')}</g>
     <g class="front" stroke="url(#mn${id})">
       ${near('nk')}${near('fau')}${near('fal')}${near('flu')}${near('fll')}</g>
     <g class="front" fill="url(#mn${id})" ${edge}>${cap('fh')}${cap('ff')}</g>
-    <circle data-head r="5.4" fill="url(#mn${id})" ${edge}/>
+    <circle data-head r="5.2" fill="url(#mn${id})" ${edge}/>
     <g class="eq">${dyn}</g></svg>`;
 }
 const DEG=57.2957795;
@@ -1511,22 +1511,24 @@ const WEAPONS={
   <circle cx="60" cy="284" r="9" fill="var(--pommel)"/>
   <circle cx="60" cy="284" r="4" fill="var(--magenta)"/>`,
 
- /* single curved edge, disc tsuba, wrapped tsuka */
+ /* Single curved edge, diamond tsuba, wrapped tsuka. The blade outline is a real
+    arc: a cubic centreline with a vertical tangent at the machi — so the tsuka
+    stands upright and every bit of the curve lives in the blade — offset either
+    side and tapered to the kissaki. Edge on the convex side, spine on the
+    concave, which is the difference between a katana and a glowing plank. */
  katana:`
-  <path d="M84 14 C79 72 72 142 68 202 L53 202 C57 142 65 72 74 16 Z" fill="url(#edgeX)"/>
-  <path d="M56 198 C60 140 68 70 77 20" fill="none" stroke="var(--core)"
-        stroke-width="1.6" opacity=".45" stroke-dasharray="7 5"/>
-  <path d="M84 14 L74 16 L78 30 Z" fill="var(--core)" opacity=".9"/>
-  <rect x="51" y="200" width="19" height="11" rx="1.5" fill="var(--pommel)"/>
-  <ellipse cx="60" cy="216" rx="27" ry="7" fill="var(--guard)"/>
-  <ellipse cx="60" cy="214" rx="27" ry="7" fill="var(--pommel)"/>
-  <ellipse cx="60" cy="214" rx="8" ry="3" fill="var(--grip)"/>
-  <rect x="52" y="221" width="16" height="58" rx="2" fill="var(--grip)"/>
-  <g stroke="var(--guard)" stroke-width="3.4" stroke-linecap="round">
-    <path d="M52 231 L68 239"/><path d="M68 231 L52 239"/>
-    <path d="M52 249 L68 257"/><path d="M68 249 L52 257"/>
-    <path d="M52 267 L68 275"/><path d="M68 267 L52 275"/></g>
-  <rect x="50" y="277" width="20" height="9" rx="2" fill="var(--pommel)"/>`,
+  <path d="M60.4 204L59.4 181.1L59.7 157.7L60.9 134.1L62.9 110.9L65.7 88.7L69.2 67.9L73.3 49L78.2 32.4L83.6 18.8L80.4 17.2L73.8 30.8L67.8 47.4L62.4 66.4L57.7 87.3L53.6 109.7L50.2 133L47.4 156.8L45.4 180.7L43.6 204Z" fill="url(#edgeX)"/>
+  <path d="M55.7 204L56.4 181L57.1 157.5L58 133.8L59.8 110.5L62.9 88.2L67.1 67.4L72 48.6L77.3 32.1L82.8 18.4"
+        fill="none" stroke="var(--core)" stroke-width="1.4" opacity=".4"/>
+  <path d="M83.6 18.8L80.4 17.2L73.8 30.8Z" fill="var(--core)" opacity=".85"/>
+  <rect x="43.4" y="198" width="17.2" height="13" rx="1" fill="var(--pommel)"/>
+  <path d="M52 208L68 220L52 232L36 220Z" fill="var(--guard)"/>
+  <path d="M52 213L62 220L52 227L42 220Z" fill="var(--pommel)"/>
+  <rect x="44" y="229" width="16" height="56" rx="2" fill="var(--guard)"/>
+  <g fill="var(--grip)">
+    <path d="M52 230L58.5 236L52 242L45.5 236Z"/><path d="M52 244L58.5 250L52 256L45.5 250Z"/>
+    <path d="M52 258L58.5 264L52 270L45.5 264Z"/><path d="M52 272L58.5 278L52 284L45.5 278Z"/></g>
+  <rect x="43" y="283" width="18" height="8" rx="2" fill="var(--pommel)"/>`,
 
  /* blunt mass on a long haft — the heaviest silhouette of the six */
  hammer:`
