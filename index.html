@@ -3,204 +3,356 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
-<title>System Hunter — RPG Workout</title>
-<meta name="description" content="A gamer's workout app. Daily quests, levels, ranks, and 73 movements from wall push-ups to power cleans.">
-<meta name="theme-color" content="#0A0818">
+<title>Ascendant — RPG Workout</title>
+<meta name="description" content="An RPG workout app. Daily quests, ranks, levels, and 73 skills from wall push-ups to power cleans.">
+<meta name="theme-color" content="#020103">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="System Hunter">
+<meta name="apple-mobile-web-app-title" content="Ascendant">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta property="og:title" content="System Hunter">
-<meta property="og:description" content="Arise. Daily quests, levels, and 73 workouts from beginner to elite.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230A0818'/><text x='50' y='72' font-size='68' font-family='Arial' font-weight='bold' fill='%235BE9E4' text-anchor='middle'>E</text></svg>">
+<meta property="og:title" content="Ascendant">
+<meta property="og:description" content="Clear the daily quest. Keep your aura lit. 73 skills, E-rank to A-rank.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23020103'/><path d='M50 12 L64 34 L64 68 L50 80 L36 68 L36 34 Z' fill='%23FF3D7F'/></svg>">
 <style>
-html{background:#0A0818}
-body{margin:0;padding:0;background:#0A0818;overscroll-behavior-y:none;min-height:100vh;min-height:100dvh}
+:root{
+  --void:#020103; --deep:#070408; --panel:#0C060A; --line:#2A0C1A;
+  --ash:#9E8590; --bone:#F6E9EF;
+  --crimson:#E8114F; --magenta:#FF3D7F; --core:#FFF0F5; --gold:#E8C583;
+  --deepblade:#7A0A2C; --guard:#4A1020; --grip:#2A0A14; --pommel:#5C1226;
+  --display:"Cinzel","Bodoni MT","Times New Roman",serif;
+  --body:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--void)}
+#root{
+  font-family:var(--body);color:var(--bone);max-width:760px;margin:0 auto;min-height:100vh;position:relative;
+  padding-top:calc(8px + env(safe-area-inset-top));
+  padding-right:env(safe-area-inset-right);
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  padding-left:env(safe-area-inset-left);
+  background:
+    radial-gradient(58% 34% at 50% 18%, rgba(232,17,79,.12) 0%, transparent 70%),
+    radial-gradient(110% 50% at 50% 100%, #0A0206 0%, transparent 72%),
+    var(--void);
+}
+#root::after{
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:3;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.boot{padding:90px 20px;text-align:center;color:var(--magenta);letter-spacing:.22em;font-size:12px;font-family:var(--body)}
+
+/* masthead + level row */
+.mast{padding:6px 18px 0}
+.brandrow{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:10px}
+.brand{font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:.3em;text-indent:.3em}
+.matline{font-size:11.5px;color:var(--ash);letter-spacing:.13em;margin-left:auto}
+.lvlrow{display:flex;align-items:center;gap:13px;padding:14px 18px 0}
+.lvlbadge{width:46px;height:52px;flex:0 0 46px;display:grid;place-items:center;position:relative;
+  background:linear-gradient(180deg,var(--magenta),var(--deepblade));
+  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)}
+.lvlbadge::before{content:"";position:absolute;inset:2px;background:linear-gradient(180deg,#0B0409,#030103);
+  clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)}
+.lvlbadge span{position:relative;font-family:var(--display);font-size:22px;font-weight:700;
+  color:var(--magenta);text-shadow:0 0 18px rgba(255,61,127,.8)}
+.lvlmeta{flex:1;min-width:0}
+.lvlline{display:flex;align-items:baseline;gap:10px;margin-bottom:7px}
+.lvlline b{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+.xpnum{margin-left:auto;font-size:11px;color:var(--ash);letter-spacing:.07em}
+.xpbar{height:5px;background:var(--line);overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--deepblade),var(--crimson),var(--magenta));
+  transition:width .6s cubic-bezier(.3,.9,.3,1)}
+.goldchip{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--gold);white-space:nowrap}
+.coin{width:12px;height:12px;border-radius:50%;display:inline-block;
+  background:radial-gradient(circle at 34% 30%,#FFE29A,#C9902F 62%,#7d5416);
+  box-shadow:0 0 11px -2px rgba(232,197,131,.7)}
+
+/* hero */
+.hero{position:relative;padding:18px 18px 22px;overflow:hidden}
+#aura{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sigil{position:absolute;left:50%;top:142px;transform:translate(-50%,-50%);
+  width:280px;height:280px;border-radius:50%;pointer-events:none;opacity:var(--sig,.8);
+  background:conic-gradient(from 0deg, transparent 0 12%, rgba(232,17,79,.22) 13%, transparent 14% 24%,
+    rgba(232,17,79,.22) 25%, transparent 26% 49%, rgba(232,17,79,.22) 50%, transparent 51% 74%,
+    rgba(232,17,79,.22) 75%, transparent 76%);
+  mask:radial-gradient(circle, transparent 44%, #000 46%, #000 49%, transparent 51%);
+  -webkit-mask:radial-gradient(circle, transparent 44%, #000 46%, #000 49%, transparent 51%);
+  animation:spin 42s linear infinite;transition:opacity 1.4s}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.blade{position:relative;height:258px;display:grid;place-items:center;margin-bottom:24px}
+.blade-halo{position:absolute;width:200px;height:200px;border-radius:50%;opacity:var(--glow,1);transition:opacity 1.4s;
+  background:radial-gradient(closest-side, rgba(255,61,127,.5), rgba(232,17,79,.18) 46%, transparent 72%);filter:blur(26px)}
+.blade-svg{position:relative;height:250px;filter:drop-shadow(0 0 24px rgba(232,17,79,.7))}
+.name-etch{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  font-family:var(--display);font-size:12px;letter-spacing:.5em;text-indent:.5em;color:var(--ash)}
+.aurawrap{position:relative;z-index:1}
+.aurascale{display:flex;justify-content:space-between;margin-bottom:7px}
+.as{font-size:9px;letter-spacing:.13em;color:#3A2029;text-transform:uppercase}
+.as.on{color:var(--ash)}
+.as.cur{color:var(--magenta)}
+.aurabar{height:3px;background:var(--line);overflow:hidden}
+.aurabar i{display:block;height:100%;background:linear-gradient(90deg,var(--deepblade),var(--crimson) 55%,var(--core));
+  transition:width 1s cubic-bezier(.3,.9,.3,1)}
+.auranote{font-size:12px;color:var(--ash);margin:9px 0 0}
+.auranote b{color:var(--bone);font-weight:600}
+
+/* stats */
+.props{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+  margin:0 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.prop{background:var(--void);padding:12px 5px 10px;text-align:center}
+.prop span{display:block;font-size:9px;letter-spacing:.15em;color:var(--ash)}
+.prop b{display:block;font-family:var(--display);font-size:24px;font-weight:700;line-height:1.15;margin-top:2px}
+.prop i{display:block;height:2px;background:var(--line);margin-top:8px;position:relative}
+.prop i::after{content:"";position:absolute;left:0;top:0;height:100%;width:var(--v);background:var(--crimson)}
+
+/* blocks */
+.block{padding:28px 18px 0}
+.block.top{padding-top:calc(14px + env(safe-area-inset-top))}
+.blockhead{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.blockhead h2{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin:0}
+.tally{margin-left:auto;font-size:11.5px;color:var(--ash);letter-spacing:.08em;display:flex;align-items:center;gap:6px}
+.note{font-size:12px;color:var(--ash);line-height:1.6;margin:14px 0 0}
+.note.big{font-size:13.5px;margin-top:4px}
+.dgn{font-size:14px;line-height:1.6;margin:6px 0 14px;color:var(--bone)}
+.dgn b{color:var(--magenta);font-weight:600}
+.cleared{margin-top:14px;padding:13px;text-align:center;border:1px solid var(--crimson);
+  color:var(--magenta);font-family:var(--display);letter-spacing:.24em;text-transform:uppercase;
+  font-size:14px;background:rgba(232,17,79,.07)}
+
+/* work list */
+.work{list-style:none;margin:0;padding:0}
+.w{display:flex;align-items:center;gap:15px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.w:first-child{border-top:1px solid var(--line)}
+.wfig{width:52px;height:52px;flex:0 0 52px;background:linear-gradient(180deg,#090409,#020102);border:1px solid var(--line)}
+.wfig svg{width:100%;height:100%;display:block}
+.wmeta{flex:1;min-width:0}
+.wmeta h3{margin:0;font-size:15.5px;font-weight:500}
+.wmeta p{margin:3px 0 0;font-size:11.5px;color:var(--ash);letter-spacing:.09em;text-transform:uppercase}
+.wmark{width:26px;height:26px;flex:0 0 26px;border:1px solid var(--line);display:grid;place-items:center;
+  color:var(--magenta);font-size:13px}
+.w.done{opacity:.4}
+.w.done .wmark{border-color:var(--crimson);background:rgba(232,17,79,.1)}
+.w.done .wmeta h3{text-decoration:line-through;text-decoration-color:var(--ash)}
+
+/* library */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
+.filters button{background:none;border:1px solid var(--line);color:var(--ash);
+  font:inherit;font-size:12px;padding:6px 11px;cursor:pointer}
+.filters button.on{border-color:var(--crimson);color:var(--magenta);background:rgba(232,17,79,.08)}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}
+@media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{border:1px solid var(--line);background:linear-gradient(180deg,#0A0509,#020102);
+  padding:8px;cursor:pointer;position:relative;text-align:left;color:inherit;font:inherit}
+.card.locked{opacity:.36}
+.card svg{width:100%;display:block}
+.card h4{margin:6px 0 0;font-size:13px;font-weight:500;line-height:1.25}
+.card p{margin:3px 0 0;font-size:11px;color:var(--ash)}
+.rk{position:absolute;top:6px;right:6px;font-family:var(--display);font-size:12px;font-weight:700;
+  width:19px;height:19px;display:grid;place-items:center;border:1px solid currentColor}
+.rk-E{color:#7E9E8C}.rk-D{color:#8FA8C4}.rk-C{color:#C77BFF}.rk-B{color:var(--gold)}.rk-A{color:var(--magenta)}
+.gearlab{position:absolute;top:6px;left:6px;font-size:8.5px;letter-spacing:.05em;color:var(--gold);
+  border:1px solid rgba(232,197,131,.4);padding:1px 4px;text-transform:uppercase}
+
+/* records */
+.pr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.pr:first-of-type{border-top:1px solid var(--line)}
+.pr h4{margin:0;font-size:14.5px;font-weight:500}
+.pr p{margin:4px 0 0;font-size:12px;color:var(--ash)}
+.pr p b{font-family:var(--display);font-size:17px;color:var(--gold);font-weight:700}
+.prin-wrap{display:flex;gap:6px}
+.prin{width:64px;background:#060309;border:1px solid var(--line);color:var(--bone);padding:9px;text-align:center;font:inherit}
+.prin:focus{outline:none;border-color:var(--crimson)}
+.heat{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:12px}
+.heat i{aspect-ratio:1;display:block;background:#0C060A;border:1px solid var(--line)}
+.heat i.hm1{background:rgba(232,17,79,.3);border-color:rgba(232,17,79,.4)}
+.heat i.hm2{background:rgba(232,17,79,.6);border-color:rgba(232,17,79,.7)}
+.heat i.hm3{background:var(--magenta);border-color:var(--magenta)}
+.heatkey{display:flex;justify-content:space-between;margin-top:7px;font-size:10.5px;color:var(--ash);letter-spacing:.06em}
+
+/* vault items */
+.item{display:flex;gap:13px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.item:first-of-type{border-top:1px solid var(--line)}
+.ico{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border:1px solid var(--line);
+  font-size:17px;color:var(--magenta)}
+.itxt{flex:1;min-width:0}
+.itxt h4{margin:0;font-size:14px;font-weight:500}
+.itxt p{margin:3px 0 0;font-size:12px;color:var(--ash);line-height:1.45}
+.mini{border:1px solid var(--gold);background:none;color:var(--gold);padding:8px 12px;
+  font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
+.mini:disabled{opacity:.3;cursor:default}
+.mini.on{border-color:var(--crimson);color:var(--magenta)}
+.mini.danger{border-color:#7A2233;color:#C9556B}
+
+/* buttons */
+.btn{width:100%;padding:16px;border:0;cursor:pointer;margin-top:14px;
+  font-family:var(--display);font-size:15px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
+  color:#12030A;background:linear-gradient(180deg,var(--magenta),var(--crimson));
+  box-shadow:0 0 34px -14px var(--crimson)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{filter:grayscale(.7);opacity:.45;cursor:default;box-shadow:none}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--ash);box-shadow:none;
+  font-size:13px;letter-spacing:.16em;margin-top:8px}
+
+/* tabs */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;max-width:760px;margin:0 auto;
+  background:linear-gradient(180deg,rgba(2,1,3,.4),var(--void) 45%);
+  border-top:1px solid var(--line);backdrop-filter:blur(10px);
+  padding:6px calc(6px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(6px + env(safe-area-inset-left))}
+.tabs button{flex:1;background:none;border:0;color:var(--ash);cursor:pointer;position:relative;
+  font-family:var(--display);font-size:13px;letter-spacing:.16em;text-transform:uppercase;padding:11px 2px;font-weight:700}
+.tabs button.on{color:var(--magenta)}
+.tabs button.on::after{content:"";position:absolute;top:0;left:24%;right:24%;height:2px;background:var(--magenta)}
+
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(1,0,2,.86);z-index:60;display:grid;place-items:end center;
+  font-family:var(--body);color:var(--bone)}
+.sheet{width:100%;max-width:760px;max-height:92vh;overflow-y:auto;background:var(--deep);
+  border-top:1px solid var(--crimson);position:relative;animation:rise .22s ease-out;
+  padding:18px calc(16px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+@keyframes rise{from{transform:translateY(26px);opacity:0}to{transform:none;opacity:1}}
+.sheet-rank{position:absolute;top:16px;right:16px;font-family:var(--display);font-size:15px;font-weight:700;
+  width:26px;height:26px;display:grid;place-items:center;border:1px solid currentColor}
+.sheet h2{font-family:var(--display);font-size:25px;margin:0;letter-spacing:.04em;padding-right:40px;font-weight:700}
+.sheet .sub{color:var(--ash);font-size:12px;margin:6px 0 14px;letter-spacing:.05em;text-transform:uppercase}
+.demo{border:1px solid var(--line);margin-bottom:14px;background:linear-gradient(180deg,#0A0509,#020102)}
+.demo svg{width:100%;display:block}
+.cues{list-style:none;padding:0;margin:0 0 4px}
+.cues li{padding:9px 0 9px 20px;position:relative;font-size:14px;line-height:1.5;border-bottom:1px solid var(--line)}
+.cues li::before{content:"";position:absolute;left:3px;top:16px;width:6px;height:6px;background:var(--crimson);transform:rotate(45deg)}
+.dose{margin:14px 0 0;font-size:12px;color:var(--ash);letter-spacing:.1em;text-transform:uppercase}
+.dose b{color:var(--gold);font-family:var(--display);font-size:15px;margin-left:6px;letter-spacing:.04em}
+
+/* onboarding */
+.ob{max-width:520px;margin:0 auto;padding:26px 18px 0}
+.obstep{font-size:10.5px;color:var(--ash);letter-spacing:.28em;margin-bottom:12px;text-transform:uppercase}
+.ob h2{font-family:var(--display);font-size:29px;letter-spacing:.03em;margin:0 0 8px;line-height:1.15;font-weight:700}
+.oblead{color:var(--ash);font-size:13px;line-height:1.65;margin:0 0 20px}
+.opts{display:grid;gap:8px;margin-bottom:8px}
+.opt{text-align:left;background:none;border:1px solid var(--line);color:var(--bone);
+  padding:14px;font:inherit;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.opt.on{border-color:var(--crimson);background:rgba(232,17,79,.08)}
+.opt small{display:block;color:var(--ash);font-size:12px;margin-top:4px;line-height:1.45}
+.opt .tick{color:var(--magenta);font-size:13px;opacity:0}
+.opt.on .tick{opacity:1}
+.namein{width:100%;background:#060309;border:1px solid var(--line);color:var(--bone);
+  padding:15px;font:inherit;font-size:17px;margin-bottom:8px}
+.namein:focus{outline:none;border-color:var(--crimson)}
+
+/* intro */
+.sysmsg{position:fixed;inset:0;z-index:95;background:rgba(1,0,2,.95);display:grid;place-items:center;
+  padding:22px;font-family:var(--body);color:var(--bone)}
+.sysbox{width:100%;max-width:420px;border:1px solid var(--crimson);padding:28px 24px;position:relative;
+  background:linear-gradient(180deg,#0A0409,#020102);box-shadow:0 0 70px -14px var(--crimson)}
+.syshead{font-family:var(--display);letter-spacing:.4em;font-size:12px;color:var(--magenta);
+  text-align:center;margin-bottom:22px;text-transform:uppercase;opacity:0}
+.sysline{font-size:15.5px;line-height:1.65;margin:0 0 13px;color:var(--bone);opacity:0;
+  transform:translateY(6px);animation:lineIn .5s forwards}
+.sysline.big{font-family:var(--display);font-size:26px;letter-spacing:.04em;color:var(--magenta);line-height:1.25;font-weight:700}
+@keyframes lineIn{to{opacity:1;transform:none}}
+.sysbtns{margin-top:20px;opacity:0;animation:lineIn .4s forwards}
+
+/* tour */
+.tourblock{position:fixed;inset:0;z-index:99}
+.spot{position:fixed;z-index:100;border:2px solid var(--magenta);pointer-events:none;
+  box-shadow:0 0 0 9999px rgba(1,0,2,.88),0 0 26px -2px var(--magenta);
+  transition:top .3s cubic-bezier(.3,.8,.3,1),left .3s cubic-bezier(.3,.8,.3,1),width .3s,height .3s}
+.tip{position:fixed;z-index:101;width:min(330px,calc(100vw - 28px));background:#0A0509;
+  border:1px solid var(--crimson);padding:15px;font-family:var(--body);color:var(--bone);transition:top .3s,left .3s}
+.tip h4{margin:0 0 7px;font-family:var(--display);font-size:17px;letter-spacing:.09em;color:var(--magenta);font-weight:700}
+.tip p{margin:0;font-size:13.5px;line-height:1.55}
+.tiprow{display:flex;align-items:center;gap:10px;margin-top:15px}
+.dots2{flex:1;display:flex;gap:4px}
+.dots2 i{width:5px;height:5px;background:var(--line);border-radius:50%}
+.dots2 i.on{background:var(--magenta)}
+.tip button{border:1px solid var(--line);background:none;color:var(--ash);padding:8px 13px;
+  font:inherit;font-size:13px;cursor:pointer}
+.tip button.go{border-color:var(--magenta);color:#12030A;background:var(--magenta);font-weight:600}
+
+/* level up */
+.awaken{position:fixed;inset:0;z-index:90;background:#010001;overflow:hidden;font-family:var(--body)}
+#burst{position:absolute;inset:0;width:100%;height:100%}
+.aflash{position:absolute;inset:0;background:var(--core);opacity:0;pointer-events:none}
+.acore{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(0);
+  width:120px;height:120px;border-radius:50%;filter:blur(2px);
+  background:radial-gradient(circle,#fff 0%, var(--core) 22%, var(--magenta) 48%, rgba(232,17,79,0) 72%)}
+.aring{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(0);
+  width:200px;height:200px;border-radius:50%;border:2px solid var(--magenta);opacity:0}
+.atext{position:absolute;left:0;right:0;top:62%;display:grid;justify-items:center;gap:9px;
+  text-align:center;opacity:0;padding:0 20px;transition:opacity .85s ease-out}
+.asmall{font-size:11px;letter-spacing:.4em;color:var(--ash);text-transform:uppercase}
+.abig{font-family:var(--display);font-size:min(54px,13vw);font-weight:700;letter-spacing:.11em;
+  line-height:1;text-shadow:0 0 40px rgba(255,61,127,.6)}
+.asub{font-size:13.5px;color:var(--ash)}
+.asub b{color:var(--magenta);font-weight:700;letter-spacing:.09em}
+.aloot{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+.aloot-i{border:1px solid var(--line);padding:7px 12px;font-size:12px;letter-spacing:.06em;
+  background:rgba(255,255,255,.02)}
+
+/* shareable card */
+.cardveil{position:fixed;inset:0;background:rgba(1,0,2,.92);z-index:70;overflow-y:auto;
+  font-family:var(--body);color:var(--bone);padding:20px 16px calc(30px + env(safe-area-inset-bottom))}
+.cardwrap{max-width:420px;margin:0 auto}
+.hcard{border:1px solid var(--crimson);padding:22px 20px 18px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(60% 40% at 50% 12%, rgba(232,17,79,.16), transparent 70%),
+    linear-gradient(180deg,#0A0409,#020102);
+  box-shadow:0 0 60px -20px var(--crimson)}
+.hcard::before,.hcard::after{content:"";position:absolute;width:16px;height:16px;border:1px solid var(--crimson)}
+.hcard::before{top:6px;left:6px;border-right:0;border-bottom:0}
+.hcard::after{bottom:6px;right:6px;border-left:0;border-top:0}
+.hc-top{display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid var(--line);padding-bottom:10px}
+.hc-brand{font-family:var(--display);font-size:13px;letter-spacing:.34em;text-indent:.34em;font-weight:700}
+.hc-rank{font-family:var(--display);font-size:15px;font-weight:700;letter-spacing:.14em;color:var(--magenta)}
+.hc-blade{display:grid;place-items:center;padding:14px 0 6px}
+.hc-blade .blade-svg{height:150px;filter:drop-shadow(0 0 22px rgba(232,17,79,.75))}
+.hc-id{text-align:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.hc-id h3{font-family:var(--display);font-size:29px;margin:0;letter-spacing:.16em;text-indent:.16em;font-weight:700}
+.hc-id p{margin:6px 0 0;font-size:12px;color:var(--ash);letter-spacing:.14em;text-transform:uppercase}
+.hc-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
+  border-bottom:1px solid var(--line)}
+.hc-stats div{background:#030103;padding:11px 3px;text-align:center}
+.hc-stats u{display:block;font-size:8.5px;letter-spacing:.13em;color:var(--ash);text-decoration:none}
+.hc-stats b{display:block;font-family:var(--display);font-size:21px;font-weight:700;margin-top:2px}
+.hc-rows{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.hc-rows div{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+  padding:9px 10px;border-bottom:1px solid var(--line)}
+.hc-rows div:nth-child(odd){border-right:1px solid var(--line)}
+.hc-rows span{font-size:10.5px;color:var(--ash);letter-spacing:.09em;text-transform:uppercase}
+.hc-rows b{font-family:var(--display);font-size:16px;font-weight:700}
+.hc-prs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);margin-top:0}
+.hc-prs div{background:#030103;padding:12px 4px;text-align:center}
+.hc-prs span{display:block;font-size:9px;letter-spacing:.12em;color:var(--ash);text-transform:uppercase}
+.hc-prs b{display:block;font-family:var(--display);font-size:22px;color:var(--gold);font-weight:700;margin-top:3px}
+.hc-foot{text-align:center;font-size:10.5px;color:var(--ash);letter-spacing:.09em;padding-top:14px}
+
+/* toast */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:82px;z-index:80;
+  background:#0A0509;border:1px solid var(--crimson);color:var(--magenta);
+  padding:11px 16px;font-family:var(--body);font-size:13px;letter-spacing:.04em;
+  pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
+@keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+
+/* figure strokes */
+.gnd{stroke:var(--line);stroke-width:1}
+.back polyline{stroke:var(--deepblade);stroke-width:5}
+.front polyline{stroke-width:6}
+.eqf{fill:#D8C2CC}
+.eqo{fill:none;stroke:#D8C2CC;stroke-width:1.6}
+.eqb{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 2.5}
+.eqf2{stroke:#D8C2CC;stroke-width:3}
+.eqs{fill:var(--line);stroke:none}
+.eqs2{stroke:var(--line);stroke-width:2.5}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+
 </style>
 </head>
 <body>
-<div id="root"><div class="boot">Waking the System<span class="dots"></span></div></div>
-
-<style>
-  :root{
-    --void:#0A0818; --deep:#120E2E; --panel:#181341; --edge:#2E2668;
-    --arc:#5BE9E4; --mana:#9B7BFF; --gold:#F2B84B; --blood:#FF4D6D;
-    --ink:#EAE6FF; --mute:#8D86BE;
-    --display:"Arial Narrow","Haettenschweiler",Impact,"Franklin Gothic Medium",sans-serif;
-    --body:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  #root{font-family:var(--body);color:var(--ink);
-    background:radial-gradient(120% 60% at 50% -10%,#241a5c 0%,transparent 60%),
-      radial-gradient(80% 40% at 100% 100%,#10203f 0%,transparent 60%),var(--void);
-    min-height:100vh;
-    padding-top:calc(14px + env(safe-area-inset-top));
-    padding-right:calc(12px + env(safe-area-inset-right));
-    padding-bottom:calc(92px + env(safe-area-inset-bottom));
-    padding-left:calc(12px + env(safe-area-inset-left));
-    max-width:760px;margin:0 auto;overflow-x:hidden}
-  .boot{padding:80px 20px;text-align:center;color:var(--arc);letter-spacing:.18em;font-size:13px}
-  .dots::after{content:"";animation:dots 1.2s steps(4,end) infinite}
-  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
-
-  .win{position:relative;background:linear-gradient(180deg,rgba(24,19,65,.92),rgba(14,11,40,.92));
-    border:1px solid var(--edge);border-radius:2px;padding:14px;margin-bottom:12px;
-    box-shadow:0 0 0 1px rgba(91,233,228,.07),0 14px 40px -22px #000}
-  .win::before,.win::after{content:"";position:absolute;width:10px;height:10px;border:1px solid var(--arc);opacity:.75}
-  .win::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
-  .win::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
-  .win-title{font-family:var(--display);font-size:19px;letter-spacing:.14em;color:var(--arc);margin:0 0 10px;font-weight:700}
-  .win-title small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.02em;color:var(--mute);font-weight:400;margin-top:3px}
-
-  .hunter{display:flex;gap:14px;align-items:center}
-  .rankbadge{width:64px;height:64px;flex:0 0 64px;display:grid;place-items:center;
-    font-family:var(--display);font-size:34px;font-weight:700;color:var(--void);
-    background:conic-gradient(from 210deg,var(--arc),var(--mana),var(--arc));
-    clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)}
-  .hname{font-family:var(--display);font-size:26px;letter-spacing:.06em;line-height:1;margin:0;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .htitle{color:var(--gold);font-size:12px;margin:4px 0 8px;letter-spacing:.04em}
-  .bar{height:7px;background:#0C0926;border:1px solid var(--edge);overflow:hidden}
-  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--mana),var(--arc));transition:width .5s cubic-bezier(.2,.9,.2,1)}
-  .barlab{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:5px}
-  .barlab b{color:var(--ink);font-weight:600}
-  .purse{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-  .chip{border:1px solid var(--edge);padding:6px 10px;font-size:12px;display:flex;gap:6px;align-items:center;background:rgba(10,8,24,.6)}
-  .chip.g b{color:var(--gold)} .chip.s b{color:var(--blood)}
-  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px}
-  .stat{text-align:center;border-top:1px solid var(--edge);padding-top:7px}
-  .stat u{display:block;font-size:10px;color:var(--mute);text-decoration:none;letter-spacing:.1em}
-  .stat b{display:block;font-size:20px;font-family:var(--display);letter-spacing:.04em}
-
-  .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;
-    background:linear-gradient(180deg,rgba(10,8,24,.6),var(--void) 40%);
-    border-top:1px solid var(--edge);backdrop-filter:blur(8px);
-    padding:6px calc(6px + env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) calc(6px + env(safe-area-inset-left));max-width:760px;margin:0 auto}
-  .tabs button{flex:1;background:none;border:0;color:var(--mute);font-family:var(--display);
-    font-size:14px;letter-spacing:.1em;padding:10px 2px;cursor:pointer;position:relative}
-  .tabs button.on{color:var(--arc)}
-  .tabs button.on::after{content:"";position:absolute;top:0;left:22%;right:22%;height:2px;background:var(--arc)}
-
-  .qrow{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(46,38,104,.8);cursor:pointer}
-  .qrow:last-of-type{border-bottom:0}
-  .qfig{width:58px;height:58px;flex:0 0 58px;background:rgba(10,8,24,.7);border:1px solid var(--edge)}
-  .qmeta{flex:1;min-width:0}
-  .qmeta h4{margin:0;font-size:15px;font-weight:600}
-  .qmeta p{margin:3px 0 0;font-size:12px;color:var(--mute)}
-  .qcheck{width:30px;height:30px;flex:0 0 30px;border:1px solid var(--edge);display:grid;place-items:center;color:transparent;font-size:16px;background:rgba(10,8,24,.6)}
-  .qrow.done .qcheck{background:var(--arc);color:var(--void);border-color:var(--arc)}
-  .qrow.done .qmeta h4{color:var(--mute);text-decoration:line-through}
-  .qdone-banner{text-align:center;padding:14px;border:1px solid var(--arc);color:var(--arc);
-    font-family:var(--display);letter-spacing:.14em;font-size:17px;margin-top:10px;background:rgba(91,233,228,.06)}
-  .warn{font-size:12px;color:var(--mute);margin:10px 0 0;line-height:1.55}
-
-  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-  .filters button{background:rgba(10,8,24,.6);border:1px solid var(--edge);color:var(--mute);
-    font-size:12px;padding:6px 11px;cursor:pointer;font-family:var(--body)}
-  .filters button.on{border-color:var(--arc);color:var(--arc);background:rgba(91,233,228,.08)}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  @media(min-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
-  .card{border:1px solid var(--edge);background:linear-gradient(180deg,rgba(24,19,65,.8),rgba(12,9,32,.9));
-    padding:8px;cursor:pointer;position:relative;text-align:left;color:inherit;font:inherit}
-  .card.locked{opacity:.4}
-  .card svg{width:100%;display:block;background:radial-gradient(60% 60% at 50% 45%,rgba(155,123,255,.14),transparent 70%)}
-  .card h4{margin:6px 0 0;font-size:13px;font-weight:600;line-height:1.25}
-  .card p{margin:3px 0 0;font-size:11px;color:var(--mute)}
-  .rk{position:absolute;top:6px;right:6px;font-family:var(--display);font-size:13px;width:20px;height:20px;display:grid;place-items:center;border:1px solid currentColor}
-  .rk-E{color:#7EE0A0}.rk-D{color:var(--arc)}.rk-C{color:var(--mana)}.rk-B{color:var(--gold)}.rk-A{color:var(--blood)}
-  .gear{position:absolute;top:6px;left:6px;font-size:9px;letter-spacing:.06em;color:var(--gold);border:1px solid rgba(242,184,75,.5);padding:1px 4px}
-
-  .veil{position:fixed;inset:0;background:rgba(5,4,14,.82);z-index:60;display:grid;place-items:end center}
-  .sheet{width:100%;max-width:760px;max-height:92vh;overflow-y:auto;background:var(--deep);
-    border-top:1px solid var(--arc);padding:16px calc(14px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));animation:rise .22s ease-out}
-  @keyframes rise{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
-  .sheet h2{font-family:var(--display);font-size:27px;margin:0;letter-spacing:.05em}
-  .sheet .sub{color:var(--mute);font-size:12px;margin:5px 0 14px}
-  .demo{background:radial-gradient(70% 70% at 50% 45%,rgba(155,123,255,.16),transparent 70%);border:1px solid var(--edge);margin-bottom:14px}
-  .demo svg{width:100%;display:block}
-  .cues{list-style:none;padding:0;margin:0 0 14px}
-  .cues li{padding:7px 0 7px 22px;position:relative;font-size:14px;line-height:1.45;border-bottom:1px solid rgba(46,38,104,.5)}
-  .cues li::before{content:"";position:absolute;left:4px;top:14px;width:6px;height:6px;background:var(--arc);transform:rotate(45deg)}
-  .btn{width:100%;padding:14px;background:linear-gradient(90deg,var(--mana),var(--arc));border:0;color:#0A0818;
-    font-family:var(--display);font-size:18px;letter-spacing:.12em;cursor:pointer}
-  .btn.ghost{background:none;border:1px solid var(--edge);color:var(--mute);margin-top:8px;font-size:15px}
-  .btn:disabled{filter:grayscale(1);opacity:.5;cursor:default}
-
-  .item{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(46,38,104,.6)}
-  .item:last-child{border-bottom:0}
-  .item .ico{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border:1px solid var(--edge);font-size:19px}
-  .item h4{margin:0;font-size:14px}
-  .item p{margin:3px 0 0;font-size:12px;color:var(--mute);line-height:1.4}
-  .buy{border:1px solid var(--gold);background:none;color:var(--gold);padding:7px 11px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:var(--body)}
-  .buy:disabled{opacity:.35;cursor:default}
-  .buy.owned{border-color:var(--edge);color:var(--mute)}
-  .buy.warnbtn{border-color:var(--blood);color:var(--blood)}
-
-  .pr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(46,38,104,.6)}
-  .prin{width:66px;background:#0C0926;border:1px solid var(--edge);color:var(--ink);padding:8px;text-align:center;font:inherit}
-
-  /* onboarding */
-  .ob{max-width:520px;margin:0 auto;padding-top:22px}
-  .ob .step{font-size:11px;color:var(--mute);letter-spacing:.16em;margin-bottom:10px}
-  .ob h2{font-family:var(--display);font-size:30px;letter-spacing:.04em;margin:0 0 6px;line-height:1.1}
-  .ob p.lead{color:var(--mute);font-size:13px;line-height:1.6;margin:0 0 18px}
-  .opts{display:grid;gap:8px;margin-bottom:16px}
-  .opt{text-align:left;background:rgba(10,8,24,.6);border:1px solid var(--edge);color:var(--ink);
-    padding:13px 14px;font:inherit;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;gap:10px;align-items:center}
-  .opt.on{border-color:var(--arc);background:rgba(91,233,228,.09)}
-  .opt small{display:block;color:var(--mute);font-size:12px;margin-top:3px;line-height:1.4}
-  .opt .tick{color:var(--arc);font-size:15px;opacity:0}
-  .opt.on .tick{opacity:1}
-  .namein{width:100%;background:#0C0926;border:1px solid var(--edge);color:var(--ink);padding:14px;font:inherit;font-size:17px;margin-bottom:16px}
-  .namein:focus{outline:none;border-color:var(--arc)}
-
-  /* system message intro */
-  .sysmsg{position:fixed;inset:0;z-index:95;background:rgba(4,3,12,.94);display:grid;place-items:center;padding:22px;
-    font-family:var(--body);color:var(--ink)}
-  .sysbox{width:100%;max-width:420px;border:1px solid var(--arc);background:linear-gradient(180deg,rgba(24,19,65,.96),rgba(10,8,26,.96));
-    padding:26px 22px;position:relative;box-shadow:0 0 60px -18px var(--arc)}
-  .sysbox::before,.sysbox::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--arc)}
-  .sysbox::before{top:-2px;left:-2px;border-right:0;border-bottom:0}
-  .sysbox::after{bottom:-2px;right:-2px;border-left:0;border-top:0}
-  .syshead{font-family:var(--display);letter-spacing:.28em;font-size:13px;color:var(--arc);text-align:center;margin-bottom:20px}
-  .sysline{font-size:16px;line-height:1.6;margin:0 0 12px;color:var(--ink);opacity:0;transform:translateY(6px);animation:lineIn .45s forwards}
-  .sysline.big{font-family:var(--display);font-size:24px;letter-spacing:.05em;color:var(--arc);line-height:1.25}
-  @keyframes lineIn{to{opacity:1;transform:none}}
-  .sysbtns{margin-top:22px;opacity:0;animation:lineIn .4s forwards}
-
-  /* guided tour */
-  .tourblock{position:fixed;inset:0;z-index:99}
-  .spot{position:fixed;z-index:100;border:2px solid var(--arc);pointer-events:none;
-    box-shadow:0 0 0 9999px rgba(4,3,12,.86),0 0 22px -2px var(--arc);
-    transition:top .3s cubic-bezier(.3,.8,.3,1),left .3s cubic-bezier(.3,.8,.3,1),width .3s,height .3s}
-  .tip{position:fixed;z-index:101;width:min(330px,calc(100vw - 28px));background:var(--panel);
-    border:1px solid var(--arc);padding:14px 15px;transition:top .3s,left .3s}
-  .tip h4{margin:0 0 6px;font-family:var(--display);font-size:19px;letter-spacing:.08em;color:var(--arc)}
-  .tip p{margin:0;font-size:13.5px;line-height:1.55;color:var(--ink)}
-  .tiprow{display:flex;align-items:center;gap:10px;margin-top:14px}
-  .tiprow .dots2{flex:1;display:flex;gap:4px}
-  .tiprow .dots2 i{width:5px;height:5px;background:var(--edge);border-radius:50%}
-  .tiprow .dots2 i.on{background:var(--arc)}
-  .tip button{border:1px solid var(--edge);background:none;color:var(--mute);padding:8px 12px;font:inherit;font-size:13px;cursor:pointer}
-  .tip button.go{border-color:var(--arc);color:var(--void);background:var(--arc);font-weight:600}
-
-  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:78px;z-index:80;background:var(--panel);
-    border:1px solid var(--arc);color:var(--arc);padding:11px 16px;font-size:13px;letter-spacing:.05em;
-    pointer-events:none;animation:pop .3s ease-out;max-width:90%;text-align:center}
-  @keyframes pop{from{transform:translate(-50%,10px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
-  .lvlup{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(5,4,14,.8);
-    font-family:var(--display);text-align:center;animation:pop .3s;padding:20px}
-  .lvlup div{font-size:44px;color:var(--arc);letter-spacing:.2em;line-height:1.2}
-  .lvlup p{font-family:var(--body);color:var(--ink);font-size:14px;letter-spacing:.02em;max-width:340px;margin:10px auto 0;line-height:1.5}
-  @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
-</style>
-
+<div id="root"><div class="boot">Awakening</div></div>
 <script>
-/* =========================================================
-   THE SYSTEM — universal build
-   Pose = 22 numbers: head,neck,hip,[backElbow,hand,knee,foot],[frontElbow,hand,knee,foot]
-   idx: 0/1 head 2/3 neck 4/5 hip 6/7 bE 8/9 bH 10/11 bK 12/13 bF 14/15 fE 16/17 fH 18/19 fK 20/21 fF
-   ========================================================= */
 const P=(...n)=>n;
 const m=(base,ed)=>{const a=base.slice();for(const k in ed)a[k]=ed[k];return a};
 const ST = P(50,14, 50,24, 50,52, 45,37, 44,50, 46,70, 46,88, 55,37, 56,50, 54,70, 54,88);
@@ -504,26 +656,35 @@ const EX=[
     P(42,30,46,36,50,58,50,42,52,46,64,58,80,62,52,43,54,47,66,58,82,64)]}
 ];
 
-const RANKS=['E','D','C','B','A'];
-const RANK_LV={E:1,D:4,C:9,B:16,A:26};
-const RANK_NAME={E:'E-Rank Awakened',D:'D-Rank Hunter',C:'C-Rank Hunter',B:'B-Rank Hunter',A:'A-Rank Hunter',S:'S-Rank Monarch'};
+/* ============================================================
+   ASCENDANT — app shell (data block is prepended at build time)
+   ============================================================ */
+
+const RANKS=['E','D','C','B','A','S'];
+const RANK_LV={E:1,D:4,C:9,B:16,A:26,S:40};
+const RANK_TITLE={E:'Novice',D:'Adept',C:'Expert',B:'Master',A:'Grandmaster',S:'Sword Saint'};
 const CATS={push:'Push',pull:'Pull',legs:'Legs',core:'Core',cardio:'Cardio',full:'Full body'};
 const EQNAME={db:'Dumbbells',kb:'Kettlebell',bb:'Barbell',bar:'Pull-up bar',bench:'Bench',band:'Bands',machine:'Machines'};
+const AURA=[
+ {n:'Dormant',min:0},{n:'Stirring',min:1},{n:'Kindled',min:3},{n:'Surging',min:7},{n:'Ascendant',min:21}
+];
 
 const SHOP=[
  {id:'t_awake',k:'title',n:'The Awakened',p:60,ico:'✦',d:'First title. You showed up.'},
- {id:'t_iron',k:'title',n:'Iron Willed',p:220,ico:'⚔',d:'For finishing quests you didn\'t feel like starting.'},
+ {id:'t_iron',k:'title',n:'Iron Willed',p:220,ico:'⚔',d:'For clearing quests you didn\'t feel like starting.'},
  {id:'t_shadow',k:'title',n:'Shadow of the Gym',p:500,ico:'☾',d:'They stopped noticing you leave. You never stopped going.'},
- {id:'t_monarch',k:'title',n:'Monarch in Training',p:1200,ico:'♛',d:'Reserved for the delusional and the consistent.'},
- {id:'p_rest',k:'potion',n:'Potion of Rest',p:150,ico:'⌛',d:'Protects your streak for one extra missed day. Consumed on use.'},
- {id:'th_ember',k:'theme',n:'Ember Sigil',p:400,ico:'◆',d:'Recolors the System to molten orange.'},
- {id:'th_abyss',k:'theme',n:'Abyss Sigil',p:400,ico:'◆',d:'Recolors the System to deep green void.'}
+ {id:'t_bloodsworn',k:'title',n:'Bloodsworn',p:900,ico:'⛧',d:'Thirty days without letting the aura die.'},
+ {id:'t_monarch',k:'title',n:'Monarch in Training',p:1400,ico:'♛',d:'Reserved for the delusional and the consistent.'},
+ {id:'p_rest',k:'potion',n:'Elixir of Rest',p:150,ico:'⌛',d:'Protects your streak through one extra idle day. Consumed on use.'},
+ {id:'bl_ember',k:'blade',n:'Ember Edge',p:400,ico:'◆',d:'Recolors your blade and aura to molten orange.'},
+ {id:'bl_frost',k:'blade',n:'Frostfang',p:400,ico:'◆',d:'Recolors your blade and aura to pale glacial blue.'},
+ {id:'bl_void',k:'blade',n:'Voidbrand',p:700,ico:'◆',d:'Recolors your blade and aura to violet abyss.'}
 ];
-const THEMES={
- th_ember:{arc:'#FF9E4A',mana:'#FF5E5B',edge:'#5A2A2A',deep:'#1E0F16',panel:'#2A1520'},
- th_abyss:{arc:'#5BE39B',mana:'#3E8F7C',edge:'#1F4A3E',deep:'#08160F',panel:'#0E2418'}
+const BLADES={
+ bl_ember:{crimson:'#FF6A1A',magenta:'#FFA23D',core:'#FFF3DF',line:'#2A150A'},
+ bl_frost:{crimson:'#2FA8E8',magenta:'#7FD8FF',core:'#EAF8FF',line:'#0C2230'},
+ bl_void :{crimson:'#8B2BE8',magenta:'#C77BFF',core:'#F4EAFF',line:'#1C0C2A'}
 };
-
 const GOALS={
  muscle:{n:'Build muscle',w:{push:3,pull:3,legs:3,core:1,cardio:1,full:1}},
  strong:{n:'Get stronger',w:{push:3,pull:3,legs:4,core:2,cardio:1,full:2}},
@@ -532,10 +693,7 @@ const GOALS={
 };
 const XPLEVEL={new:1,some:5,trained:12,adv:20};
 
-/* ---------------- state ---------------- */
-/* ---------------- storage ----------------
-   Uses Claude's window.storage when running inside Claude,
-   falls back to the browser's own storage anywhere else. */
+/* ---------------- storage ---------------- */
 const DB=(()=>{
   if(typeof window!=='undefined'&&window.storage&&window.storage.get)return window.storage;
   return {
@@ -543,329 +701,507 @@ const DB=(()=>{
     async set(k,v){localStorage.setItem(k,v);return{key:k,value:v}}
   };
 })();
+const KEY='asc:hunter:v3';
+const OLDKEY='sh:hunter:v2';
 
-const KEY='sh:hunter:v2';
 let S={
  setup:false,name:'',goal:'consist',exp:'new',eq:[],days:4,
  lvl:1,xp:0,gold:0,streak:0,best:0,last:null,
  stats:{STR:5,END:5,VIT:5,AGI:5,CORE:5},
  prs:{pushup:0,squat:0,plank:0},
- logs:0,questDate:null,questDone:[],questBonus:false,owned:[],title:null,theme:null,potions:0,tourSeen:false
+ logs:0,questDate:null,questDone:[],questBonus:false,
+ owned:[],title:null,blade:null,potions:0,tourSeen:false,
+ history:{}, clears:0
 };
 const need=l=>40+l*30;
 const rankOf=l=>l>=40?'S':l>=26?'A':l>=16?'B':l>=9?'C':l>=4?'D':'E';
 const unlocked=r=>S.lvl>=(RANK_LV[r]||1);
 const hasEq=e=>(e.eq||[]).every(x=>S.eq.includes(x));
 const today=()=>new Date().toLocaleDateString('en-CA');
+const auraTier=()=>{let t=AURA[0];for(const a of AURA)if(S.streak>=a.min)t=a;return t};
+const auraIdx=()=>AURA.indexOf(auraTier());
 
-async function load(){try{const r=await DB.get(KEY);if(r&&r.value)S=Object.assign(S,JSON.parse(r.value));}catch(e){}}
-let sT;function save(){clearTimeout(sT);sT=setTimeout(async()=>{try{await DB.set(KEY,JSON.stringify(S))}catch(e){console.error('save failed',e)}},250)}
+async function load(){
+  try{const r=await DB.get(KEY);if(r&&r.value)S=Object.assign(S,JSON.parse(r.value));return}
+  catch(e){}
+  try{ // migrate an old System Hunter save so nobody loses progress
+    const r=await DB.get(OLDKEY);
+    if(r&&r.value){
+      const o=JSON.parse(r.value);
+      S=Object.assign(S,o,{theme:undefined,blade:null});
+      save();
+    }
+  }catch(e){}
+}
+let sT;function save(){clearTimeout(sT);sT=setTimeout(async()=>{
+  try{await DB.set(KEY,JSON.stringify(S))}catch(e){console.error('save failed',e)}},250)}
 
 /* ---------------- figures ---------------- */
 function pts(p){const o=[];for(let i=0;i<22;i+=2)o.push({x:p[i],y:p[i+1]});return o}
+let figSeq=0;
 function figSVG(prop,pprop){
-  let stat='',dyn='';
-  if(pprop==='bench') stat+='<rect x="14" y="66" width="60" height="5" rx="1" class="eqs"/><rect x="20" y="71" width="4" height="16" class="eqs"/><rect x="64" y="71" width="4" height="16" class="eqs"/>';
-  if(prop==='fixbar') stat+='<line x1="18" y1="6" x2="82" y2="6" class="eqs2"/><line x1="20" y1="0" x2="20" y2="6" class="eqs"/><line x1="80" y1="0" x2="80" y2="6" class="eqs"/>';
-  if(prop==='cable') stat+='<rect x="86" y="14" width="12" height="60" class="eqs"/><line x1="92" y1="24" x2="92" y2="24" class="eqs2" data-p="cbl"/>';
-  if(prop==='plate') stat+='<rect x="84" y="30" width="14" height="40" rx="2" class="eqs"/>';
-  if(prop==='db'||prop==='band') dyn+='<g data-p="h0"></g><g data-p="h1"></g>';
-  if(prop==='db1'||prop==='kb'||prop==='kb1') dyn+='<g data-p="h1"></g>';
-  if(prop==='kb2') dyn+='<g data-p="h1"></g>';
+  const id=++figSeq;let stat='',dyn='';
+  if(pprop==='bench')stat+='<rect x="14" y="66" width="60" height="5" rx="1" class="eqs"/><rect x="20" y="71" width="4" height="16" class="eqs"/><rect x="64" y="71" width="4" height="16" class="eqs"/>';
+  if(prop==='fixbar')stat+='<line x1="18" y1="6" x2="82" y2="6" class="eqs2"/><line x1="20" y1="0" x2="20" y2="6" class="eqs2"/><line x1="80" y1="0" x2="80" y2="6" class="eqs2"/>';
+  if(prop==='cable')stat+='<rect x="86" y="14" width="12" height="60" class="eqs"/><line class="eqs2" data-p="cbl" x1="92" y1="24" x2="92" y2="24"/>';
+  if(prop==='plate')stat+='<rect x="84" y="30" width="14" height="40" rx="2" class="eqs"/>';
+  if(prop==='db'||prop==='band')dyn+='<g data-p="h0"></g><g data-p="h1"></g>';
+  if(prop==='db1'||prop==='kb'||prop==='kb1'||prop==='kb2')dyn+='<g data-p="h1"></g>';
   return `<svg viewBox="0 0 100 100" aria-hidden="true">
+    <defs><linearGradient id="mn${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--crimson)"/>
+    </linearGradient></defs>
     <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
     ${stat}
-    <g class="back"><polyline data-l="1,3,4"/><polyline data-l="2,5,6"/></g>
-    <g class="front"><polyline data-l="1,2"/><polyline data-l="1,7,8"/><polyline data-l="2,9,10"/><circle data-head r="7"/></g>
-    <g class="eq" data-prop="${prop||''}">${dyn}</g>
-  </svg>`;
+    <g class="back" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <polyline data-l="1,3,4"/><polyline data-l="2,5,6"/></g>
+    <g class="front" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <polyline data-l="1,2" stroke="url(#mn${id})"/>
+      <polyline data-l="1,7,8" stroke="url(#mn${id})"/>
+      <polyline data-l="2,9,10" stroke="url(#mn${id})"/></g>
+    <circle data-head r="7.5" fill="url(#mn${id})"/>
+    <g class="eq">${dyn}</g></svg>`;
 }
-function paint(svg,pose,prop){
+function paintFig(svg,pose,prop){
   const p=pts(pose);
-  svg.querySelectorAll('polyline').forEach(pl=>pl.setAttribute('points',pl.dataset.l.split(',').map(i=>p[+i].x+','+p[+i].y).join(' ')));
+  svg.querySelectorAll('polyline').forEach(pl=>pl.setAttribute('points',
+    pl.dataset.l.split(',').map(i=>p[+i].x+','+p[+i].y).join(' ')));
   const h=svg.querySelector('[data-head]');h.setAttribute('cx',p[0].x);h.setAttribute('cy',p[0].y);
   if(!prop)return;
   const bH=p[4],fH=p[8];
-  const set=(sel,html)=>{const g=svg.querySelector(sel);if(g)g.innerHTML=html};
-  const dbAt=(q)=>`<rect x="${q.x-6}" y="${q.y-2.6}" width="12" height="5.2" rx="2.2" class="eqf"/>`;
-  const kbAt=(q)=>`<circle cx="${q.x}" cy="${q.y+3}" r="4.6" class="eqf"/><path d="M${q.x-3.4} ${q.y+1} a3.4 4 0 0 1 6.8 0" class="eqo"/>`;
-  if(prop==='db'){set('[data-p="h0"]',dbAt(bH));set('[data-p="h1"]',dbAt(fH))}
-  else if(prop==='db1'){set('[data-p="h1"]',dbAt(fH))}
-  else if(prop==='kb'||prop==='kb1'||prop==='kb2'){set('[data-p="h1"]',kbAt(prop==='kb2'?{x:(bH.x+fH.x)/2,y:(bH.y+fH.y)/2}:fH))}
+  const set=(s,html)=>{const g=svg.querySelector(s);if(g)g.innerHTML=html};
+  const db=q=>`<rect x="${q.x-6}" y="${q.y-2.6}" width="12" height="5.2" rx="2.2" class="eqf"/>`;
+  const kb=q=>`<circle cx="${q.x}" cy="${q.y+3}" r="4.6" class="eqf"/><path d="M${q.x-3.4} ${q.y+1} a3.4 4 0 0 1 6.8 0" class="eqo"/>`;
+  if(prop==='db'){set('[data-p="h0"]',db(bH));set('[data-p="h1"]',db(fH))}
+  else if(prop==='db1')set('[data-p="h1"]',db(fH));
+  else if(prop==='kb'||prop==='kb1'||prop==='kb2')
+    set('[data-p="h1"]',kb(prop==='kb2'?{x:(bH.x+fH.x)/2,y:(bH.y+fH.y)/2}:fH));
   else if(prop==='band'){set('[data-p="h0"]',`<line x1="${bH.x}" y1="${bH.y}" x2="${fH.x}" y2="${fH.y}" class="eqb"/>`);set('[data-p="h1"]','')}
   else if(prop==='bar'||prop==='bar2'){
-    const y=(bH.y+fH.y)/2, x1=Math.min(bH.x,fH.x)-16, x2=Math.max(bH.x,fH.x)+16;
-    const g=svg.querySelector('.eq');
-    g.innerHTML=`<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="eqf2"/>
-      <rect x="${x1-2}" y="${y-7}" width="5" height="14" rx="1" class="eqf"/>
-      <rect x="${x2-3}" y="${y-7}" width="5" height="14" rx="1" class="eqf"/>`;
+    const y=(bH.y+fH.y)/2,x1=Math.min(bH.x,fH.x)-16,x2=Math.max(bH.x,fH.x)+16;
+    svg.querySelector('.eq').innerHTML=
+      `<line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" class="eqf2"/>
+       <rect x="${x1-2}" y="${y-7}" width="5" height="14" rx="1" class="eqf"/>
+       <rect x="${x2-3}" y="${y-7}" width="5" height="14" rx="1" class="eqf"/>`;
   }
-  else if(prop==='cable'){const l=svg.querySelector('[data-p="cbl"]');if(l){l.setAttribute('x1',92);l.setAttribute('y1',30);l.setAttribute('x2',fH.x);l.setAttribute('y2',fH.y)}}
+  else if(prop==='cable'){const l=svg.querySelector('[data-p="cbl"]');
+    if(l){l.setAttribute('x1',92);l.setAttribute('y1',30);l.setAttribute('x2',fH.x);l.setAttribute('y2',fH.y)}}
 }
 const lerp=(a,b,t)=>a+(b-a)*t;
-const REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let rigs=[];
-function mount(svg,frames,phase,prop){const r={svg,frames,phase:phase||0,prop};rigs.push(r);paint(svg,frames[0],prop);return r}
-function tick(now){
+function mountFig(svg,frames,phase,prop){const r={svg,frames,phase:phase||0,prop};rigs.push(r);paintFig(svg,frames[0],prop);return r}
+(function figLoop(now){
   if(!REDUCED)for(const r of rigs){
-    const t=((now/1400)+r.phase)%2,k=t<1?t:2-t,e=k*k*(3-2*k),a=r.frames[0],b=r.frames[1],o=[];
-    for(let i=0;i<22;i++)o.push(lerp(a[i],b[i],e));
-    paint(r.svg,o,r.prop);
+    const t=((now/1400)+r.phase)%2,k=t<1?t:2-t,e=k*k*(3-2*k),o=[];
+    for(let i=0;i<22;i++)o.push(lerp(r.frames[0][i],r.frames[1][i],e));
+    paintFig(r.svg,o,r.prop);
   }
-  requestAnimationFrame(tick);
+  requestAnimationFrame(figLoop);
+})(0);
+
+/* ---------------- aura canvas ---------------- */
+let ac,ax,AW=0,AH=0,tendrils=[],motes=[],auraRunning=false;
+for(let i=0;i<7;i++)tendrils.push({a:Math.random()*6.3,sp:(.0016+Math.random()*.0028)*(Math.random()<.5?-1:1),
+  rad:110+Math.random()*130,wob:.5+Math.random()*1.6,ph:Math.random()*6.3,len:.7+Math.random()*1.5,w:1.3+Math.random()*2.4});
+for(let i=0;i<24;i++)motes.push({x:Math.random(),y:Math.random(),v:.0006+Math.random()*.0018,r:.6+Math.random()*1.6,a:.2+Math.random()*.6});
+function bindAura(){
+  ac=document.getElementById('aura');if(!ac){auraRunning=false;return}
+  ax=ac.getContext('2d');sizeAura();
+  if(!auraRunning){auraRunning=true;requestAnimationFrame(auraLoop)}
 }
-requestAnimationFrame(tick);
-function styleSvg(svg){
-  svg.querySelectorAll('polyline').forEach(p=>{p.setAttribute('fill','none');p.setAttribute('stroke-linecap','round');p.setAttribute('stroke-linejoin','round')});
-  const g=svg.querySelector('.gnd');if(g){g.setAttribute('stroke','var(--edge)');g.setAttribute('stroke-width','1')}
-  svg.querySelectorAll('.back polyline').forEach(p=>{p.setAttribute('stroke','var(--mana)');p.setAttribute('stroke-width','4');p.setAttribute('opacity','.4')});
-  svg.querySelectorAll('.front polyline').forEach(p=>{p.setAttribute('stroke','var(--arc)');p.setAttribute('stroke-width','5')});
-  svg.querySelector('[data-head]').setAttribute('fill','var(--arc)');
-  svg.querySelectorAll('.eqs').forEach(e=>{e.setAttribute('fill','var(--edge)');e.setAttribute('stroke','none')});
-  svg.querySelectorAll('.eqs2').forEach(e=>{e.setAttribute('stroke','var(--edge)');e.setAttribute('stroke-width','2.5')});
+function sizeAura(){if(!ac)return;const r=ac.getBoundingClientRect();AW=ac.width=Math.max(2,r.width*2);AH=ac.height=Math.max(2,r.height*2)}
+addEventListener('resize',()=>{sizeAura()});
+function auraLoop(now){
+  if(!ac||!ac.isConnected){auraRunning=false;return}
+  ax.clearRect(0,0,AW,AH);
+  const I=Math.min(1,auraIdx()/3.2),cx=AW/2,cy=AH*.46;
+  if(I>0&&!REDUCED){
+    for(const t of tendrils){
+      t.a+=t.sp;ax.beginPath();
+      for(let s=0;s<=38;s++){
+        const f=s/38,ang=t.a+f*t.len*2.6;
+        const wob=Math.sin(now/700+t.ph+f*7)*t.wob*24*I;
+        const rr=(t.rad+wob)*(.5+f*.62)*I;
+        const x=cx+Math.cos(ang)*rr,y=cy+Math.sin(ang)*rr*.78;
+        s?ax.lineTo(x,y):ax.moveTo(x,y);
+      }
+      const g=ax.createLinearGradient(cx-t.rad,cy,cx+t.rad,cy);
+      g.addColorStop(0,'rgba(0,0,0,0)');
+      g.addColorStop(.5,CSSVAR('--magenta-rgba',I*.5));
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ax.strokeStyle=g;ax.lineWidth=t.w*2;ax.lineCap='round';ax.stroke();
+    }
+    for(const m of motes){
+      m.y-=m.v;if(m.y<0){m.y=1;m.x=Math.random()}
+      ax.globalAlpha=m.a*I*(m.y<.3?m.y/.3:1);
+      ax.fillStyle=m.a>.55?cssv('--core'):cssv('--magenta');
+      ax.beginPath();ax.arc(m.x*AW,m.y*AH,m.r*2,0,6.3);ax.fill();
+    }
+    ax.globalAlpha=1;
+  }
+  requestAnimationFrame(auraLoop);
 }
-const EQCSS=`<style>.eqf{fill:var(--gold)}.eqo{fill:none;stroke:var(--gold);stroke-width:1.6}
-.eqb{stroke:var(--gold);stroke-width:2;stroke-dasharray:3 2.5}.eqf2{stroke:var(--gold);stroke-width:3}</style>`;
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#FF3D7F';
+function CSSVAR(_,a){const c=cssv('--magenta');
+  const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`}
 
 /* ---------------- quest ---------------- */
-function seeded(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return()=>{h=Math.imul(h^h>>>15,2246822507);h^=h>>>13;return(h>>>0)/4294967296}}
+function seeded(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
+  return()=>{h=Math.imul(h^h>>>15,2246822507);h^=h>>>13;return(h>>>0)/4294967296}}
 function pool(){const p=EX.filter(e=>unlocked(e.r)&&hasEq(e));return p.length?p:EX.filter(e=>!e.eq.length&&e.r==='E')}
 function questFor(d){
   const rnd=seeded(d+'|'+S.lvl+'|'+S.eq.join('')+'|'+S.goal),pl=pool(),w=GOALS[S.goal].w;
   const bag=[];for(const c in w)for(let i=0;i<w[c];i++)bag.push(c);
-  const out=[],used=new Set();
-  let guard=0;
+  const out=[],used=new Set();let guard=0;
   while(out.length<5&&guard++<200){
     const c=bag[Math.floor(rnd()*bag.length)];
     let opts=pl.filter(e=>e.c===c&&!used.has(e.id));
     if(!opts.length)opts=pl.filter(e=>!used.has(e.id));
     if(!opts.length)break;
-    const pick=opts[Math.floor(rnd()*opts.length)];
-    used.add(pick.id);out.push(pick);
+    const pick=opts[Math.floor(rnd()*opts.length)];used.add(pick.id);out.push(pick);
   }
   return out;
 }
-function rollQuest(){const d=today();if(S.questDate!==d){S.questDate=d;S.questDone=[];S.questBonus=false;save()}return questFor(d)}
+function rollQuest(){const d=today();
+  if(S.questDate!==d){S.questDate=d;S.questDone=[];S.questBonus=false;save()}
+  return questFor(d)}
 
 /* ---------------- progression ---------------- */
 let pendingLevel=null;
 function award(xp,gold,stat){
   S.xp+=xp;S.gold+=gold;S.logs++;
   if(stat&&S.stats[stat]!==undefined)S.stats[stat]+=1;
+  const d=today();S.history[d]=(S.history[d]||0)+1;
   let g=0;
   while(S.xp>=need(S.lvl)){S.xp-=need(S.lvl);S.lvl++;g++;for(const k in S.stats)S.stats[k]+=1}
   save();if(g)pendingLevel=S.lvl;return g;
 }
-const gap=()=>Math.max(1,7-(S.days||4));
-function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/864e5)}
+const gapAllowed=()=>Math.max(1,7-(S.days||4));
+const daysBetween=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
 function touchStreak(){
   const d=today();if(S.last===d)return;
-  if(!S.last){S.streak=1}
+  if(!S.last)S.streak=1;
   else{
     const n=daysBetween(S.last,d);
-    if(n<=gap())S.streak++;
-    else if(S.potions>0){S.potions--;S.streak++;toast('Potion of Rest consumed — streak held')}
+    if(n<=gapAllowed())S.streak++;
+    else if(S.potions>0){S.potions--;S.streak++;toast('Elixir of Rest consumed — streak held')}
     else S.streak=1;
   }
   S.best=Math.max(S.best,S.streak);S.last=d;save();
 }
 
 /* ---------------- UI ---------------- */
-let tab='quest',filt={r:'all',c:'all',eq:'mine'},open=null,ob={step:0,name:'',exp:null,goal:null,eq:[],days:null};
+let tab='quest',filt={r:'all',c:'all',eq:'mine'},open=null,
+    ob={step:0,name:'',exp:null,goal:null,eq:[],days:null};
 const root=document.getElementById('root');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2100)}
-function applyTheme(){const t=THEMES[S.theme],r=document.documentElement.style;
-  if(!t){['--arc','--mana','--edge','--deep','--panel'].forEach(v=>r.removeProperty(v));return}
-  r.setProperty('--arc',t.arc);r.setProperty('--mana',t.mana);r.setProperty('--edge',t.edge);r.setProperty('--deep',t.deep);r.setProperty('--panel',t.panel)}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2200)}
+function applyBlade(){
+  const b=BLADES[S.blade],r=document.documentElement.style;
+  if(!b){['--crimson','--magenta','--core','--line'].forEach(v=>r.removeProperty(v));return}
+  for(const k in b)r.setProperty('--'+k,b[k]);
+}
 
 /* ----- onboarding ----- */
 function viewOB(){
   const s=ob.step;
-  const wrap=(step,title,lead,body,btn,ok)=>`<div class="ob">
-    <div class="step">${step} OF 5</div><h2>${title}</h2><p class="lead">${lead}</p>${body}
+  const wrap=(n,title,lead,body,btn,ok)=>`<div class="ob">
+    <div class="obstep">${n} of 5</div><h2>${title}</h2><p class="oblead">${lead}</p>${body}
     <button class="btn" data-obnext ${ok?'':'disabled'}>${btn}</button>
     ${s>0?'<button class="btn ghost" data-obback>Back</button>':''}</div>`;
   const opt=(v,k,label,sub,multi)=>{
     const on=multi?ob.eq.includes(v):ob[k]===v;
-    return `<button class="opt ${on?'on':''}" data-ob="${k}:${v}"><span>${label}${sub?`<small>${sub}</small>`:''}</span><span class="tick">✓</span></button>`};
-  if(s===0)return wrap(1,'The System has selected you.',
-    'Every hunter needs a name. Yours goes on the card.',
+    return `<button class="opt ${on?'on':''}" data-ob="${k}:${v}">
+      <span>${label}${sub?`<small>${sub}</small>`:''}</span><span class="tick">✦</span></button>`};
+  if(s===0)return wrap(1,'The blade has chosen you.',
+    'Every ascendant needs a name. Yours gets etched into the steel.',
     `<input class="namein" id="obname" maxlength="18" placeholder="Enter your name" value="${esc(ob.name)}" autocomplete="off">`,
     'Begin',ob.name.trim().length>0);
   if(s===1)return wrap(2,'How much have you trained?',
-    'This sets your starting level and which movements unlock right away. Be honest — nobody is watching.',
+    'Sets your starting level and which skills unlock now. Be honest, nobody is watching.',
     `<div class="opts">
-      ${opt('new','exp','Brand new','Never really trained, or coming back after years off')}
+      ${opt('new','exp','Brand new','Never really trained, or years off')}
       ${opt('some','exp','A little','On and off. You know a squat from a deadlift')}
-      ${opt('trained','exp','Trained','Consistent for a while. Comfortable in a gym')}
+      ${opt('trained','exp','Trained','Consistent for a while, comfortable in a gym')}
       ${opt('adv','exp','Advanced','Years in. You have numbers you care about')}
     </div>`,'Continue',!!ob.exp);
   if(s===2)return wrap(3,'What are you chasing?',
-    'Your daily quests get built around this. You can change it later.',
+    'Your daily quests get built around this. Changeable any time.',
     `<div class="opts">
       ${opt('muscle','goal','Build muscle','More pressing and pulling volume')}
       ${opt('strong','goal','Get stronger','Heavier compounds, lower reps')}
       ${opt('cond','goal','Conditioning','More cardio and full-body work')}
       ${opt('consist','goal','Just move more','Balanced and forgiving. Habit first')}
     </div>`,'Continue',!!ob.goal);
-  if(s===3)return wrap(4,'What do you have access to?',
-    'Pick everything you can actually get to. Nothing selected is completely fine — the bodyweight library is huge.',
-    `<div class="opts">
-      ${opt('db','eq','Dumbbells','',1)}
-      ${opt('kb','eq','Kettlebell','',1)}
-      ${opt('bb','eq','Barbell and plates','',1)}
-      ${opt('bench','eq','A bench','',1)}
-      ${opt('bar','eq','Pull-up bar','',1)}
-      ${opt('band','eq','Resistance bands','',1)}
-      ${opt('machine','eq','Gym machines and cardio equipment','',1)}
-    </div>`,ob.eq.length?'Continue':'I train with nothing but my body',true);
+  if(s===3)return wrap(4,'What can you get to?',
+    'Pick everything you have access to. Nothing selected is fine — the bodyweight library is huge.',
+    `<div class="opts">${Object.entries(EQNAME).map(([k,v])=>opt(k,'eq',v,'',1)).join('')}</div>`,
+    ob.eq.length?'Continue':'I train with nothing but my body',true);
   return wrap(5,'How many days a week?',
-    'This decides how forgiving your streak is. Rest days are part of the plan, not a failure.',
+    'Decides how forgiving your streak is. Rest days are part of the plan, not a failure.',
     `<div class="opts">
-      ${opt(3,'days','3 days','Streak survives up to 4 days between sessions')}
-      ${opt(4,'days','4 days','Streak survives up to 3 days between sessions')}
-      ${opt(5,'days','5 days','Streak survives up to 2 days between sessions')}
-      ${opt(6,'days','6 days','Streak survives 1 day between sessions')}
-    </div>`,'Enter the System',!!ob.days);
+      ${opt(3,'days','3 days','Aura survives up to 4 idle days')}
+      ${opt(4,'days','4 days','Aura survives up to 3 idle days')}
+      ${opt(5,'days','5 days','Aura survives up to 2 idle days')}
+      ${opt(6,'days','6 days','Aura survives 1 idle day')}
+    </div>`,'Awaken',!!ob.days);
 }
 function finishOB(){
-  S.setup=true;S.name=ob.name.trim().slice(0,18);S.exp=ob.exp;S.goal=ob.goal;S.eq=ob.eq.slice();S.days=ob.days;
-  S.lvl=XPLEVEL[ob.exp]||1;
+  S.setup=true;S.name=ob.name.trim().slice(0,18);S.exp=ob.exp;S.goal=ob.goal;
+  S.eq=ob.eq.slice();S.days=ob.days;S.lvl=XPLEVEL[ob.exp]||1;
   const bump={new:0,some:2,trained:5,adv:9}[ob.exp]||0;
   for(const k in S.stats)S.stats[k]+=bump;
   save();tab='quest';render();showIntro();
 }
 
-/* ----- main views ----- */
-function hunterCard(){
-  const r=rankOf(S.lvl),n=need(S.lvl);
-  const title=S.title?(SHOP.find(x=>x.id===S.title)||{}).n:RANK_NAME[r];
-  return `<section class="win">
-    <div class="hunter">
-      <div class="rankbadge"><span>${r}</span></div>
-      <div style="flex:1;min-width:0">
-        <h1 class="hname">${esc(S.name||'Hunter')}</h1>
-        <div class="htitle">${esc(title)} · Level ${S.lvl}</div>
-        <div class="bar"><i style="width:${Math.min(100,S.xp/n*100)}%"></i></div>
-        <div class="barlab"><span>Experience</span><span><b>${S.xp}</b> / ${n}</span></div>
+/* ----- shared pieces ----- */
+function bladeSVG(){
+  return `<svg class="blade-svg" viewBox="0 0 120 300" aria-hidden="true">
+    <defs>
+      <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--core)"/>
+        <stop offset="38%" stop-color="var(--magenta)"/>
+        <stop offset="100%" stop-color="var(--deepblade)"/></linearGradient>
+      <linearGradient id="fuller" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="rgba(255,240,245,0)"/>
+        <stop offset="50%" stop-color="rgba(255,240,245,.85)"/>
+        <stop offset="100%" stop-color="rgba(255,240,245,0)"/></linearGradient>
+    </defs>
+    <path d="M60 8 L82 74 L82 214 L60 244 L38 214 L38 74 Z" fill="url(#edge)"/>
+    <rect x="57" y="70" width="6" height="146" fill="url(#fuller)"/>
+    <path d="M26 216 L94 216 L88 230 L32 230 Z" fill="var(--guard)"/>
+    <rect x="53" y="230" width="14" height="48" rx="3" fill="var(--grip)"/>
+    <circle cx="60" cy="284" r="9" fill="var(--pommel)"/>
+    <circle cx="60" cy="284" r="4" fill="var(--magenta)"/></svg>`;
+}
+function heroBlock(){
+  const t=auraTier(),i=auraIdx(),pct=Math.min(100,(i/(AURA.length-1))*100);
+  const dead=S.streak===0;
+  return `<section class="hero">
+    <canvas id="aura"></canvas>
+    <div class="sigil" style="--sig:${dead?.1:.4+i*.15}"></div>
+    <div class="blade">
+      <div class="blade-halo" style="--glow:${dead?0:.3+i*.18}"></div>
+      ${bladeSVG()}
+      <div class="name-etch">${esc(S.name||'HUNTER')}</div>
+    </div>
+    <div class="aurawrap">
+      <div class="aurascale">
+        ${AURA.map((a,k)=>`<span class="as ${k<=i?'on':''} ${k===i?'cur':''}">${a.n}</span>`).join('')}
       </div>
+      <div class="aurabar"><i style="width:${pct}%"></i></div>
+      <p class="auranote">${dead
+        ? 'Your aura has gone out. Clear anything today to relight it.'
+        : `<b>${S.streak}</b> day streak · fades after ${gapAllowed()} idle day${gapAllowed()>1?'s':''}`}</p>
     </div>
-    <div class="purse">
-      <div class="chip g">Gold <b>${S.gold}</b></div>
-      <div class="chip s">Streak <b>${S.streak}</b></div>
-      <div class="chip">Best <b>${S.best}</b></div>
-      <div class="chip">Sets logged <b>${S.logs}</b></div>
-      ${S.potions?`<div class="chip">Potions <b>${S.potions}</b></div>`:''}
-    </div>
-    <div class="stats">${Object.entries(S.stats).map(([k,v])=>`<div class="stat"><u>${k}</u><b>${v}</b></div>`).join('')}</div>
   </section>`;
 }
+function crestBlock(){
+  const r=rankOf(S.lvl),n=need(S.lvl);
+  const title=S.title?(SHOP.find(x=>x.id===S.title)||{}).n:RANK_TITLE[r];
+  return `<header class="mast">
+    <div class="brandrow"><span class="brand">ASCENDANT</span>
+      <span class="matline">${r}-Rank · ${esc(title)}</span></div>
+  </header>
+  <div class="lvlrow">
+    <div class="lvlbadge"><span>${S.lvl}</span></div>
+    <div class="lvlmeta">
+      <div class="lvlline"><b>Level ${S.lvl}</b><span class="xpnum">${S.xp} / ${n} XP</span></div>
+      <div class="xpbar"><i style="width:${Math.min(100,S.xp/n*100)}%"></i></div>
+    </div>
+    <div class="goldchip"><span class="coin"></span>${S.gold.toLocaleString()}</div>
+  </div>`;
+}
+function statsBlock(){
+  const max=Math.max(...Object.values(S.stats),20);
+  return `<section class="props">${Object.entries(S.stats).map(([k,v])=>
+    `<div class="prop"><span>${k}</span><b>${v}</b><i style="--v:${Math.round(v/max*100)}%"></i></div>`).join('')}</section>`;
+}
+
+/* ----- views ----- */
 function viewQuest(){
-  const q=rollQuest(),done=S.questDone,all=q.length&&q.every(e=>done.includes(e.id));
+  const q=rollQuest(),done=S.questDone,cleared=q.filter(e=>done.includes(e.id)).length;
+  const all=q.length&&cleared===q.length;
   const light=unlocked('D')?'knee push-ups':'wall push-ups';
-  return hunterCard()+`
-  <section class="win">
-    <h2 class="win-title">Daily Quest<small>Built from your goal and your equipment. Resets at midnight.</small></h2>
-    ${q.map((e,i)=>`<div class="qrow ${done.includes(e.id)?'done':''}" data-q="${e.id}">
-        <svg class="qfig" data-fig="${e.id}" data-phase="${i*0.3}" viewBox="0 0 100 100"></svg>
-        <div class="qmeta"><h4>${esc(e.n)}</h4><p>${esc(e.d)} · ${CATS[e.c]}</p></div>
-        <div class="qcheck">✓</div></div>`).join('')}
-    ${all?'<div class="qdone-banner">Quest Complete</div>':''}
-    <p class="warn">Tap a row to see how it's done and log it. Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn't.</p>
+  return crestBlock()+heroBlock()+statsBlock()+`
+  <section class="block">
+    <div class="blockhead"><h2>Daily Quest</h2><span class="tally">${cleared} / ${q.length} cleared</span></div>
+    <ul class="work">
+      ${q.map((e,i)=>`<li class="w ${done.includes(e.id)?'done':''}" data-q="${e.id}">
+        <div class="wfig"><svg data-fig="${e.id}" data-phase="${i*.3}"></svg></div>
+        <div class="wmeta"><h3>${esc(e.n)}</h3><p>${esc(e.d)} · ${CATS[e.c]}</p></div>
+        <div class="wmark">${done.includes(e.id)?'✦':''}</div></li>`).join('')}
+    </ul>
+    ${all?'<div class="cleared">Quest cleared</div>':''}
+    <p class="note">Tap a row for the demo and to log it. Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn\'t.</p>
   </section>
-  <section class="win">
-    <h2 class="win-title">Instant Dungeon<small>Optional bonus. Six minutes, whatever you have left.</small></h2>
-    <p style="font-size:14px;line-height:1.55;margin:0 0 12px">Set a six-minute timer and cycle: <b>5 ${light} → 8 squats → 20-second plank</b>. Repeat until the timer dies. Count your rounds and try to beat it next time.</p>
-    <button class="btn" data-dungeon>Clear the dungeon · +60 XP · +40 gold</button>
+  <section class="block">
+    <div class="blockhead"><h2>Instant Dungeon</h2></div>
+    <p class="dgn">Six minutes, no rest. Cycle <b>5 ${light} → 8 squats → 20-second plank</b> until the timer dies. Count your rounds and beat it next time.</p>
+    <button class="btn" data-dungeon>Enter the dungeon · +60 XP · +40 gold</button>
   </section>`;
 }
 function viewLib(){
   let list=EX.filter(e=>(filt.r==='all'||e.r===filt.r)&&(filt.c==='all'||e.c===filt.c));
   if(filt.eq==='mine')list=list.filter(hasEq);
-  const owned=S.eq.length?S.eq.map(x=>EQNAME[x]).join(', '):'bodyweight only';
-  return `<section class="win">
-    <h2 class="win-title">Skill Library<small>${EX.length} movements total. Your kit: ${esc(owned)}.</small></h2>
+  return `<section class="block top">
+    <div class="blockhead"><h2>Skill Library</h2><span class="tally">${list.length} of ${EX.length}</span></div>
     <div class="filters">
       <button data-f="eq:mine" class="${filt.eq==='mine'?'on':''}">What I can do</button>
-      <button data-f="eq:all" class="${filt.eq==='all'?'on':''}">Show everything</button>
+      <button data-f="eq:all" class="${filt.eq==='all'?'on':''}">Everything</button>
     </div>
     <div class="filters">
       <button data-f="r:all" class="${filt.r==='all'?'on':''}">All ranks</button>
-      ${RANKS.map(r=>`<button data-f="r:${r}" class="${filt.r===r?'on':''}">${r}${unlocked(r)?'':' · Lv'+RANK_LV[r]}</button>`).join('')}
+      ${['E','D','C','B','A'].map(r=>`<button data-f="r:${r}" class="${filt.r===r?'on':''}">${r}${unlocked(r)?'':' · Lv'+RANK_LV[r]}</button>`).join('')}
     </div>
     <div class="filters">
-      <button data-f="c:all" class="${filt.c==='all'?'on':''}">Everything</button>
+      <button data-f="c:all" class="${filt.c==='all'?'on':''}">All types</button>
       ${Object.entries(CATS).map(([k,v])=>`<button data-f="c:${k}" class="${filt.c===k?'on':''}">${v}</button>`).join('')}
     </div>
     <div class="grid">
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
-        ${e.eq.length?`<span class="gear">${e.eq.map(x=>EQNAME[x].split(' ')[0].toUpperCase()).join('+')}</span>`:''}
-        <svg data-fig="${e.id}" data-phase="${(i%7)*0.28}" viewBox="0 0 100 100"></svg>
+        ${e.eq.length?`<span class="gearlab">${e.eq.map(x=>EQNAME[x].split(' ')[0]).join('+')}</span>`:''}
+        <svg data-fig="${e.id}" data-phase="${(i%7)*.28}"></svg>
         <h4>${esc(e.n)}</h4><p>${esc(e.d)}</p></button>`).join('')}
     </div>
-    ${list.length?'':'<p class="warn">Nothing matches that filter. Try "Show everything".</p>'}
+    ${list.length?'':'<p class="note">Nothing matches those filters. Try "Everything".</p>'}
   </section>`;
 }
 function viewRecords(){
-  const rows=[['pushup','Push-ups to failure'],['squat','Squats to failure'],['plank','Plank hold (seconds)']];
-  return hunterCard()+`<section class="win">
-    <h2 class="win-title">Personal Records<small>Test these every couple of weeks. Not every day.</small></h2>
-    ${rows.map(([k,l])=>`<div class="pr">
-      <div><h4 style="margin:0;font-size:14px">${l}</h4>
-      <p style="margin:3px 0 0;font-size:12px;color:var(--mute)">Best: <b style="color:var(--gold);font-size:14px">${S.prs[k]||'—'}</b></p></div>
-      <div style="display:flex;gap:6px"><input class="prin" type="number" inputmode="numeric" min="0" data-pr="${k}" placeholder="0"><button class="buy" data-prsave="${k}">Save</button></div>
-    </div>`).join('')}
-    <p class="warn">Beating a record pays 3 gold per point of improvement. Going to failure is a test, not a workout — do it fresh and take the rest of that day easy.</p>
+  const rows=[['pushup','Push-ups to failure','reps'],['squat','Squats to failure','reps'],['plank','Plank hold','seconds']];
+  const days=Object.keys(S.history).length;
+  return crestBlock()+`
+  <section class="block top">
+    <div class="blockhead"><h2>Records</h2><span class="tally">${S.logs} logged</span></div>
+    ${rows.map(([k,l,u])=>`<div class="pr">
+      <div><h4>${l}</h4><p>Best: <b>${S.prs[k]||'—'}</b> ${S.prs[k]?u:''}</p></div>
+      <div class="prin-wrap"><input class="prin" type="number" inputmode="numeric" min="0" data-pr="${k}" placeholder="0">
+      <button class="mini" data-prsave="${k}">Save</button></div></div>`).join('')}
+    <p class="note">Beating a record pays 3 gold per point. Going to failure is a test, not a workout — do it fresh, take the rest of the day easy.</p>
+  </section>
+  <section class="block">
+    <div class="blockhead"><h2>Log</h2><span class="tally">${days} active day${days===1?'':'s'}</span></div>
+    ${heatmap()}
+  </section>
+  <section class="block">
+    <button class="btn" data-card>Generate shareable card</button>
+    <p class="note">Makes a clean card of your stats to screenshot and send.</p>
   </section>`;
 }
-function viewShop(){
-  return `<section class="win">
-    <h2 class="win-title">The Vault<small>Gold: ${S.gold}</small></h2>
+function heatmap(){
+  const cells=[];const now=new Date();
+  for(let i=69;i>=0;i--){
+    const d=new Date(now.getTime()-i*864e5).toLocaleDateString('en-CA');
+    const n=S.history[d]||0;
+    cells.push(`<i class="hm${n?(n>=4?'3':n>=2?'2':'1'):'0'}" title="${d}: ${n}"></i>`);
+  }
+  return `<div class="heat">${cells.join('')}</div>
+    <div class="heatkey"><span>10 weeks ago</span><span>today</span></div>`;
+}
+function viewVault(){
+  return `<section class="block top">
+    <div class="blockhead"><h2>The Vault</h2><span class="tally"><span class="coin"></span> ${S.gold.toLocaleString()}</span></div>
     ${SHOP.map(it=>{
-      const owned=S.owned.includes(it.id),eqd=(it.k==='title'&&S.title===it.id)||(it.k==='theme'&&S.theme===it.id);
+      const owned=S.owned.includes(it.id);
+      const eqd=(it.k==='title'&&S.title===it.id)||(it.k==='blade'&&S.blade===it.id);
       let label='Buy · '+it.p,dis=S.gold<it.p;
       if(it.k!=='potion'&&owned){label=eqd?'Equipped':'Equip';dis=false}
       return `<div class="item"><div class="ico">${it.ico}</div>
-        <div style="flex:1"><h4>${esc(it.n)}</h4><p>${esc(it.d)}</p></div>
-        <button class="buy ${owned&&it.k!=='potion'?'owned':''}" data-shop="${it.id}" ${dis?'disabled':''}>${label}</button></div>`}).join('')}
-    ${S.title?'<div class="item"><div class="ico">✕</div><div style="flex:1"><h4>Remove title</h4><p>Go back to your rank name.</p></div><button class="buy" data-shop="clear_title">Remove</button></div>':''}
-    ${S.theme?'<div class="item"><div class="ico">✕</div><div style="flex:1"><h4>Default sigil</h4><p>Back to the blue System.</p></div><button class="buy" data-shop="clear_theme">Reset</button></div>':''}
+        <div class="itxt"><h4>${esc(it.n)}</h4><p>${esc(it.d)}</p></div>
+        <button class="mini ${eqd?'on':''}" data-shop="${it.id}" ${dis?'disabled':''}>${label}</button></div>`}).join('')}
+    ${S.title?'<div class="item"><div class="ico">✕</div><div class="itxt"><h4>Remove title</h4><p>Back to your rank name.</p></div><button class="mini" data-shop="clear_title">Remove</button></div>':''}
+    ${S.blade?'<div class="item"><div class="ico">✕</div><div class="itxt"><h4>Default blade</h4><p>Back to crimson.</p></div><button class="mini" data-shop="clear_blade">Reset</button></div>':''}
   </section>
-  <section class="win">
-    <h2 class="win-title">Your Profile<small>Change these any time.</small></h2>
-    <div class="item"><div class="ico">◈</div><div style="flex:1"><h4>Goal: ${GOALS[S.goal].n}</h4><p>Shapes what shows up in your daily quest.</p></div><button class="buy" data-cyclegoal>Change</button></div>
-    <div class="item"><div class="ico">▤</div><div style="flex:1"><h4>Equipment</h4><p>${S.eq.length?esc(S.eq.map(x=>EQNAME[x]).join(', ')):'Bodyweight only'}</p></div><button class="buy" data-editeq>Edit</button></div>
-    <div class="item"><div class="ico">◷</div><div style="flex:1"><h4>${S.days} days a week</h4><p>Streak survives up to ${gap()} day${gap()>1?'s':''} between sessions.</p></div><button class="buy" data-cycledays>Change</button></div>
-    <div class="item"><div class="ico">?</div><div style="flex:1"><h4>Replay the tutorial</h4><p>Walks you through the app again in about a minute.</p></div><button class="buy" data-replaytour>Replay</button></div>
-    <div class="item"><div class="ico">⟲</div><div style="flex:1"><h4>Start over</h4><p>Wipes your level, gold, and records on this device. Cannot be undone.</p></div><button class="buy warnbtn" data-reset>Reset</button></div>
+  <section class="block">
+    <div class="blockhead"><h2>Your Profile</h2></div>
+    <div class="item"><div class="ico">◈</div><div class="itxt"><h4>Goal: ${GOALS[S.goal].n}</h4><p>Shapes your daily quest.</p></div><button class="mini" data-cyclegoal>Change</button></div>
+    <div class="item"><div class="ico">▤</div><div class="itxt"><h4>Equipment</h4><p>${S.eq.length?esc(S.eq.map(x=>EQNAME[x]).join(', ')):'Bodyweight only'}</p></div><button class="mini" data-editeq>Edit</button></div>
+    <div class="item"><div class="ico">◷</div><div class="itxt"><h4>${S.days} days a week</h4><p>Aura survives ${gapAllowed()} idle day${gapAllowed()>1?'s':''}.</p></div><button class="mini" data-cycledays>Change</button></div>
+    <div class="item"><div class="ico">?</div><div class="itxt"><h4>Replay the tutorial</h4><p>About a minute.</p></div><button class="mini" data-replaytour>Replay</button></div>
+    <div class="item"><div class="ico">⟲</div><div class="itxt"><h4>Start over</h4><p>Wipes your level, gold and records on this device.</p></div><button class="mini danger" data-reset>Reset</button></div>
   </section>
-  <section class="win">
-    <h2 class="win-title">How gold works<small></small></h2>
-    <p style="font-size:14px;line-height:1.6;margin:0;color:var(--mute)">Logging a movement pays 10 gold. Finishing the whole daily quest pays 80 XP and 50 gold. Clearing the Instant Dungeon pays 40. Beating a record pays 3 per point. There's no way to buy gold — only to earn it.</p>
+  <section class="block">
+    <div class="blockhead"><h2>How gold works</h2></div>
+    <p class="note big">Logging a skill pays 10 gold. Clearing the full daily quest pays 80 XP and 50 gold. The Instant Dungeon pays 40. Beating a record pays 3 per point. There's no way to buy gold, only to earn it.</p>
   </section>`;
 }
 function viewEqEdit(){
-  return `<section class="win"><h2 class="win-title">Your Equipment<small>Tap what you can get to. This changes your quests and your library.</small></h2>
-  <div class="opts">${Object.entries(EQNAME).map(([k,v])=>`<button class="opt ${S.eq.includes(k)?'on':''}" data-toggleeq="${k}"><span>${v}</span><span class="tick">✓</span></button>`).join('')}</div>
-  <button class="btn" data-eqdone>Save kit</button></section>`;
+  return `<section class="block top">
+    <div class="blockhead"><h2>Your Equipment</h2></div>
+    <p class="note" style="margin-top:0">Tap what you can get to. Changes your quests and your library.</p>
+    <div class="opts">${Object.entries(EQNAME).map(([k,v])=>
+      `<button class="opt ${S.eq.includes(k)?'on':''}" data-toggleeq="${k}"><span>${v}</span><span class="tick">✦</span></button>`).join('')}</div>
+    <button class="btn" data-eqdone>Save kit</button></section>`;
 }
 
+/* ----- shareable card ----- */
+function showCard(){
+  const r=rankOf(S.lvl),t=auraTier();
+  const title=S.title?(SHOP.find(x=>x.id===S.title)||{}).n:RANK_TITLE[r];
+  const top=Object.entries(S.stats).sort((a,b)=>b[1]-a[1])[0];
+  const v=document.createElement('div');v.className='cardveil';v.dataset.veil='1';
+  v.innerHTML=`<div class="cardwrap">
+    <div class="hcard">
+      <div class="hc-top">
+        <span class="hc-brand">ASCENDANT</span>
+        <span class="hc-rank">${r}-RANK</span>
+      </div>
+      <div class="hc-blade">${bladeSVG()}</div>
+      <div class="hc-id">
+        <h3>${esc(S.name||'HUNTER')}</h3>
+        <p>${esc(title)} · Level ${S.lvl}</p>
+      </div>
+      <div class="hc-stats">
+        ${Object.entries(S.stats).map(([k,val])=>`<div><u>${k}</u><b>${val}</b></div>`).join('')}
+      </div>
+      <div class="hc-rows">
+        <div><span>Aura</span><b>${t.n}</b></div>
+        <div><span>Streak</span><b>${S.streak}d</b></div>
+        <div><span>Best</span><b>${S.best}d</b></div>
+        <div><span>Skills logged</span><b>${S.logs}</b></div>
+        <div><span>Top stat</span><b>${top[0]} ${top[1]}</b></div>
+        <div><span>Gold</span><b>${S.gold.toLocaleString()}</b></div>
+      </div>
+      <div class="hc-prs">
+        <div><span>Push-ups</span><b>${S.prs.pushup||'—'}</b></div>
+        <div><span>Squats</span><b>${S.prs.squat||'—'}</b></div>
+        <div><span>Plank</span><b>${S.prs.plank?S.prs.plank+'s':'—'}</b></div>
+      </div>
+      <div class="hc-foot">Screenshot this. Send it to someone who won't beat it.</div>
+    </div>
+    <button class="btn ghost" data-close>Close</button>
+  </div>`;
+  document.body.appendChild(v);
+}
+
+/* ----- render ----- */
 function render(){
-  applyTheme();
-  if(!S.setup){root.innerHTML=viewOB();const n=document.getElementById('obname');if(n){n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');b.disabled=!ob.name.trim()}}return}
-  const body=tab==='quest'?viewQuest():tab==='lib'?viewLib():tab==='rec'?viewRecords():tab==='eqedit'?viewEqEdit():viewShop();
-  root.innerHTML=EQCSS+body+`<nav class="tabs">
-    <button data-tab="quest" class="${tab==='quest'?'on':''}">QUEST</button>
-    <button data-tab="lib" class="${tab==='lib'?'on':''}">SKILLS</button>
-    <button data-tab="rec" class="${tab==='rec'?'on':''}">RECORDS</button>
-    <button data-tab="shop" class="${tab==='shop'||tab==='eqedit'?'on':''}">VAULT</button></nav>`;
+  applyBlade();
+  if(!S.setup){root.innerHTML=viewOB();
+    const n=document.getElementById('obname');
+    if(n)n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');if(b)b.disabled=!ob.name.trim()};
+    return}
+  const body=tab==='quest'?viewQuest():tab==='lib'?viewLib():tab==='rec'?viewRecords():
+             tab==='eqedit'?viewEqEdit():viewVault();
+  root.innerHTML=body+`<nav class="tabs">
+    <button data-tab="quest" class="${tab==='quest'?'on':''}">Quest</button>
+    <button data-tab="lib" class="${tab==='lib'?'on':''}">Skills</button>
+    <button data-tab="rec" class="${tab==='rec'?'on':''}">Records</button>
+    <button data-tab="vault" class="${tab==='vault'||tab==='eqedit'?'on':''}">Vault</button></nav>`;
   rigs=[];
   root.querySelectorAll('svg[data-fig]').forEach(svg=>{
     const e=EX.find(x=>x.id===svg.dataset.fig);if(!e)return;
-    svg.innerHTML=figSVG(e.p,e.pp);styleSvg(svg);mount(svg,e.f,parseFloat(svg.dataset.phase||0),e.p);
+    svg.outerHTML=figSVG(e.p,e.pp).replace('<svg ',`<svg data-fig="${e.id}" data-phase="${svg.dataset.phase||0}" `);
   });
+  root.querySelectorAll('svg[data-fig]').forEach(svg=>{
+    const e=EX.find(x=>x.id===svg.dataset.fig);if(!e)return;
+    mountFig(svg,e.f,parseFloat(svg.dataset.phase||0),e.p);
+  });
+  bindAura();
   if(open)renderSheet();
   if(pendingLevel!==null)showLevelUp();
 }
@@ -873,127 +1209,169 @@ function renderSheet(){
   const e=EX.find(x=>x.id===open);if(!e)return;
   const lockedRank=!unlocked(e.r),lockedEq=!hasEq(e);
   const q=rollQuest(),inQ=q.some(x=>x.id===e.id),doneToday=S.questDone.includes(e.id);
-  const v=document.createElement('div');v.className='veil';v.dataset.veil='1';
   const kit=e.eq.length?e.eq.map(x=>EQNAME[x]).join(' + '):'no equipment';
-  v.innerHTML=`<div class="sheet">${EQCSS}
+  const v=document.createElement('div');v.className='veil';v.dataset.veil='1';
+  v.innerHTML=`<div class="sheet">
+    <div class="sheet-rank rk-${e.r}">${e.r}</div>
     <h2>${esc(e.n)}</h2>
-    <div class="sub">${e.r}-Rank · ${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
-    <div class="demo"><svg data-sheetfig viewBox="0 0 100 100"></svg></div>
+    <div class="sub">${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
+    <div class="demo">${figSVG(e.p,e.pp).replace('<svg ','<svg data-sheetfig ')}</div>
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
-    <div class="sub" style="margin:0 0 12px">Target for now: <b style="color:var(--gold)">${esc(e.d)}</b></div>
+    <div class="dose">Target for now <b>${esc(e.d)}</b></div>
     ${lockedRank?`<button class="btn" disabled>Unlocks at level ${RANK_LV[e.r]}</button>`
-      :lockedEq?`<button class="btn" disabled>Needs ${esc(kit)}</button>`
-      :`<button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
+     :lockedEq?`<button class="btn" disabled>Needs ${esc(kit)}</button>`
+     :`<button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
     <button class="btn ghost" data-close>Close</button></div>`;
   document.body.appendChild(v);
   const svg=v.querySelector('[data-sheetfig]');
-  svg.innerHTML=figSVG(e.p,e.pp);styleSvg(svg);mount(svg,e.f,0,e.p);
+  mountFig(svg,e.f,0,e.p);
 }
-function closeSheet(){document.querySelectorAll('[data-veil]').forEach(v=>{v.querySelectorAll('svg').forEach(s=>{rigs=rigs.filter(r=>r.svg!==s)});v.remove()});open=null}
-function showLevelUp(){
-  const lv=pendingLevel;pendingLevel=null;
-  const r=rankOf(lv),prev=rankOf(lv-1);
-  const d=document.createElement('div');d.className='lvlup';
-  d.innerHTML=`<div>LEVEL ${lv}<p>${r!==prev?'Rank up. You are now '+RANK_NAME[r]+'. New skills unlocked in the library.':'All stats increased by 1.'}</p></div>`;
-  document.body.appendChild(d);
-  const bye=()=>{d.remove();if(r!==prev)render()};
-  d.addEventListener('click',bye);setTimeout(()=>{if(d.isConnected)bye()},2600);
+function closeSheet(){
+  document.querySelectorAll('[data-veil]').forEach(v=>{
+    v.querySelectorAll('svg').forEach(s=>{rigs=rigs.filter(r=>r.svg!==s)});v.remove()});
+  open=null;
 }
 
-/* ---------------- system intro ---------------- */
+/* ----- level up ----- */
+let shards=[],BW,BH,burstOn=false,bx,bc;
+function sizeBurst(){if(!bc)return;BW=bc.width=innerWidth*2;BH=bc.height=innerHeight*2}
+function shardBurst(n,spd){
+  for(let i=0;i<n;i++){const a=Math.random()*6.3,s=spd*(.35+Math.random());
+    shards.push({x:BW/2,y:BH*.42,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,
+      r:1+Math.random()*3.2,dec:.008+Math.random()*.012})}
+}
+function burstLoop(){
+  if(!burstOn||!bc||!bc.isConnected)return;
+  bx.clearRect(0,0,BW,BH);
+  for(let i=shards.length-1;i>=0;i--){
+    const p=shards[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.975;p.vy*=.975;p.life-=p.dec;
+    if(p.life<=0){shards.splice(i,1);continue}
+    bx.globalAlpha=p.life;
+    bx.fillStyle=p.life>.7?cssv('--core'):p.life>.35?cssv('--magenta'):cssv('--crimson');
+    bx.beginPath();bx.arc(p.x,p.y,p.r*2.2,0,6.3);bx.fill();
+  }
+  requestAnimationFrame(burstLoop);
+}
+function showLevelUp(){
+  const lv=pendingLevel;pendingLevel=null;
+  const r=rankOf(lv),prev=rankOf(lv-1),ranked=r!==prev;
+  const el=document.createElement('div');el.className='awaken';
+  el.innerHTML=`<canvas id="burst"></canvas><div class="aflash"></div>
+    <div class="acore"></div><div class="aring r1"></div><div class="aring r2"></div>
+    <div class="atext">
+      <span class="asmall">${ranked?'Rank up':'Level up'}</span>
+      <span class="abig">LEVEL ${lv}</span>
+      <span class="asub">${ranked?`Now <b>${r}-Rank · ${RANK_TITLE[r]}</b>`:'Every stat increased by 1'}</span>
+      <div class="aloot">
+        <span class="aloot-i">All stats +1</span>
+        ${ranked?'<span class="aloot-i">New skills unlocked</span>':''}
+      </div>
+    </div>`;
+  document.body.appendChild(el);
+  bc=el.querySelector('#burst');bx=bc.getContext('2d');sizeBurst();
+  shards=[];burstOn=true;requestAnimationFrame(burstLoop);
+  const core=el.querySelector('.acore'),flash=el.querySelector('.aflash'),
+        txt=el.querySelector('.atext'),r1=el.querySelector('.r1'),r2=el.querySelector('.r2');
+  setTimeout(()=>{core.style.transition='transform 1.05s cubic-bezier(.35,.8,.3,1)';
+    core.style.transform='translate(-50%,-50%) scale(1)';shardBurst(40,3)},120);
+  setTimeout(()=>{core.style.transition='transform .22s ease-in';
+    core.style.transform='translate(-50%,-50%) scale(.35)'},1150);
+  setTimeout(()=>{
+    if(navigator.vibrate)navigator.vibrate([0,45,40,110]);
+    core.style.transition='transform .5s cubic-bezier(.15,1.1,.4,1)';
+    core.style.transform='translate(-50%,-50%) scale(3.4)';
+    flash.style.opacity=.92;shardBurst(220,26);
+    setTimeout(()=>{flash.style.transition='opacity .55s';flash.style.opacity=0},60);
+    [r1,r2].forEach((rr,i)=>setTimeout(()=>{
+      rr.style.transition='transform 1.15s cubic-bezier(.1,.8,.25,1), opacity 1.15s';
+      rr.style.opacity=.85;rr.style.transform='translate(-50%,-50%) scale(6)';
+      setTimeout(()=>{rr.style.opacity=0},420)},i*170));
+  },1400);
+  setTimeout(()=>{core.style.transition='transform 1.2s ease-out, opacity 1.2s';
+    core.style.transform='translate(-50%,-50%) scale(1.5)';core.style.opacity=.3},1960);
+  setTimeout(()=>{txt.style.opacity=1},2120);
+  const bye=()=>{burstOn=false;el.remove();if(ranked)render()};
+  el.addEventListener('click',bye);
+  setTimeout(()=>{if(el.isConnected)bye()},5400);
+}
+
+/* ----- intro + tour ----- */
 function showIntro(){
   const lines=[
-    ['[ NOTIFICATION ]','head'],
-    ['You have been selected as a Player.','big'],
-    ['Daily quests will be issued at midnight. Complete them and you grow stronger. Ignore them and you stay exactly as you are.',''],
-    ['Rewards are earned. Never given.','']
+    ['You have awakened.','big'],
+    ['A quest will be issued each day. Clear it and your aura grows. Ignore it and the light goes out.',''],
+    ['Nothing here is given. All of it is earned.','']
   ];
   const d=document.createElement('div');d.className='sysmsg';
   d.innerHTML=`<div class="sysbox">
-    <div class="syshead" style="opacity:0;animation:lineIn .4s forwards">[ NOTIFICATION ]</div>
-    ${lines.slice(1).map((l,i)=>`<p class="sysline ${l[1]}" style="animation-delay:${.5+i*.9}s">${esc(l[0])}</p>`).join('')}
-    <div class="sysbtns" style="animation-delay:${.5+(lines.length-1)*.9}s">
-      <button class="btn" data-accept>Accept</button>
-    </div></div>`;
+    <div class="syshead" style="animation:lineIn .4s forwards">The System</div>
+    ${lines.map((l,i)=>`<p class="sysline ${l[1]}" style="animation-delay:${.45+i*.95}s">${esc(l[0])}</p>`).join('')}
+    <div class="sysbtns" style="animation-delay:${.45+lines.length*.95}s">
+      <button class="btn" data-accept>Accept</button></div></div>`;
   document.body.appendChild(d);
 }
-
-/* ---------------- guided tour ---------------- */
 const TOUR=[
- {sel:'.rankbadge',t:'This is you',x:'Your rank, level and stats. Every set you log feeds this card. Rank goes E → D → C → B → A as you level.'},
- {sel:'.bar',t:'Experience',x:'Fills every time you log a movement. Fill it completely and you level up, which unlocks harder skills in the library.'},
- {sel:'.qrow',t:'Your daily quest',x:'Four or five movements picked for your goal and the gear you said you have. It rebuilds itself every morning.'},
- {sel:'.qrow',t:'Tap any row',x:'It opens a demo of the movement — an animated figure, form cues, and how many sets to do. That is where you log it.'},
- {sel:'.qcheck',t:'Then check it off',x:'Logging pays XP and gold. Finish every row in the quest and you get a bonus on top. That is the whole loop.'},
- {sel:'[data-dungeon]',t:'Instant dungeon',x:'Optional. Six minutes of circuits on days you have extra in the tank. Skip it whenever you want.'},
- {sel:'[data-tab="lib"]',t:'The library',x:'68 movements from wall push-ups to power cleans. Filter by what you can actually do, or browse everything and see what unlocks later.'},
- {sel:'[data-tab="rec"]',t:'Records',t2:1,x:'Max push-ups, max squats, longest plank. Test them every couple of weeks — beating an old number pays gold per point.'},
- {sel:'[data-tab="shop"]',t:'The vault',x:'Spend gold on titles and color themes. You can also change your goal, edit your equipment, or reset everything from here.'}
+ {sel:'.blade',t:'This is your blade',x:'It burns as long as you keep training. Let the streak die and it goes dark and dull.'},
+ {sel:'.lvlrow',t:'Level, XP and gold',x:'Every skill you log pays both. Fill the bar and you level up, which unlocks harder skills.'},
+ {sel:'.props',t:'Your stats',x:'STR, END, VIT, AGI and CORE grow from the kind of work you actually do. Level ups raise all five.'},
+ {sel:'.work',t:'The daily quest',x:'Five skills picked for your goal and your equipment. Rebuilt every morning at midnight.'},
+ {sel:'.w',t:'Tap any row',x:'Opens the demo with an animated figure and form cues. That is where you log it.'},
+ {sel:'[data-dungeon]',t:'Instant dungeon',x:'Optional six-minute bonus on days you have extra in the tank.'},
+ {sel:'[data-tab="lib"]',t:'The library',x:'73 skills from wall push-ups to power cleans, ranked E through A.'},
+ {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Also where you generate a card to screenshot and send to the group chat.'},
+ {sel:'[data-tab="vault"]',t:'The vault',x:'Spend gold on titles and blade colors. Change your goal, kit or rest days here too.'}
 ];
 let tour={on:false,i:0,els:null};
 function startTour(){
-  S.tourSeen=true;save();
-  tour.on=true;tour.i=0;tab='quest';closeSheet();render();
+  S.tourSeen=true;save();tour.on=true;tour.i=0;tab='quest';closeSheet();render();
   const block=document.createElement('div');block.className='tourblock';
   const spot=document.createElement('div');spot.className='spot';
   const tip=document.createElement('div');tip.className='tip';
-  document.body.append(block,spot,tip);
-  tour.els={block,spot,tip};
-  window.addEventListener('resize',placeTour);
-  window.addEventListener('scroll',placeTour,true);
+  document.body.append(block,spot,tip);tour.els={block,spot,tip};
+  addEventListener('resize',placeTour);addEventListener('scroll',placeTour,true);
   stepTour(0);
 }
 function stepTour(i){
-  tour.i=i;
-  const s=TOUR[i],{tip}=tour.els;
+  tour.i=i;const s=TOUR[i],{tip}=tour.els;
   tip.innerHTML=`<h4>${esc(s.t)}</h4><p>${esc(s.x)}</p>
-    <div class="tiprow">
-      <span class="dots2">${TOUR.map((_,k)=>`<i class="${k<=i?'on':''}"></i>`).join('')}</span>
-      ${i<TOUR.length-1?'<button data-tskip>Skip</button>':''}
-      <button class="go" data-tnext>${i<TOUR.length-1?'Next':'Let\'s go'}</button>
-    </div>`;
+    <div class="tiprow"><span class="dots2">${TOUR.map((_,k)=>`<i class="${k<=i?'on':''}"></i>`).join('')}</span>
+    ${i<TOUR.length-1?'<button data-tskip>Skip</button>':''}
+    <button class="go" data-tnext>${i<TOUR.length-1?'Next':'Begin'}</button></div>`;
   const el=document.querySelector(s.sel);
   if(el)el.scrollIntoView({block:'center',behavior:'smooth'});
-  setTimeout(placeTour,el?260:0);
+  setTimeout(placeTour,el?280:0);
 }
 function placeTour(){
   if(!tour.on)return;
-  const s=TOUR[tour.i],{spot,tip}=tour.els;
-  const el=document.querySelector(s.sel);
-  if(!el){spot.style.opacity=0;tip.style.top='50%';tip.style.left='50%';tip.style.transform='translate(-50%,-50%)';return}
-  spot.style.opacity=1;tip.style.transform='none';
+  const s=TOUR[tour.i],{spot,tip}=tour.els,el=document.querySelector(s.sel);
+  if(!el){spot.style.opacity=0;return}
+  spot.style.opacity=1;
   const r=el.getBoundingClientRect(),pad=7;
   spot.style.top=(r.top-pad)+'px';spot.style.left=(r.left-pad)+'px';
   spot.style.width=(r.width+pad*2)+'px';spot.style.height=(r.height+pad*2)+'px';
   const th=tip.offsetHeight||150,tw=tip.offsetWidth||320;
   let top=r.bottom+16;
-  if(top+th>window.innerHeight-12)top=Math.max(12,r.top-th-16);
+  if(top+th>innerHeight-12)top=Math.max(12,r.top-th-16);
   let left=r.left+r.width/2-tw/2;
-  left=Math.min(Math.max(12,left),window.innerWidth-tw-12);
+  left=Math.min(Math.max(12,left),innerWidth-tw-12);
   tip.style.top=top+'px';tip.style.left=left+'px';
 }
 function endTour(){
-  if(!tour.on)return;
-  tour.on=false;
-  Object.values(tour.els).forEach(e=>e.remove());
-  tour.els=null;
-  window.removeEventListener('resize',placeTour);
-  window.removeEventListener('scroll',placeTour,true);
+  if(!tour.on)return;tour.on=false;
+  Object.values(tour.els).forEach(e=>e.remove());tour.els=null;
+  removeEventListener('resize',placeTour);removeEventListener('scroll',placeTour,true);
 }
 
 /* ---------------- events ---------------- */
 document.addEventListener('click',ev=>{
   const t=ev.target;
-  // intro + tour
   if(t.closest('[data-accept]')){document.querySelector('.sysmsg')?.remove();startTour();return}
-  if(t.closest('[data-tskip]')){endTour();toast('Tutorial skipped. Replay it any time from the Vault.');return}
+  if(t.closest('[data-tskip]')){endTour();toast('Skipped. Replay it from the Vault.');return}
   if(t.closest('[data-tnext]')){
-    if(tour.i>=TOUR.length-1){endTour();toast('You are set. Go clear your first quest.')}
-    else stepTour(tour.i+1);
-    return}
+    if(tour.i>=TOUR.length-1){endTour();toast('Go clear your first quest.')}else stepTour(tour.i+1);return}
   if(t.closest('[data-replaytour]')){tab='quest';render();startTour();return}
   if(tour.on)return;
-  // onboarding
+
   const o=t.closest('[data-ob]');
   if(o){const [k,v]=o.dataset.ob.split(':');
     if(k==='eq'){const i=ob.eq.indexOf(v);i>=0?ob.eq.splice(i,1):ob.eq.push(v)}
@@ -1005,11 +1383,13 @@ document.addEventListener('click',ev=>{
     ob.step++;render();return}
   if(t.closest('[data-obback]')){ob.step=Math.max(0,ob.step-1);render();return}
 
-  const tb=t.closest('[data-tab]');if(tb){tab=tb.dataset.tab;closeSheet();render();return}
+  const tb=t.closest('[data-tab]');if(tb){tab=tb.dataset.tab;closeSheet();render();scrollTo(0,0);return}
   const f=t.closest('[data-f]');if(f){const [k,v]=f.dataset.f.split(':');filt[k]=v;render();return}
   const ex=t.closest('[data-ex]');if(ex){open=ex.dataset.ex;renderSheet();return}
   const qr=t.closest('[data-q]');if(qr){open=qr.dataset.q;renderSheet();return}
-  if(t.closest('[data-close]')||t.dataset.veil==='1'){closeSheet();return}
+  if(t.closest('[data-card]')){showCard();return}
+  if(t.closest('[data-close]')||t.dataset.veil==='1'){closeSheet();
+    document.querySelectorAll('.cardveil').forEach(v=>v.remove());return}
 
   const lg=t.closest('[data-log]');
   if(lg){
@@ -1017,11 +1397,13 @@ document.addEventListener('click',ev=>{
     touchStreak();
     if(inQ&&!S.questDone.includes(e.id))S.questDone.push(e.id);
     award(inQ?25:15,10,e.st);
-    if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){S.questBonus=true;award(80,50,null);toast('Daily Quest complete · +80 XP · +50 gold')}
-    else toast(e.n+' logged · +'+(inQ?25:15)+' XP · +10 gold');
+    if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
+      S.questBonus=true;S.clears++;award(80,50,null);toast('Daily quest cleared · +80 XP · +50 gold')}
+    else toast(e.n+' · +'+(inQ?25:15)+' XP · +10 gold');
     closeSheet();render();return}
 
-  if(t.closest('[data-dungeon]')){touchStreak();award(60,40,'END');toast('Dungeon cleared · +60 XP · +40 gold');render();return}
+  if(t.closest('[data-dungeon]')){touchStreak();award(60,40,'END');
+    toast('Dungeon cleared · +60 XP · +40 gold');render();return}
 
   const ps=t.closest('[data-prsave]');
   if(ps){const k=ps.dataset.prsave,inp=document.querySelector(`[data-pr="${k}"]`),v=parseInt(inp.value,10);
@@ -1034,40 +1416,44 @@ document.addEventListener('click',ev=>{
   const sh=t.closest('[data-shop]');
   if(sh){const id=sh.dataset.shop;
     if(id==='clear_title'){S.title=null;save();render();return}
-    if(id==='clear_theme'){S.theme=null;save();render();return}
+    if(id==='clear_blade'){S.blade=null;save();render();return}
     const it=SHOP.find(x=>x.id===id),owned=S.owned.includes(id);
-    if(it.k==='potion'){if(S.gold<it.p){toast('Not enough gold');return}S.gold-=it.p;S.potions++;toast('Potion of Rest acquired');save();render();return}
-    if(!owned){if(S.gold<it.p){toast('Not enough gold');return}S.gold-=it.p;S.owned.push(id);toast(it.n+' acquired')}
+    if(it.k==='potion'){if(S.gold<it.p){toast('Not enough gold');return}
+      S.gold-=it.p;S.potions++;toast('Elixir acquired');save();render();return}
+    if(!owned){if(S.gold<it.p){toast('Not enough gold');return}
+      S.gold-=it.p;S.owned.push(id);toast(it.n+' acquired')}
     if(it.k==='title')S.title=S.title===id?null:id;
-    if(it.k==='theme')S.theme=S.theme===id?null:id;
+    if(it.k==='blade')S.blade=S.blade===id?null:id;
     save();render();return}
 
-  if(t.closest('[data-cyclegoal]')){const k=Object.keys(GOALS);S.goal=k[(k.indexOf(S.goal)+1)%k.length];save();toast('Goal: '+GOALS[S.goal].n);render();return}
+  if(t.closest('[data-cyclegoal]')){const k=Object.keys(GOALS);
+    S.goal=k[(k.indexOf(S.goal)+1)%k.length];save();toast('Goal: '+GOALS[S.goal].n);render();return}
   if(t.closest('[data-cycledays]')){S.days=S.days>=6?3:S.days+1;save();render();return}
   if(t.closest('[data-editeq]')){tab='eqedit';render();return}
   const te=t.closest('[data-toggleeq]');
-  if(te){const k=te.dataset.toggleeq,i=S.eq.indexOf(k);i>=0?S.eq.splice(i,1):S.eq.push(k);save();render();return}
-  if(t.closest('[data-eqdone]')){tab='shop';save();toast('Kit updated');render();return}
+  if(te){const k=te.dataset.toggleeq,i=S.eq.indexOf(k);
+    i>=0?S.eq.splice(i,1):S.eq.push(k);save();render();return}
+  if(t.closest('[data-eqdone]')){tab='vault';save();toast('Kit updated');render();return}
   if(t.closest('[data-reset]')){
     if(!confirm('Wipe your hunter and start over? This cannot be undone.'))return;
     S={setup:false,name:'',goal:'consist',exp:'new',eq:[],days:4,lvl:1,xp:0,gold:0,streak:0,best:0,last:null,
-      stats:{STR:5,END:5,VIT:5,AGI:5,CORE:5},prs:{pushup:0,squat:0,plank:0},logs:0,questDate:null,questDone:[],
-      questBonus:false,owned:[],title:null,theme:null,potions:0};
+      stats:{STR:5,END:5,VIT:5,AGI:5,CORE:5},prs:{pushup:0,squat:0,plank:0},logs:0,questDate:null,
+      questDone:[],questBonus:false,owned:[],title:null,blade:null,potions:0,tourSeen:false,history:{},clears:0};
     ob={step:0,name:'',exp:null,goal:null,eq:[],days:null};
-    save();applyTheme();render();return}
+    save();applyBlade();render();return}
 });
 
 /* ---------------- boot ---------------- */
 (async()=>{
   await load();
   if(S.setup&&S.last){
-    const d=today(),n=daysBetween(S.last,d);
-    if(n>gap()){if(S.potions>0)S.potions--;else S.streak=0;save()}
+    const n=daysBetween(S.last,today());
+    if(n>gapAllowed()){if(S.potions>0)S.potions--;else S.streak=0;save()}
   }
   render();
   if(S.setup&&!S.tourSeen)setTimeout(startTour,400);
 })();
-</script>
 
+</script>
 </body>
 </html>
