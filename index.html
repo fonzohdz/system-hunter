@@ -431,7 +431,9 @@ const EX=[
     P(22,49,30,51,58,55,26,59,22,64,70,61,84,66,28,60,24,65,68,61,82,66)]},
 {id:'bridge',n:'Glute Bridge',r:'E',c:'legs',st:'STR',d:'3 × 12',eq:[],
  cues:['On your back, knees bent, feet flat and close to your butt.','Push through your heels and lift your hips into a ramp.','Squeeze hard at the top for a full second.','Wakes up what sitting all day puts to sleep.'],
- f:[LIE,m(LIE,{3:60,5:50,7:66,11:52,15:67,19:52})]},
+ hi:'legs',
+ f:[P(18,74,27,74,52,78,32,82,41,86,66,66,62,88,33,81,42,85,68,64,64,88),
+    P(18,74,27,74,52,64,32,82,41,86,66,64,62,88,33,81,42,85,68,62,64,88)]},
 {id:'march',n:'Standing March',r:'E',c:'cardio',st:'END',d:'3 × 45s',eq:[],
  cues:['Stand tall, drive one knee to hip height.','Swing the opposite arm like a fast walk.','Stay light and rhythmic.','Hold a wall if your balance is shaky.'],
  f:[m(ST,{6:44,8:42,14:56,16:58,18:58,19:60,20:56,21:72}),
@@ -439,15 +441,18 @@ const EX=[
 {id:'calf',n:'Calf Raise',r:'E',c:'legs',st:'END',d:'3 × 15',eq:[],
  cues:['Near a wall for balance, feet hip width.','Rise onto the balls of your feet as high as possible.','Lower over 3 seconds — that\'s where the work is.','Do them while brushing your teeth. Free reps.'],
  t:{down:1,hold:.3,up:3,rest:.4},
- f:[ST,m(ST,{1:10,3:20,5:48,7:33,9:46,11:66,13:84,15:33,17:46,19:66,21:84})]},
+ hi:'legs',
+ f:[P(50,16,50,28,50,58,40,44,38,60,45,76,45,90,60,44,62,60,55,76,55,90),
+    P(50,9,50,21,50,51,40,37,38,53,45,70,45,90,60,37,62,53,55,70,55,90)]},
 {id:'birddog',n:'Bird Dog',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['Hands and knees, back flat like a tabletop.','Reach one arm forward and the opposite leg back.','Wobbling? Go shorter, not faster.','Best move going for a cranky lower back.'],
  f:[P(26,44,34,46,62,48,30,54,28,66,70,54,78,66,32,55,30,66,68,54,76,66),
     P(24,42,32,44,62,48,24,40,14,38,70,52,88,42,32,55,30,66,68,54,76,66)]},
 {id:'deadbug',n:'Dead Bug',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['On your back, arms up, knees over hips.','Lower one arm and the opposite leg toward the floor.','Keep your lower back pressed flat the whole time.','Stop the moment your back arches.'],
- f:[P(20,60,30,60,58,62,30,50,32,40,60,50,62,40,32,52,34,42,62,52,64,42),
-    P(20,60,30,60,58,62,24,54,14,52,60,50,62,40,32,52,34,42,68,58,82,60)]},
+ hi:'core',
+ f:[P(20,74,29,74,56,76,32,64,34,52,58,62,72,60,33,63,35,51,60,62,74,60),
+    P(20,74,29,74,56,76,24,68,13,66,58,62,72,60,33,63,35,51,70,72,86,76)]},
 {id:'kneepush',n:'Knee Push-Up',r:'D',c:'push',st:'STR',d:'3 × 8',eq:[],
  cues:['Knees down, hands slightly wider than shoulders.','Straight line head to knees — no piking the hips.','Elbows travel back around 45°, not flared straight out.','The bridge between incline and full push-ups.'],
  f:[P(22,44,30,47,58,53,28,58,26,72,70,60,84,72,30,59,27,72,68,60,82,72),
@@ -552,7 +557,9 @@ const EX=[
     m(ST,{6:44,7:38,8:47,9:30,14:56,15:38,16:53,17:30})]},
 {id:'db_hammer',n:'Hammer Curl',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['db'],p:'db',
  cues:['Same as a curl but palms face each other the whole way.','Hits the forearm and the thicker part of the bicep.','No swinging. If your back moves, the weight is too heavy.','Pairs well right after regular curls.'],
- f:[m(ST,{8:43,9:52,16:57,17:52}),m(ST,{7:40,8:46,9:32,15:40,16:54,17:32})]},
+ hi:'arms',
+ f:[P(50,14,50,26,50,56,39,42,38,58,45,76,45,90,61,42,62,58,55,76,55,90),
+    P(50,14,50,26,50,56,39,44,42,32,45,76,45,90,61,44,58,32,55,76,55,90)]},
 {id:'db_goblet',n:'Goblet Squat',r:'D',c:'legs',st:'STR',d:'3 × 10',eq:['db'],p:'kb',
  cues:['Hold one dumbbell vertically against your chest like a goblet.','Squat down between your knees, elbows inside your thighs.','The weight up front keeps your chest from dumping forward.','Best squat for learning depth safely.'],
  f:[m(ST,{6:44,7:34,8:48,9:36,14:56,15:34,16:52,17:36}),
@@ -711,8 +718,9 @@ const EX=[
     P(24,44,32,48,52,58,30,54,26,62,60,54,68,44,32,55,28,63,62,56,70,46)]},
 {id:'treadmill',n:'Incline Treadmill Walk',r:'E',c:'cardio',st:'END',d:'20 min',eq:['machine'],
  cues:['Steep incline, slow speed. Brutal without the joint pounding.','Don\'t hang off the handrails — it deletes most of the work.','You should be able to talk but not sing.','The most underrated cardio in any gym.'],
- f:[P(48,14,49,24,52,52,43,36,40,48,46,72,42,88,56,36,58,48,60,68,62,84),
-    P(48,14,49,24,52,52,55,36,58,48,58,70,60,86,44,36,41,47,44,70,40,86)]},
+ hi:'legs',
+ f:[P(50,14,50,26,50,56,40,40,37,53,45,74,45,90,60,40,63,50,58,66,60,80),
+    P(50,14,50,26,50,56,40,40,37,50,42,66,40,80,60,40,63,53,56,74,56,90)]},
 {id:'rowerg',n:'Rowing Machine',r:'C',c:'cardio',st:'END',d:'5 × 3 min',eq:['machine'],p:'cable',
  cues:['Legs, then back, then arms. Reverse it on the way in.','Most of the power comes from your legs, not your arms.','Long strokes beat frantic short ones.','500m intervals with a minute rest is a great starting workout.'],
  f:[P(34,34,40,40,48,58,40,46,34,44,62,50,76,58,42,47,36,45,64,52,78,60),
@@ -981,7 +989,12 @@ let sT;function save(){clearTimeout(sT);sT=setTimeout(async()=>{
 /* ---------------- figures ---------------- */
 function pts(p){const o=[];for(let i=0;i<22;i+=2)o.push({x:p[i],y:p[i+1]});return o}
 let figSeq=0;
-function figSVG(prop,pprop){
+/* Which limbs carry the bright accent, defaulting from category so all 73 get a
+   sensible split without per-exercise authoring. An exercise overrides with `hi`. */
+const HIDEF={push:'arms',pull:'arms',legs:'legs',core:'core',cardio:'legs',full:'both'};
+const hiOf=e=>e.hi||HIDEF[e.c]||'both';
+const LIT=1, MUT=.3, LITB=.5, MUTB=.24;   // near lit / near muted / far lit / far muted
+function figSVG(prop,pprop,hi){
   const id=++figSeq;let stat='',dyn='';
   if(pprop==='bench')stat+='<rect x="14" y="66" width="60" height="5" rx="1" class="eqs"/><rect x="20" y="71" width="4" height="16" class="eqs"/><rect x="64" y="71" width="4" height="16" class="eqs"/>';
   if(prop==='fixbar')stat+='<line x1="18" y1="6" x2="82" y2="6" class="eqs2"/><line x1="20" y1="0" x2="20" y2="6" class="eqs2"/><line x1="80" y1="0" x2="80" y2="6" class="eqs2"/>';
@@ -994,21 +1007,30 @@ function figSVG(prop,pprop){
      shapes. The only addition is taper — each limb is split into two segments so
      the upper can be thicker than the lower — and the far side runs thinner and
      dimmer for depth without changing shape. Legibility at 52px beats detail. */
-  const L=(l,w)=>`<polyline data-l="${l}" stroke-width="${w}"/>`;
+  /* Hierarchy. The body is context, the working limbs are the point: a curl
+     reads as bright arms against a dim body, a squat as bright legs. Four
+     opacity levels — lit and muted, each with a dimmer far-side twin. */
+  const k=hi||'both';
+  const arms=k==='arms'||k==='both', legs=k==='legs'||k==='both', body=k==='core';
+  const aN=arms?LIT:MUT, aF=arms?LITB:MUTB;
+  const lN=legs?LIT:MUT, lF=legs?LITB:MUTB;
+  const bN=body?LIT:MUT;
+  const L=(l,w,o)=>`<polyline data-l="${l}" stroke-width="${w}" opacity="${o}"/>`;
   return `<svg viewBox="0 0 100 100" aria-hidden="true">
     <defs><linearGradient id="mn${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="var(--core)"/><stop offset="100%" stop-color="var(--crimson)"/>
     </linearGradient></defs>
     <line x1="4" y1="94" x2="96" y2="94" class="gnd"/>
     ${stat}
-    <g class="back" fill="none" stroke-linecap="round" stroke-linejoin="round">
-      ${L('1,3',4.2)}${L('3,4',3.2)}${L('2,5',4.8)}${L('5,6',3.6)}</g>
+    <g class="back" fill="none" stroke-linecap="round" stroke-linejoin="round"
+       stroke="url(#mn${id})">
+      ${L('1,3',4.2,aF)}${L('3,4',3.2,aF)}${L('2,5',4.8,lF)}${L('5,6',3.6,lF)}</g>
     <g class="front" fill="none" stroke-linecap="round" stroke-linejoin="round"
        stroke="url(#mn${id})">
-      ${L('1,2',6)}
-      ${L('1,7',5.4)}${L('7,8',4.2)}
-      ${L('2,9',6.2)}${L('9,10',4.8)}</g>
-    <circle data-head r="7.5" fill="url(#mn${id})"/>
+      ${L('1,2',6,bN)}
+      ${L('1,7',5.4,aN)}${L('7,8',4.2,aN)}
+      ${L('2,9',6.2,lN)}${L('9,10',4.8,lN)}</g>
+    <circle data-head r="7.5" fill="url(#mn${id})" opacity="${bN}"/>
     <g class="eq">${dyn}</g></svg>`;
 }
 function paintFig(svg,pose,prop){
@@ -1810,7 +1832,7 @@ function render(){
   rigs=[];
   root.querySelectorAll('svg[data-fig]').forEach(svg=>{
     const e=EX.find(x=>x.id===svg.dataset.fig);if(!e)return;
-    svg.outerHTML=figSVG(e.p,e.pp).replace('<svg ',`<svg data-fig="${e.id}" data-phase="${svg.dataset.phase||0}" `);
+    svg.outerHTML=figSVG(e.p,e.pp,hiOf(e)).replace('<svg ',`<svg data-fig="${e.id}" data-phase="${svg.dataset.phase||0}" `);
   });
   root.querySelectorAll('svg[data-fig]').forEach(svg=>{
     const e=EX.find(x=>x.id===svg.dataset.fig);if(!e)return;
@@ -1830,7 +1852,7 @@ function renderSheet(){
     <div class="sheet-rank rk-${e.r}">${e.r}</div>
     <h2>${esc(e.n)}</h2>
     <div class="sub">${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
-    <div class="demo">${figSVG(e.p,e.pp).replace('<svg ','<svg data-sheetfig ')}</div>
+    <div class="demo">${figSVG(e.p,e.pp,hiOf(e)).replace('<svg ','<svg data-sheetfig ')}</div>
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
     <div class="dose">Target for now <b>${esc(e.d)}</b></div>
     ${lockedRank?`<button class="btn" disabled>Unlocks at level ${RANK_LV[e.r]}</button>`
