@@ -143,3 +143,28 @@ branches. Small, described commits.
 In-app copy is plain and direct. No corporate tone, no exclamation-point
 enthusiasm, no "Awesome job!!" reward text. The System is terse and a little
 cold. Errors and empty states say what happened and what to do.
+
+## The figure audit
+
+`scratchpad/sheet.js` builds `figure-audit.html`: all 155 at start, midpoint and
+end, plus the live animation at the 52px card size, with the support surfaces
+drawn. Every movement carries a status — RE-AUTHORED, VERIFIED UNIQUE or
+VERIFIED SHARED. **NEEDS REVIEW must stay at zero.**
+
+`scratchpad/v9.js` and `v10.js` hold the per-movement expectations. They are
+written from each exercise, never from its `c` tag: a deadlift must keep the
+elbow above 140, a calf raise must not change the knee, a hold must not travel,
+a hanging movement must clear the floor, a support point must not drift. When
+you change a pose, run both — and then look at the audit page, because geometry
+cannot tell you whether a figure reads as its exercise.
+
+Behaviour is stated per movement, not inferred: `hold`, `alternating`,
+`locomotion`, `multi-phase` are explicit lists in `sheet.js`; everything else is
+a rep. Multi-phase movements carry three to five frames — the loop walks them
+forward and back, so a burpee authored plank → squat → stand → jump plays the
+whole cycle.
+
+Shared poses are legitimate only when the silhouette and mechanics are the same
+movement with a different implement (a cable curl is a curl). They are not
+legitimate across movements that merely share a muscle — a Nordic curl is not a
+glute bridge, a dip is not a push-up, a shrug is not a carry.

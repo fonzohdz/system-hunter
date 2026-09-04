@@ -26,6 +26,37 @@ holds. Add a prominent **Begin Quest** button at the top of it. If a session is
 already in progress, that button reads **Resume Quest** and returns to where
 they left off.
 
+### Kit check — first screen of the session
+
+**This replaces the persistent kit control built in Mission 2.** That control is
+currently a permanent block of five chips sitting above the quest list every
+time you open the app. It's noise: it asks a question you only need to answer
+once a day, and it asks it every time you glance at the screen.
+
+Move it into the session. Tapping **Begin Quest** opens a kit check as the first
+screen:
+
+- One question: *what do you have today?*
+- The same presets — My full kit / Hotel room / Floor space only / Cardio
+  machine only / Custom.
+- Their profile default is preselected, so the common case is one tap on
+  **Begin** and it's gone.
+- Choosing something different re-rolls the quest before the session starts.
+- Then it disappears for the rest of the day. Reopening or resuming a session
+  does not ask again.
+
+**On the quest overview**, replace the chip block with a single quiet line —
+something like "Built for: Hotel room · change" — where the change link reopens
+the picker. One line, not a panel.
+
+If they already ran the kit check today, the line reflects what they picked. If
+they haven't, it shows their profile default.
+
+Keep everything else from Mission 2's travel mode: the presets and their
+contents, the per-day scoping, the date-stamped persistence, logged-stays-logged,
+and the script-verified guarantee that every preset can fill a full
+five-movement quest at every rank.
+
 ### The run
 
 Fullscreen takeover, no tab bar. One movement at a time. States:
