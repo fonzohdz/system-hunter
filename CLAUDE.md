@@ -34,6 +34,17 @@ with muscle-map diagrams.
   detail views, and `bodyCard` is the compact version the library cards use.
   Every muscle term must stay reachable by at least one exercise, or the filter
   has a dead option.
+- **The weapon is not on the home screen.** `S.weapon` only ever picks which
+  SVG `bladeSVG()` draws — it never touches quests, XP, gold, stats or the
+  aura. On the home screen it was 270px above the fold that looked identical
+  whether you had trained for a year or never opened the app, so it was
+  removed. It still renders in the Vault picker, the onboarding preview and the
+  shareable hunter card, which is where a cosmetic belongs: the home screen is
+  for you, the card is what other people see. Weapons are still the only paid
+  appearance item, so do not remove the shop entry or the card render.
+  What responds to training in the hero block is `auraIdx()` — the sigil, the
+  halo glow and the tier scale. Keep those.
+
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
   those with fixed pixel padding.
