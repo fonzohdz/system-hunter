@@ -92,25 +92,6 @@ html,body{margin:0;background:var(--void)}
 .blade-halo{position:absolute;width:200px;height:200px;border-radius:50%;opacity:var(--glow,1);transition:opacity 1.4s;
   background:radial-gradient(closest-side, rgba(var(--m1),.5), rgba(var(--c1),.18) 46%, transparent 72%);filter:blur(26px)}
 .blade-svg{position:relative;height:250px;filter:drop-shadow(0 0 24px rgba(var(--c1),.7))}
-/* The hunter. Body tones are deliberately near-black so the armour, which is
-   palette-coloured, is the thing that reads as you rank up. */
-.hero-svg{position:relative;height:250px;--hf-body:#180C13;--hf-dark:#0C0509;
-  filter:drop-shadow(0 0 22px rgba(var(--c1),.55))}
-.hero-svg.lit{filter:drop-shadow(0 0 26px rgba(var(--c1),.8))}
-.hf-idle{animation:hfIdle 5.6s ease-in-out infinite;transform-origin:55px 264px}
-.hf-breathe{animation:hfBreathe 4.2s ease-in-out infinite;transform-origin:55px 150px}
-.hf-head{animation:hfHead 6.8s ease-in-out infinite;transform-origin:55px 86px}
-.hf-cape{animation:hfCape 7.4s ease-in-out infinite;transform-origin:55px 100px}
-@keyframes hfIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
-@keyframes hfBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.028)}}
-@keyframes hfHead{0%,100%{transform:rotate(0deg)}30%{transform:rotate(-1.6deg)}
-  65%{transform:rotate(1.2deg)}}
-@keyframes hfCape{0%,100%{transform:skewX(0deg)}35%{transform:skewX(2.2deg)}
-  70%{transform:skewX(-1.6deg)}}
-.gearline{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ash2);
-  margin:0 0 4px;text-align:center}
-.gearline b{color:var(--magenta);font-weight:600}
-.hc-blade .hero-svg{height:150px;filter:drop-shadow(0 0 22px rgba(var(--c1),.75))}
 .name-etch{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
   font-family:var(--display);font-size:12px;letter-spacing:.5em;text-indent:.5em;color:var(--ash)}
 .aurawrap{position:relative;z-index:1}
@@ -515,7 +496,6 @@ html,body{margin:0;background:var(--void)}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
   .sigil{animation:none}
-  .hf-idle,.hf-breathe,.hf-head,.hf-cape{animation:none}
   .acore,.aring,#burst{display:none}
   .atext{transition:none;opacity:1 !important}
   .aflash{display:none}
@@ -2037,8 +2017,8 @@ const WEAPONDEFS=`<defs>
 const WEAPONS={
  /* straight double-edged blade with a fuller and a crossguard */
  longsword:`
-  <path d="M60 8 L73 74 L73 214 L60 244 L47 214 L47 74 Z" fill="url(#edge)"/>
-  <rect x="58" y="70" width="4" height="146" fill="url(#fuller)"/>
+  <path d="M60 8 L82 74 L82 214 L60 244 L38 214 L38 74 Z" fill="url(#edge)"/>
+  <rect x="57" y="70" width="6" height="146" fill="url(#fuller)"/>
   <path d="M26 216 L94 216 L88 230 L32 230 Z" fill="var(--guard)"/>
   <rect x="53" y="230" width="14" height="48" rx="3" fill="var(--grip)"/>
   <circle cx="60" cy="284" r="9" fill="var(--pommel)"/>
@@ -2050,28 +2030,28 @@ const WEAPONS={
     side and tapered to the kissaki. Edge on the convex side, spine on the
     concave, which is the difference between a katana and a glowing plank. */
  katana:`
-  <path d="M47 206 C50 140 60 76 74 28 L84 33 C70 80 61 142 59 206 Z" fill="url(#edgeX)"/>
-  <path d="M74 28 L84 33 L80 20 Z" fill="var(--core)" opacity=".9"/>
-  <path d="M52 204 C55 140 64 78 77 32" fill="none" stroke="var(--core)"
-        stroke-width="1.2" opacity=".38"/>
-  <ellipse cx="53" cy="212" rx="17" ry="5.5" fill="var(--guard)"/>
-  <ellipse cx="53" cy="212" rx="8" ry="3" fill="var(--pommel)"/>
-  <rect x="45" y="216" width="16" height="60" rx="3" fill="var(--grip)"/>
-  <g fill="var(--guard)">
-    <path d="M53 220 L60 227 L53 234 L46 227 Z"/>
-    <path d="M53 236 L60 243 L53 250 L46 243 Z"/>
-    <path d="M53 252 L60 259 L53 266 L46 259 Z"/></g>
-  <rect x="44" y="272" width="18" height="7" rx="2" fill="var(--pommel)"/>`,
+  <path d="M60.4 204L59.4 181.1L59.7 157.7L60.9 134.1L62.9 110.9L65.7 88.7L69.2 67.9L73.3 49L78.2 32.4L83.6 18.8L80.4 17.2L73.8 30.8L67.8 47.4L62.4 66.4L57.7 87.3L53.6 109.7L50.2 133L47.4 156.8L45.4 180.7L43.6 204Z" fill="url(#edgeX)"/>
+  <path d="M55.7 204L56.4 181L57.1 157.5L58 133.8L59.8 110.5L62.9 88.2L67.1 67.4L72 48.6L77.3 32.1L82.8 18.4"
+        fill="none" stroke="var(--core)" stroke-width="1.4" opacity=".4"/>
+  <path d="M83.6 18.8L80.4 17.2L73.8 30.8Z" fill="var(--core)" opacity=".85"/>
+  <rect x="43.4" y="198" width="17.2" height="13" rx="1" fill="var(--pommel)"/>
+  <path d="M52 208L68 220L52 232L36 220Z" fill="var(--guard)"/>
+  <path d="M52 213L62 220L52 227L42 220Z" fill="var(--pommel)"/>
+  <rect x="44" y="229" width="16" height="56" rx="2" fill="var(--guard)"/>
+  <g fill="var(--grip)">
+    <path d="M52 230L58.5 236L52 242L45.5 236Z"/><path d="M52 244L58.5 250L52 256L45.5 250Z"/>
+    <path d="M52 258L58.5 264L52 270L45.5 264Z"/><path d="M52 272L58.5 278L52 284L45.5 278Z"/></g>
+  <rect x="43" y="283" width="18" height="8" rx="2" fill="var(--pommel)"/>`,
 
  /* blunt mass on a long haft — the heaviest silhouette of the six */
  hammer:`
-  <rect x="53" y="60" width="14" height="212" rx="2" fill="var(--guard)"/>
-  <rect x="58" y="62" width="3" height="208" fill="var(--pommel)" opacity=".8"/>
+  <rect x="53" y="60" width="14" height="212" rx="2" fill="var(--grip)"/>
   <path d="M20 40 L30 28 L90 28 L100 40 L100 84 L90 96 L30 96 L20 84 Z" fill="url(#edge)"/>
   <path d="M20 40 L30 28 L90 28 L100 40 Z" fill="var(--core)" opacity=".28"/>
-  <rect x="27" y="46" width="10" height="32" rx="2" fill="var(--deepblade)" opacity=".45"/>
-  <rect x="83" y="46" width="10" height="32" rx="2" fill="var(--deepblade)" opacity=".45"/>
-  <path d="M60 48 L69 62 L60 76 L51 62 Z" fill="var(--core)" opacity=".92"/>
+  <rect x="26" y="44" width="13" height="36" rx="2" fill="var(--guard)"/>
+  <rect x="81" y="44" width="13" height="36" rx="2" fill="var(--guard)"/>
+  <rect x="51" y="24" width="18" height="76" rx="2" fill="var(--pommel)"/>
+  <path d="M60 50 L67 62 L60 74 L53 62 Z" fill="var(--core)"/>
   <rect x="47" y="98" width="26" height="8" rx="2" fill="var(--guard)"/>
   <rect x="47" y="244" width="26" height="8" rx="2" fill="var(--guard)"/>
   <circle cx="60" cy="278" r="10" fill="var(--pommel)"/>
@@ -2095,36 +2075,10 @@ const WEAPONS={
   <rect x="48" y="208" width="24" height="9" rx="2" fill="var(--pommel)"/>
   <path d="M52 274 L68 274 L60 294 Z" fill="var(--pommel)"/>`,
 
- /* One dagger. The Stalker carries two, one per hand, so this is the unit. */
- dagger1:`
-   <path d="M60 44 L68 100 L68 176 L60 190 L52 176 L52 100 Z" fill="url(#edge)"/>
-   <rect x="58" y="98" width="4" height="76" fill="url(#fuller)"/>
-   <path d="M38 178 L82 178 L77 189 L43 189 Z" fill="var(--guard)"/>
-   <rect x="53" y="189" width="14" height="42" rx="3" fill="var(--grip)"/>
-   <rect x="53" y="199" width="14" height="3" fill="var(--guard)"/>
-   <rect x="53" y="213" width="14" height="3" fill="var(--guard)"/>
-   <circle cx="60" cy="238" r="8" fill="var(--pommel)"/>
-   <circle cx="60" cy="238" r="3.5" fill="var(--magenta)"/>`,
-
- /* One armoured fist: knuckle domes, a thumb, a flared cuff. The old one was a
-    rectangle with four dots on it. */
- gauntlet1:`
-   <path d="M48 126 Q48 115 59 113 L73 113 Q83 116 83 128 L83 151 Q83 161 71 161
-            L59 161 Q48 161 48 150 Z" fill="url(#edge)"/>
-   <g fill="var(--core)" opacity=".85">
-     <circle cx="55" cy="124" r="4.2"/><circle cx="64" cy="120" r="4.8"/>
-     <circle cx="73" cy="121" r="4.6"/><circle cx="81" cy="127" r="3.6"/></g>
-   <path d="M46 133 Q36 137 38 148 Q40 157 49 155" fill="none"
-         stroke="var(--guard)" stroke-width="8.5" stroke-linecap="round"/>
-   <path d="M52 140 L79 138" stroke="var(--deepblade)" stroke-width="2" opacity=".55"/>
-   <path d="M47 161 L84 161 L89 189 L42 189 Z" fill="var(--guard)"/>
-   <path d="M42 189 L89 189 L91 199 L40 199 Z" fill="var(--pommel)"/>
-   <path d="M54 168 L78 167" stroke="var(--core)" stroke-width="1.3" opacity=".3"/>`,
-
- /* two short blades crossed — kept for the Vault weapon picker */
+ /* two short blades crossed */
  daggers:(()=>{
    const d=`
-     <path d="M60 44 L68 100 L68 176 L60 190 L52 176 L52 100 Z" fill="url(#edge)"/>
+     <path d="M60 44 L71 100 L71 176 L60 190 L49 176 L49 100 Z" fill="url(#edge)"/>
      <rect x="58" y="98" width="4" height="76" fill="url(#fuller)"/>
      <path d="M38 178 L82 178 L77 189 L43 189 Z" fill="var(--guard)"/>
      <rect x="53" y="189" width="14" height="42" rx="3" fill="var(--grip)"/>
@@ -2159,187 +2113,6 @@ const WEAPONS={
      <g transform="translate(20 -14) rotate(16 60 150)">${g}</g></g>`;
  })()
 };
-
-/* ---------------- the hunter ----------------
-   A front-facing figure in the same 120x300 box as the weapons, so any weapon
-   drops into the hand with one transform. Armour is additive: each rank adds a
-   layer over the last and nothing is redrawn. Everything is palette variables,
-   so the six classes recolour it for free. */
-const GEARTIER={E:0,D:1,C:2,B:3,A:4,S:5};
-const GEARNAME=['Wrapped','Bracered','Plated','Pauldroned','Warplate','Ascendant regalia'];
-
-/* Where each weapon sits in the hand. The grip of every weapon SVG is around
-   (60,254); scaling by .52 and shifting puts it in the right fist at (76,152). */
-const HOLD='translate(45,20) scale(.52)';
-
-/* Every stance names the same joints; only the numbers change.
-   hip/knee/foot per leg, shoulder/elbow/hand per arm. "hold" is how the weapon
-   sits in the hand, and a stance may carry two of them. */
-const STANCE={
- /* Bladebound — greatsword point-down in front, both hands on the grip. The
-    calm one: feet square, weapon planted like a full stop. */
- longsword:{
-   legs:[[48,152,44,206,41,262],[62,152,66,206,69,262]],
-   arms:[[38,102,32,132,36,158],[72,102,84,110,88,122]],
-   /* tip resting on the ground BESIDE him, not planted through his own legs.
-      Held down the centre it covered the body and read as a pink wedge. */
-   hold:[['longsword','translate(88,122) scale(.58) rotate(182) translate(-60,-250)']]},
-
- /* Ronin — bladed side-on, katana low and back in one hand, the free hand out
-    for balance. Weight on the back foot. */
- katana:{
-   legs:[[48,152,38,204,32,262],[62,152,71,204,78,262]],
-   arms:[[38,102,23,124,17,148],[72,102,86,128,89,152]],
-   /* out at arm's length and steep. Across the chest it read as a sash. */
-   hold:[['katana','translate(89,152) scale(.58) rotate(-6) translate(-53,-246)']]},
-
- /* Warden — haft across the shoulder, both hands low on it, feet planted wide.
-    Nothing about this one is quick. */
- hammer:{
-   legs:[[47,152,40,206,34,263],[63,152,71,206,77,263]],
-   arms:[[38,102,42,134,58,150],[72,102,84,116,86,140]],
-   hold:[['hammer','translate(86,138) scale(.46) rotate(186) translate(-60,-250)']]},
-
- /* Arcanist — staff planted in the ground beside them, one hand on the shaft at
-    chest height, the orb up level with the head. */
- staff:{
-   legs:[[48,152,45,206,43,262],[62,152,64,206,66,262]],
-   arms:[[38,102,29,130,33,157],[72,102,82,124,86,145]],
-   hold:[['staff','translate(46,44) scale(.76)']]},
-
- /* Stalker — low and coiled, ONE dagger in each hand, blades angled out. The
-    old art crushed a crossed pair into a single fist. */
- daggers:{
-   legs:[[46,156,34,200,28,262],[64,156,76,200,82,262]],
-   arms:[[38,104,25,127,27,157],[72,104,85,127,83,157]],
-   hold:[['dagger1','translate(27,157) scale(.42) rotate(-28) translate(-60,-210)'],
-         ['dagger1','translate(83,157) scale(.42) rotate(28) translate(-60,-210)']]},
-
- /* Ironclad — no weapon to hold: the gauntlets ARE the hands, up in a guard. */
- gauntlets:{
-   legs:[[47,152,40,204,35,262],[63,152,70,204,75,262]],
-   arms:[[38,102,26,126,42,94],[72,102,88,126,82,142]],
-   hold:[['gauntlet1','translate(42,94) scale(.5) rotate(-18) translate(-65,-137)'],
-         ['gauntlet1','translate(82,142) scale(.5) rotate(26) translate(-65,-137)']]}
-};
-
-let heroSeq=0;
-function heroSVG(opt){
-  const o=opt||{};
-  /* Gradient ids must be unique per figure. Six on a page all declaring
-     id="hfPlate" resolve to the first one, which is why every class rendered in
-     crimson regardless of its palette. */
-  const uid='h'+(++heroSeq);
-  const rank=o.rank||rankOf(S.lvl);
-  const g=GEARTIER[rank]!==undefined?GEARTIER[rank]:0;
-  const wk=o.weapon||S.weapon||cls().w;
-  const st=STANCE[wk]||STANCE.longsword;
-  const lit=o.lit===undefined?S.streak>0:o.lit;
-  const L=[];
-  /* a limb: two round-capped strokes, thicker at the root */
-  const limb=(p,w0,w1,col)=>
-    `<path d="M${p[0]} ${p[1]} L${p[2]} ${p[3]}" stroke="${col}" stroke-width="${w0}"
-       stroke-linecap="round" fill="none"/>
-     <path d="M${p[2]} ${p[3]} L${p[4]} ${p[5]}" stroke="${col}" stroke-width="${w1}"
-       stroke-linecap="round" fill="none"/>`;
-  const B='var(--hf-body)';
-
-  /* cape hangs behind everything */
-  if(g>=3)L.push(`<g class="hf-cape"><path d="M34 100 Q23 170 30 240 L55 228 L80 240 Q87 170 76 100 Z"
-    fill="var(--deepblade)" opacity=".88"/>
-    <path d="M55 104 L55 230" stroke="var(--crimson)" stroke-width="1.2" opacity=".45"/></g>`);
-
-  /* legs, then boots at whatever the stance put the feet on */
-  for(const lg of st.legs)L.push(limb(lg,17,14,B));
-  for(const lg of st.legs){
-    if(g>=3)L.push(`<path d="M${lg[2]-8} ${lg[3]-2} Q${lg[2]} ${lg[3]-10} ${lg[2]+8} ${lg[3]-2}
-      L${lg[2]+6} ${lg[3]+8} L${lg[2]-6} ${lg[3]+8} Z" fill="url(#pl${uid})"/>`);
-    L.push(`<ellipse cx="${lg[4]}" cy="${lg[5]+5}" rx="11" ry="6" fill="var(--hf-dark)"/>`);
-  }
-
-  /* torso */
-  L.push(`<g class="hf-breathe">
-    <path d="M36 100 Q33 130 43 156 L67 156 Q77 130 74 100 Q65 92 55 92 Q45 92 36 100 Z" fill="${B}"/>`);
-  if(g>=2)L.push(`<path d="M38 102 Q36 130 45 152 L65 152 Q74 130 72 102 Q64 95 55 95 Q46 95 38 102 Z"
-      fill="url(#pl${uid})"/>
-    <path d="M55 98 L55 152" stroke="var(--hf-dark)" stroke-width="1.4" opacity=".5"/>`);
-  if(g>=4)L.push(`<path d="M45 106 L55 117 L65 106 L65 123 L55 133 L45 123 Z"
-      fill="var(--core)" opacity=".9"/>`);
-  if(g>=1)L.push(`<rect x="40" y="148" width="30" height="9" rx="2" fill="var(--guard)"/>`);
-  if(g>=4)L.push(`<circle cx="55" cy="152.5" r="4" fill="url(#gm${uid})"/>`);
-  L.push('</g>');
-
-  /* arms */
-  for(const ar of st.arms)L.push(limb(ar,13,10.5,B));
-  /* bracer: a band across the forearm, turned to follow it. A circle here read
-     as a bubble stuck to the arm. */
-  if(g>=1)for(const ar of st.arms){
-    const mx=(ar[2]+ar[4])/2, my=(ar[3]+ar[5])/2;
-    const an=(Math.atan2(ar[5]-ar[3],ar[4]-ar[2])*57.3+90).toFixed(1);
-    L.push(`<g transform="rotate(${an} ${mx} ${my})">
-      <path d="M${mx-7.5} ${my-7} L${mx+7.5} ${my-7} L${mx+6} ${my+7} L${mx-6} ${my+7} Z"
-        fill="url(#pl${uid})"/>
-      <path d="M${mx-6.8} ${my} L${mx+6.8} ${my}" stroke="var(--hf-dark)"
-        stroke-width="1.3" opacity=".5"/></g>`);
-  }
-  /* pauldron: two overlapping angular bands with a dark seam, so it reads as
-     layered plate rather than a balloon on the shoulder */
-  const pauldron=(x,y,d)=>`<g>
-    <path d="M${x-14*d} ${y-6} Q${x+3*d} ${y-13} ${x+13*d} ${y+1}
-             L${x+10*d} ${y+8} Q${x+1*d} ${y+1} ${x-13*d} ${y+5} Z" fill="url(#pl${uid})"/>
-    <path d="M${x-12*d} ${y+5} Q${x+1*d} ${y+2} ${x+10*d} ${y+8}
-             L${x+7*d} ${y+16} Q${x-1*d} ${y+10} ${x-11*d} ${y+13} Z"
-          fill="url(#pl${uid})" opacity=".8"/>
-    <path d="M${x-12*d} ${y+5} Q${x+1*d} ${y+2} ${x+10*d} ${y+8}"
-          stroke="var(--hf-dark)" stroke-width="1.3" fill="none" opacity=".55"/></g>`;
-  if(g>=1)L.push(pauldron(st.arms[1][0]+3,st.arms[1][1]-1,1));
-  if(g>=3)L.push(pauldron(st.arms[0][0]-3,st.arms[0][1]-1,-1));
-  if(g>=5)L.push(`<path d="M${st.arms[1][0]+10} 94 L${st.arms[1][0]+19} 104 L${st.arms[1][0]+10} 112 Z"
-      fill="var(--core)" opacity=".85"/>
-    <path d="M${st.arms[0][0]-10} 94 L${st.arms[0][0]-19} 104 L${st.arms[0][0]-10} 112 Z"
-      fill="var(--core)" opacity=".85"/>`);
-
-  /* head */
-  /* a jaw and a brow shadow. A bare ellipse read as a featureless egg. */
-  L.push(`<rect x="50" y="84" width="10" height="12" rx="3" fill="${B}"/>`);
-  L.push(`<g class="hf-head">
-    <path d="M42 66 Q42 53 55 53 Q68 53 68 66 L68 76 Q68 88 55 89 Q42 88 42 76 Z" fill="${B}"/>
-    <path d="M46 79 Q55 84 64 79" stroke="var(--hf-dark)" stroke-width="1.6"
-      fill="none" opacity=".75"/>`);
-  if(g>=4)L.push(`<path d="M41 70 Q41 54 55 54 Q69 54 69 70 L69 78 L63 76 L63 66 L47 66 L47 76 L41 78 Z"
-      fill="url(#pl${uid})"/>
-    <rect x="46" y="68" width="18" height="4" rx="1.5" fill="var(--magenta)" opacity=".95"/>`);
-  else if(g>=2)L.push(`<path d="M41 68 Q41 56 55 56 Q69 56 69 68 L69 72 L41 72 Z"
-      fill="url(#pl${uid})" opacity=".9"/>`);
-  if(g>=5)L.push(`<path d="M45 52 L50 40 L55 50 L60 40 L65 52 Z" fill="var(--core)"/>`);
-  L.push('</g>');
-
-  /* whatever this class is carrying. The weapon art references the shared
-     WEAPONDEFS gradients by id, and those collide exactly like the armour ones
-     did — which is why an ember Ronin was swinging a crimson katana. Suffix
-     every id and every reference with this figure's uid. */
-  const wdefs=WEAPONDEFS.replace(/id="(\w+)"/g,`id="$1${uid}"`);
-  for(const [k,tf] of st.hold){
-    const art=(WEAPONS[k]||WEAPONS.longsword).replace(/url\(#(\w+)\)/g,`url(#$1${uid})`);
-    L.push(`<g transform="${tf}">${art}</g>`);
-  }
-
-  return `<svg class="hero-svg${lit?' lit':''}" viewBox="0 0 120 300" aria-hidden="true">
-    ${wdefs}
-    <defs>
-      <linearGradient id="pl${uid}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="var(--core)"/>
-        <stop offset="45%" stop-color="var(--magenta)"/>
-        <stop offset="100%" stop-color="var(--crimson)"/></linearGradient>
-      <radialGradient id="gm${uid}" cx="38%" cy="34%" r="70%">
-        <stop offset="0%" stop-color="var(--core)"/>
-        <stop offset="60%" stop-color="var(--magenta)"/>
-        <stop offset="100%" stop-color="var(--deepblade)"/></radialGradient>
-    </defs>
-    <g class="hf-idle">${L.join('')}</g>
-  </svg>`;
-}
-
 function bladeSVG(w){
   const k=w||S.weapon||cls().w;
   return `<svg class="blade-svg" viewBox="0 0 120 300" aria-hidden="true">${WEAPONDEFS}${WEAPONS[k]||WEAPONS.longsword}</svg>`;
@@ -2352,7 +2125,7 @@ function heroBlock(){
     <div class="sigil" style="--sig:${dead?.1:.4+i*.15}"></div>
     <div class="blade">
       <div class="blade-halo" style="--glow:${dead?0:.3+i*.18}"></div>
-      ${heroSVG()}
+      ${bladeSVG()}
       <div class="name-etch">${esc(S.name||'HUNTER')}</div>
     </div>
     <div class="aurawrap">
@@ -2363,8 +2136,6 @@ function heroBlock(){
       <div class="aurabar" role="progressbar" aria-valuenow="${i}" aria-valuemin="0"
            aria-valuemax="${AURA.length-1}" aria-valuetext="${esc(tierName(i))}"
            aria-label="Aura tier"><i style="clip-path:inset(0 ${100-pct}% 0 0)"></i></div>
-      <p class="gearline"><b>${esc(GEARNAME[GEARTIER[rankOf(S.lvl)]||0])}</b> · rank ${rankOf(S.lvl)} gear${
-        rankOf(S.lvl)==='S'?'':` · next set at level ${RANK_LV[RANKS[RANKS.indexOf(rankOf(S.lvl))+1]]}`}</p>
       <p class="auranote">${dead
         ? 'Your aura has gone out. Clear anything today to relight it.'
         : `<b>${S.streak}</b> day streak · fades after ${gapAllowed()} idle day${gapAllowed()>1?'s':''}`}</p>
@@ -2751,7 +2522,7 @@ function showCard(){
         <span class="hc-brand">ASCENDANT</span>
         <span class="hc-rank">${r}-RANK</span>
       </div>
-      <div class="hc-blade">${heroSVG()}</div>
+      <div class="hc-blade">${bladeSVG()}</div>
       <div class="hc-id">
         <h3>${esc(S.name||'HUNTER')}</h3>
         <p class="hc-cls">${esc(cls().n)}</p>
@@ -2965,7 +2736,7 @@ function showIntro(){
   document.body.appendChild(d);
 }
 const TOUR=[
- {sel:'.blade',t:'This is you',x:'Your hunter, holding your weapon. Every rank puts another piece of armour on them, and the aura burns as long as the streak does — let it die and they go dark.'},
+ {sel:'.blade',t:'This is your weapon',x:'It burns as long as you keep training. Let the streak die and it goes dark and dull.'},
  {sel:'.lvlrow',t:'Level, XP and gold',x:'Every skill you log pays both. Fill the bar and you level up, which unlocks harder skills.'},
  {sel:'.props',t:'Your stats',x:'STR, END, VIT, AGI and CORE grow from the kind of work you actually do. Level ups raise all five.'},
  {sel:'[data-begin]',t:'Begin Quest',x:'Five movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests.'},
