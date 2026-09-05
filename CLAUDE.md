@@ -19,6 +19,22 @@ with muscle-map diagrams.
   Do not rename the key, remove fields, or change the shape of the saved object
   without a migration that reads the old shape and upgrades it. Users lose their
   level, gold, streak and records otherwise, and there is no server backup.
+- **`S.perf` holds objects, not numbers.** An entry is `{r, l}` — reps (or
+  seconds) and the load in `S.unit`, `0` when unloaded. It used to be a bare
+  number; `heal()` upgrades the old shape on every load, so that migration must
+  stay. Last five per movement, capped.
+
+- **Progression has two axes.** `repCap(e)` is 3 for a movement with equipment
+  and `PROGCAP` (6) for bodyweight. Two sessions at target steps the target up;
+  at the top of a loaded movement's range the step resets to 0 and the app says
+  to add weight instead. That is double progression and it is deliberate — reps
+  climbing forever on a dumbbell press is bad coaching.
+
+- **Splits are indexed by `S.cycle`, not the weekday.** `S.cycle` increments
+  when a whole quest is cleared. Indexing by calendar day is how people never
+  train legs: miss Wednesday and leg day is gone. Missing a day must delay the
+  rotation, never skip a slot in it.
+
 - **The storage shim (`DB`).** It uses `window.storage` inside Claude and falls
   back to `localStorage` everywhere else. Never call `window.storage` directly.
 - **There are no exercise figures.** They were tried for a long time —
