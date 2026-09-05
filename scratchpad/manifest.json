@@ -154,12 +154,13 @@
  {
   "id": "squat",
   "name": "Bodyweight Squat",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "none",
   "shared": null,
   "class": "STATIC VERIFIED",
@@ -195,12 +196,13 @@
  {
   "id": "stepup",
   "name": "Step-Up",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "box",
   "shared": null,
   "class": "STATIC VERIFIED",
@@ -209,12 +211,13 @@
  {
   "id": "hinge",
   "name": "Hip Hinge",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "none",
   "shared": null,
   "class": "STATIC VERIFIED",
@@ -250,12 +253,13 @@
  {
   "id": "pushup",
   "name": "Full Push-Up",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "none",
   "shared": null,
   "class": "STATIC VERIFIED",
@@ -264,12 +268,13 @@
  {
   "id": "split",
   "name": "Split Squat",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "none",
   "shared": null,
   "class": "STATIC VERIFIED",
@@ -751,12 +756,13 @@
  {
   "id": "bb_squat",
   "name": "Barbell Back Squat",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "bar",
   "shared": null,
   "class": "STATIC VERIFIED",
@@ -768,9 +774,10 @@
   "card": 0,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "bar2",
   "shared": null,
   "class": "STATIC VERIFIED",
@@ -1460,12 +1467,13 @@
  {
   "id": "db_stepup",
   "name": "Weighted Step-Up",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "box+db",
   "shared": "stepup",
   "class": "STATIC VERIFIED",
@@ -1572,12 +1580,13 @@
  {
   "id": "bb_split",
   "name": "Barbell Split Squat",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "bar",
   "shared": "split",
   "class": "STATIC VERIFIED",
@@ -1911,12 +1920,13 @@
  {
   "id": "bb_pause_squat",
   "name": "Pause Squat",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "bar",
   "shared": "bb_squat",
   "class": "STATIC VERIFIED",
@@ -2141,12 +2151,13 @@
  {
   "id": "trx_push",
   "name": "Suspension Push-Up",
-  "card": 1,
+  "card": 2,
   "frames": [
    0,
-   1
+   1,
+   2
   ],
-  "phases": 2,
+  "phases": 3,
   "context": "strap",
   "shared": "pushup",
   "class": "STATIC VERIFIED",

@@ -76,13 +76,12 @@ for(const gone of ["function fk(","function ik2(","poseAngles","findAnchor","flo
   if(js.includes(gone))fail("complexity crept back: "+gone);
 console.log("  no rig, no motion model, no stand-ins, no frame stepping");
 if(!js.includes("function paintFig(svg,pose,prop)"))fail("painter changed shape");
-/* The exercise figures no longer animate: cards show one authored still and
-   the detail view lays the authored positions out side by side. */
-for(const gone of ["requestAnimationFrame(figLoop)","mountFig","rigs"])
-  if(js.includes(gone))fail("animation came back: "+gone);
-if(!js.includes("function figStrip(e)"))fail("no instruction strip");
+/* Cards animate; the detail view lays the authored positions out statically. */
+const loops=js.split("requestAnimationFrame(figLoop)").length-1;
+if(loops!==1)fail("expected exactly one animation loop, found "+loops);
+if(!js.includes("function figStrip(e)"))fail("no static instruction strip");
 if(!js.includes("function cardPose(e)"))fail("no card pose selection");
-console.log("  one painter, no loop, static instruction art");
+console.log("  one painter, one loop for cards, static strip in the detail view");
 
 console.log(bad?(String.fromCharCode(10)+"FAILURES: "+bad):String.fromCharCode(10)+"ALL CHECKS PASS");
 process.exit(bad?1:0);

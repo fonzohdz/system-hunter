@@ -600,15 +600,15 @@ const EX=[
 {id:'birddog',strain:['lower-back','shoulders'],mus:{p:['lower-back','abs'],s:['glutes','rear-delts']},n:'Bird Dog',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['Hands and knees, back flat like a tabletop.','Reach one arm forward and the opposite leg back.','Wobbling? Go shorter, not faster.','Best move going for a cranky lower back.'],
  /* side: supporting hand and knee planted, opposite arm and leg extend level */
- /* alternating. hands under shoulders and knees under hips at ~90 deg; front arm reaches forward while the opposite rear leg extends back, level with the spine */
- f:[P(24,60,32,64,62,68,32,76,32,90,61,88,77,90,33,76,33,90,62,88,78,90),
-    P(22,54,32,58,62,66,33,74,33,90,76,70,92,66,20,54,8,50,62,86,78,88)]},
+ /* hands under the shoulders and knees under the hips at a right angle, all four contacts drawn apart. Then the near arm reaches forward and the far leg back, both level with the spine, while the other hand and knee stay put */
+ f:[P(22,58,30,62,60,66,26,77,25,90,56,88,70,92,31,76,31,90,60,86,76,90),
+    P(20,54,30,58,60,64,26,77,25,90,76,62,92,58,18,54,6,50,60,86,76,90)]},
 {id:'deadbug',mus:{p:['abs'],s:['obliques']},n:'Dead Bug',r:'E',c:'core',st:'CORE',d:'3 × 8 each side',eq:[],
  cues:['On your back, arms up, knees over hips.','Lower one arm and the opposite leg toward the floor.','Keep your lower back pressed flat the whole time.','Stop the moment your back arches.'],
  /* side: opposite arm and leg reach away, back stays flat */
- /* alternating. lying on the back, hips and knees at 90 in tabletop; one arm reaches back overhead while the opposite leg extends away, the other pair holding tabletop */
- f:[P(20,80,29,80,56,82,32,69,34,57,57,65,73,63,33,68,35,56,58,64,74,62),
-    P(20,80,29,80,56,82,32,69,34,57,70,74,88,78,24,72,10,70,58,64,74,62)]},
+ /* on the back with the hips and knees both at ninety and the arms pointing straight up. One arm goes back overhead while the opposite leg reaches away; the other arm and knee hold their tabletop exactly */
+ f:[P(18,82,28,82,58,84,26,71,27,57,55,69,70,68,31,70,33,56,60,66,76,64),
+    P(18,82,28,82,58,84,26,71,27,57,70,76,88,82,22,72,8,68,60,66,76,64)]},
 {id:'kneepush',next:'pushup',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Knee Push-Up',r:'D',c:'push',st:'STR',d:'3 × 8',eq:[],
  cues:['Knees down, hands slightly wider than shoulders.','Straight line head to knees — no piking the hips.','Elbows travel back around 45°, not flared straight out.','The bridge between incline and full push-ups.'],
  /* side: same hinge as a push-up but pivoting from the knee */
@@ -617,9 +617,10 @@ const EX=[
 {id:'squat',next:'split',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','abs']},n:'Bodyweight Squat',r:'D',c:'legs',st:'STR',d:'3 × 12',eq:[],
  cues:['Feet shoulder width, toes turned out slightly.','Sit down and back, chest proud, knees over toes.','Go as deep as you can without the low back rounding.','Arms straight out front work as a counterweight.'],
  /* side: hips back and down, knees forward, torso pitches, arms counterbalance */
- /* rep. feet planted, hips travel back and down, knee to ~85 deg, torso pitches forward, arms counterbalance */
- f:[P(50,14,50,24,50,52,46,38,45,50,49,72,49,92,54,38,55,50,51,72,51,92),
-    P(61,36,57,45,42,68,63,52,73,48,58,74,50,92,64,51,74,47,60,74,52,92)]},
+ /* stand with the feet apart, then hips back and DOWN until the thighs are near level. Both knees stay visible, the feet stay planted fourteen units apart, and the arms swing forward as a counterweight */
+ f:[P(50,15,50,25,50,52,44,38,42,52,44,72,42,92,56,38,58,52,56,72,58,92),
+    P(55,27,52,36,47,61,56,48,64,47,51,75,42,92,60,46,68,44,61,73,58,92),
+    P(62,38,57,47,44,70,60,56,70,53,56,78,42,92,64,54,74,50,64,74,58,92)]},
 {id:'lunge',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','calves']},n:'Reverse Lunge',r:'D',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['Step backward — kinder to the knees than stepping forward.','Drop the back knee toward the floor, front shin vertical.','Push through the front heel to stand.','Hold a wall until balance catches up.'],
  /* side: front shin vertical, back knee drops toward the floor */
@@ -634,15 +635,17 @@ const EX=[
 {id:'stepup',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','calves']},p:'box',nf:1,n:'Step-Up',r:'D',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['A stair, a bench, or a low sturdy box.','Plant the whole foot and drive up through that heel.','Lower yourself slowly instead of dropping.','Stairs exist everywhere. No excuse.'],
  /* side: the box leg bends hard, then drives the whole body up onto it */
- /* rep. lead foot fixed on the box throughout, lead knee deeply bent then straight, trail foot leaves the floor and its knee drives up */
- f:[P(40,21,40,31,40,58,35,44,34,56,38,74,38,92,45,44,46,56,60,54,58,74),
-    P(56,9,56,19,56,46,50,32,48,44,70,50,76,66,62,32,64,44,58,62,58,74)]},
+ /* the lead foot is planted on the box from the first frame to the last. That knee folds to seventy-five degrees, then drives the whole body up over it while the trailing knee comes high */
+ f:[P(41,22,40,32,38,58,36,46,34,60,32,76,28,92,44,46,46,60,60,52,60,74),
+    P(48,16,48,26,47,51,42,39,40,53,48,68,44,88,54,39,56,53,62,56,60,74),
+    P(58,8,58,18,58,44,52,32,50,46,74,48,78,66,64,32,66,46,60,60,60,74)]},
 {id:'hinge',next:'db_rdl',strain:['lower-back'],mus:{p:['hamstrings','glutes'],s:['lower-back']},n:'Hip Hinge',r:'D',c:'pull',st:'STR',d:'3 × 10',eq:[],
  cues:['Soft knees. Push your hips back like closing a car door with your butt.','Back flat, chest pointing down, not curled over.','Hamstrings should feel it, not your lower back.','Teaches you how to pick things up without wrecking yourself.'],
  /* side: hips travel back, torso to near-parallel, knees soft, arms hang */
- /* rep. hips travel back, torso to near-parallel, knees stay ~165 deg, arms hang straight down */
- f:[P(50,14,50,24,50,52,46,38,45,50,49,72,49,92,54,38,55,50,51,72,51,92),
-    P(78,48,69,50,42,54,68,63,68,75,47,72,49,92,69,62,69,74,48,72,50,92)]},
+ /* the hips slide back until the back is nearly level. The knees stay at about a hundred and sixty degrees the whole way and the arms hang straight down — no squat, no elbow bend */
+ f:[P(50,15,50,25,50,52,46,38,44,52,44,72,42,92,54,38,56,52,56,72,58,92),
+    P(64,32,56,38,45,55,56,50,56,64,43,73,42,92,60,50,60,64,55,73,58,92),
+    P(77,50,67,52,40,58,64,66,65,80,44,76,42,92,68,64,69,78,52,74,58,92)]},
 {id:'sideknee',strain:['shoulders'],mus:{p:['obliques'],s:['abs','side-delts']},n:'Side Plank (knees)',r:'D',c:'core',st:'CORE',d:'3 × 20s each side',eq:[],
  cues:['On your side, elbow under shoulder, knees bent and stacked.','Lift hips into one line from head to knees.','Top hand on your hip or reaching up.','Hits what the regular plank misses.'],
  /* hold. the same forearm prop with the bottom knee down, shortening the lever */
@@ -650,19 +653,21 @@ const EX=[
     P(20,55,28,59,54,71,31,46,33,34,69,85,83,81,28,78,38,84,70,84,84,80)]},
 {id:'climber',strain:['knees','shoulders','wrists'],mus:{p:['abs'],s:['front-delts','quads']},n:'Slow Mountain Climber',r:'D',c:'cardio',st:'AGI',d:'3 × 30s',eq:[],
  cues:['Top of a push-up, hands under shoulders.','Draw one knee to your chest, then switch. Controlled.','Hips stay level — no butt popping up.','Speed it up once form is automatic.'],
- /* alternating. a fixed plank base with the hands planted; one knee drives forward past the hip while the other leg stays long, then they swap */
- f:[P(20,56,28,59,56,68,28,75,29,90,73,77,91,87,29,74,30,90,40,74,46,86),
-    P(20,56,28,59,56,68,28,75,29,90,39,75,45,87,29,74,30,90,74,76,92,86)]},
+ /* the hands and the torso never move. One knee drives forward to seventy degrees, well past the hip, while the other leg stays straight out behind — then they swap */
+ f:[P(18,54,27,58,56,68,23,75,22,90,72,78,90,88,28,74,29,90,38,72,46,84),
+    P(18,54,27,58,56,68,23,75,22,90,36,76,44,88,28,74,29,90,74,76,92,86)]},
 {id:'pushup',next:'diamond',strain:['shoulders','wrists'],mus:{p:['chest','triceps'],s:['front-delts','abs']},n:'Full Push-Up',r:'C',c:'push',st:'STR',d:'4 × 6',eq:[],
  cues:['Hands under shoulders, body rigid head to heels.','Lower until your chest is a fist off the floor.','Push the floor away — whole body moves as one plank.','The rep you\'ll measure yourself by for years.'],
- /* rep. the body turns as one rigid piece about the toes; hands and feet are fixed and only the elbows fold */
- f:[P(20,54,28,57,56,66,28,73,29,90,73,75,91,85,29,72,30,90,74,74,92,84),
-    P(16,66,25,67,54,72,37,79,29,90,72,78,91,85,38,78,30,90,73,77,92,84)]},
+ /* hands and toes are pinned and the body turns as one rigid piece about the toes. Both elbows fold back along the ribs to about a hundred degrees; the far arm is drawn offset so you can see it */
+ f:[P(18,52,27,56,56,66,24,73,23,90,72,79,88,90,29,72,30,90,74,74,92,84),
+    P(16,58,25,61,55,69,28,76,23,90,71,81,88,90,33,75,30,90,73,76,92,84),
+    P(14,64,24,66,54,72,33,79,23,90,71,82,88,90,38,78,30,90,73,77,92,84)]},
 {id:'split',next:'db_bulg',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings']},n:'Split Squat',r:'C',c:'legs',st:'STR',d:'3 × 8 each leg',eq:[],
  cues:['One foot forward, one back, split stance the whole set.','Drop straight down, back knee toward the floor.','Front heel stays glued down.','Harder than it looks. Respect it.'],
- /* rep. staggered stance, body drops vertically, both knees bend and both feet stay where they were planted */
- f:[P(46,16,46,26,46,54,43,40,42,54,40,72,34,92,49,40,50,54,52,72,56,92),
-    P(46,32,46,42,46,68,43,54,44,68,46,86,32,91,49,54,50,68,60,74,58,92)]},
+ /* a stance thirty units wide, and the body drops straight down between the feet — the hips do not travel back. The rear knee finishes just off the floor, the front shin stays upright */
+ f:[P(46,17,46,27,46,54,42,40,40,54,36,72,30,92,50,40,52,54,56,72,60,92),
+    P(46,25,46,35,46,62,42,48,40,62,42,80,30,92,50,48,52,62,60,73,60,92),
+    P(46,33,46,43,46,70,42,56,40,70,46,86,30,92,50,56,52,70,62,74,60,92)]},
 {id:'sideplank',next:'hollow',strain:['shoulders'],mus:{p:['obliques'],s:['abs','side-delts','glutes']},n:'Side Plank',r:'C',c:'core',st:'CORE',d:'3 × 30s each side',eq:[],
  cues:['Elbow under shoulder, legs straight and stacked.','Drive the hips up and hold the line.','Don\'t let the top shoulder roll forward.','Struggling? Drop the bottom knee, keep the clock going.'],
  /* hold. propped on one forearm with the body in a straight diagonal and the free arm pointing up. The support is the elbow and the feet */
@@ -847,14 +852,16 @@ const EX=[
 /* ================= BARBELL ================= */
 {id:'bb_squat',strain:['knees','lower-back'],mus:{p:['quads','glutes'],s:['hamstrings','lower-back','abs']},n:'Barbell Back Squat',r:'B',c:'legs',st:'STR',d:'4 × 6',eq:['bb'],p:'bar',
  cues:['Bar on your upper back, not your neck. Grip it hard.','Big breath, brace, then sit down between your hips.','Knees track over your toes, chest stays up.','Use a rack with safety bars. Always.'],
- /* rep. the bar rides on the back, so the chest pitches further forward than a bodyweight squat while the knee still reaches about 87 */
- f:[P(50,14,50,24,50,52,38,34,42,26,49,72,49,92,62,34,58,26,51,72,51,92),
-    P(60,38,56,47,42,68,46,53,48,44,57,75,49,92,66,50,54,42,58,74,50,92)]},
+ /* the bar rides on the back, so the chest pitches to about thirty-six degrees at the bottom — visibly further over than a bodyweight squat. Elbows stay back under the bar */
+ f:[P(50,15,50,25,50,52,36,34,42,20,44,72,42,92,64,34,58,20,56,72,58,92),
+    P(58,30,54,39,47,62,40,48,46,34,52,76,42,92,68,48,62,34,62,74,58,92),
+    P(64,41,58,49,42,71,50,58,48,45,56,79,42,92,70,58,66,45,64,75,58,92)]},
 {id:'bb_dl',strain:['lower-back','shoulders','wrists'],mus:{p:['hamstrings','glutes','lower-back'],s:['traps','forearms','lats']},n:'Barbell Deadlift',r:'B',c:'pull',st:'STR',d:'4 × 5',eq:['bb'],p:'bar2',
  cues:['Bar over mid-foot, shins nearly touching it.','Flat back, chest up, take the slack out before you pull.','Push the floor away and drag the bar up your legs.','If your back rounds, the set is over. No hero reps.'],
- /* rep. starts at the floor with the knee ~130 deg and the torso inclined, finishes standing tall; the arms stay straight the whole way, the hips and knees do the work */
- f:[P(75,56,66,60,45,70,65,74,64,88,56,78,54,92,66,74,65,88,58,78,56,92),
-    P(54,14,54,24,54,52,52,38,51,52,53,72,54,92,56,38,57,52,55,72,56,92)]},
+ /* starts with the hands at the bar on the floor, hips high and knees at about a hundred and twenty, and stands up. The arms never bend — the hips and knees do all of it */
+ f:[P(71,49,62,54,40,66,60,70,61,88,48,78,44,92,64,68,65,86,56,74,58,92),
+    P(62,32,57,40,45,58,55,54,56,72,48,74,44,92,59,52,60,70,54,73,58,92),
+    P(50,15,50,25,50,52,46,38,48,56,46,74,44,92,54,38,56,54,56,72,58,92)]},
 {id:'bb_bench',strain:['shoulders'],mus:{p:['chest'],s:['triceps','front-delts']},n:'Barbell Bench Press',r:'B',c:'push',st:'STR',d:'4 × 6',eq:['bb','bench'],p:'bench+bar',pp:'bench',
  cues:['Feet flat, shoulder blades pinched together and pulled down.','Lower the bar to your lower chest with control.','Elbows around 45° from your body, not flared out wide.','Use a spotter or safety arms. Every single time.'],
  /* rep. lying on the bench with the elbows FLARED wide apart at the bottom, then locked out over the shoulder */
@@ -2515,18 +2522,43 @@ function figStrip(e){
 
 /* data-pose is an index into the authored frames, or "card" for the still that
    identifies the movement. */
+/* Cards animate again. Taking the motion away answered a complaint about bad
+   motion by removing the thing people liked, which was the wrong trade: the fix
+   for a bad-looking squat is a better-drawn squat, not a still one. The
+   instruction strip in the detail view stays static, because there a numbered
+   sequence is what you want to read. */
+const lerp=(a,b,t)=>a+(b-a)*t;
+let rigs=[];
+(function figLoop(now){
+  if(!REDUCED)for(const r of rigs){
+    const t=((now/1500)+r.phase)%2, k=t<1?t:2-t, e=k*k*(3-2*k);
+    const n=r.f.length, seg=(n-1)*e, i=Math.min(n-2,Math.floor(seg)), u=seg-i;
+    const A=r.f[i],B=r.f[i+1],o=[];
+    for(let j=0;j<22;j++)o.push(lerp(A[j],B[j],u));
+    paintFig(r.svg,o,r.prop);
+  }
+  requestAnimationFrame(figLoop);
+})(0);
 function mountAll(root){
+  rigs=[];
   root.querySelectorAll('svg[data-fig]').forEach(sv=>{
     const e=EX.find(x=>x.id===sv.dataset.fig);if(!e)return;
-    const po=sv.dataset.pose===undefined?'card':sv.dataset.pose;
-    sv.outerHTML=figSVG().replace('<svg ',`<svg data-fig="${e.id}" data-pose="${po}" `);
+    const po=sv.dataset.pose===undefined?'live':sv.dataset.pose;
+    const ph=sv.dataset.phase||0;
+    sv.outerHTML=figSVG().replace('<svg ',
+      `<svg data-fig="${e.id}" data-pose="${po}" data-phase="${ph}" `);
   });
   root.querySelectorAll('svg[data-fig]').forEach(sv=>{
     const e=EX.find(x=>x.id===sv.dataset.fig);if(!e)return;
     const f=framesFor(e); if(!f)return;
     const raw=sv.dataset.pose;
-    const i=raw==='card'?cardPose(e):Math.min(f.length-1,Math.max(0,parseInt(raw,10)||0));
-    paintFig(sv,f[i],e.p);
+    if(raw==='live'){                       /* a card: animate it */
+      rigs.push({svg:sv,f,phase:parseFloat(sv.dataset.phase)||0,prop:e.p});
+      paintFig(sv,f[0],e.p);
+    } else {                                /* one still in the instruction strip */
+      const i=raw==='card'?cardPose(e):Math.min(f.length-1,Math.max(0,parseInt(raw,10)||0));
+      paintFig(sv,f[i],e.p);
+    }
   });
 }
 
@@ -3252,7 +3284,7 @@ function viewLib(){
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
         ${e.eq.length?`<span class="gearlab">${e.eq.map(x=>EQNAME[x].split(' ')[0]).join('+')}</span>`:''}
-        <svg data-fig="${e.id}" data-pose="card" style="width:100%;aspect-ratio:1"></svg>
+        <svg data-fig="${e.id}" data-phase="${(i%7)*.13}" style="width:100%;aspect-ratio:1"></svg>
         <h4>${esc(e.n)}</h4><p>${esc(scaledDose(e))}</p>
         <p class="cardmus">${e.mus.p.map(musName).join(" · ")}</p></button>`).join('')}
     </div>
@@ -3535,6 +3567,7 @@ function trapFocus(v){
 function closeSheet(){
   const had=document.querySelector('[data-veil]');
   document.querySelectorAll('[data-veil]').forEach(v=>{
+    v.querySelectorAll('svg').forEach(x=>{rigs=rigs.filter(r=>r.svg!==x)});
     v.remove()});
   open=null;
   if(had&&lastFocus&&lastFocus.isConnected){lastFocus.focus();lastFocus=null}
