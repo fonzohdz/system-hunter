@@ -67,31 +67,15 @@ Equipment codes: `db kb bb bar bench band machine`.
 Cues are plain-language coaching, not jargon. Four of them. The last one is
 usually the "why you care" line.
 
-## Provisions (the Food tab)
-
-Static reference content in `PROV`, filtered by `FOODEQ` and `DIETS`. It connects
-to nothing — no logging, no scoring, no XP, no gold, no streaks.
-
-**Never attach a number to food.** No calories, macros, grams, portions, daily
-totals, or tracking of any kind. No weight-loss or weight-gain framing, no good
-and bad foods, no cheat meals, no earning or burning anything off. Cooking times
-and temperatures are fine — those are instructions, not targets.
-
-An item declares what it contains in `has` (meat, pork, fish, shellfish, dairy,
-egg, nuts, gluten); the dietary filters work by exclusion. Halal and kosher can
-only screen the obvious conflicts, and the tab says so — nothing in an app can
-certify preparation.
-
-Every equipment and dietary combination must leave something to eat. Verified by
-script; the strictest possible setting currently leaves seven ideas.
-
 ## Health content rules
 
 - Movements must be scalable and beginner-safe. Every rank-E exercise should be
   doable by someone who has never trained.
 - Barbell and overhead work carries form cues, not just rep counts.
 - No calorie targets, weight-loss framing, body-composition goals, or diet
-  prescriptions anywhere in the app. Fitness only.
+  prescriptions anywhere in the app. Fitness only. There was a food reference
+  tab; it was removed at the owner's request and the app has nothing to say
+  about eating. Do not add it back without being asked.
 - Keep the "soreness is fine, pain isn't" guidance visible on the quest screen.
 
 ## Testing
