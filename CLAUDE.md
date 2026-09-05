@@ -30,6 +30,17 @@ with muscle-map diagrams.
   to add weight instead. That is double progression and it is deliberate — reps
   climbing forever on a dumbbell press is bad coaching.
 
+- **Quest length is `questLen()`, never a literal.** On `auto` it scales
+  inversely with `S.days` (3 days → 7 movements, 6 days → 4) so the WEEK stays
+  near 21–25 movements instead of the day staying at 5. Training three days a
+  week used to mean getting half the work of someone training six, which is
+  backwards. `S.vol` can pin it to 3/5/7 for people who would rather choose.
+
+- **Logging from the Library is not second-class.** The `data-log` handler must
+  keep calling `recordPerf`, so someone who ignores the quest and trains their
+  own way still gets lift history and progression. It awarded XP but recorded
+  nothing until this was fixed.
+
 - **Splits are indexed by `S.cycle`, not the weekday.** `S.cycle` increments
   when a whole quest is cleared. Indexing by calendar day is how people never
   train legs: miss Wednesday and leg day is gone. Missing a day must delay the

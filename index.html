@@ -1188,6 +1188,16 @@ const SPLITS={
  6:['push','pull','legs','push','pull','legs']
 };
 const splitCycle=()=>SPLITS[Math.min(6,Math.max(3,S.days||4))]||SPLITS[4];
+/* Movements per quest. 'auto' keeps the WEEK roughly constant instead of the
+   day, so training three days means longer sessions rather than a third of the
+   work. Everything else is a flat pin for people who would rather choose. */
+const VOLAUTO={3:7,4:6,5:5,6:4};
+const VOLN={short:3,standard:5,long:7};
+function questLen(){
+  if(VOLN[S.vol])return VOLN[S.vol];
+  return VOLAUTO[Math.min(6,Math.max(3,S.days||4))]||5;
+}
+const weekMoves=()=>questLen()*(S.days||4);
 /* null when you are not on a split — the quest is then goal-weighted as before. */
 function splitToday(){
   if(S.split!=='split')return null;
@@ -1222,7 +1232,7 @@ const fresh=()=>({
     outgrown: movements already announced, so we only say it once. */
  perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
  /* unit is display only — loads are stored exactly as typed, in that unit. */
- unit:'lb', split:'random', cycle:0,
+ unit:'lb', split:'random', cycle:0, vol:'auto',
  /* Milestones earned, the first value of each PR so doubling can be detected,
     which categories have been logged, and whether a travel quest was cleared. */
  ach:[], prFirst:{}, catsLogged:[], travelClear:false, dg:null, dgBest:0,
@@ -1411,6 +1421,7 @@ function heal(){
   }
   if(S.unit!=='kg'&&S.unit!=='lb')S.unit='lb';
   if(S.split!=='split')S.split='random';
+  if(!VOLN[S.vol])S.vol='auto';
   if(typeof S.cycle!=='number'||!(S.cycle>=0))S.cycle=0;
   if(!S.stats||typeof S.stats!=='object')S.stats=f.stats;
   if(!S.prs||typeof S.prs!=='object')S.prs=f.prs;
@@ -1675,11 +1686,11 @@ function questFor(d){
      different training day genuinely rolls a different quest. */
   const plan=splitToday();
   const rnd=seeded(d+'|'+S.lvl+'|'+effEq().join('')+'|'+S.goal+'|'+curPreset()+'|'
-    +limitsOn().join('')+'|'+(plan?plan.k+S.cycle:'')),
+    +limitsOn().join('')+'|'+(plan?plan.k+S.cycle:'')+'|'+questLen()),
         pl=pool(),w=plan?plan.w:GOALS[S.goal].w;
   const bag=[];for(const c in w)for(let i=0;i<w[c];i++)bag.push(c);
   const out=[],used=new Set();let guard=0;
-  while(out.length<5&&guard++<200){
+  while(out.length<questLen()&&guard++<200){
     const c=bag[Math.floor(rnd()*bag.length)];
     let opts=pl.filter(e=>e.c===c&&!used.has(e.id));
     if(!opts.length)opts=pl.filter(e=>!used.has(e.id));
@@ -2585,6 +2596,12 @@ function viewVault(){
       <p>${limitsOn().length?esc(limitsOn().map(k=>(LIMITS.find(l=>l.k===k)||{}).n).join(', ')):'Nothing set'}</p></div>
       <button class="mini" data-editlim>Edit</button></div>
     <div class="item"><div class="ico">◷</div><div class="itxt"><h4>${S.days} days a week</h4><p>Aura survives ${gapAllowed()} idle day${gapAllowed()>1?'s':''}.</p></div><button class="mini" data-cycledays>Change</button></div>
+    <div class="item"><div class="ico">≡</div><div class="itxt"><h4>${
+      S.vol==='auto'?'Session length: automatic':'Session length: '+questLen()+' movements'}</h4>
+      <p>${questLen()} a day, about ${weekMoves()} a week.${S.vol==='auto'
+        ? ' Set from your '+(S.days||4)+' days — fewer days means longer sessions.'
+        : ' Pinned. Switch back to automatic to let your days decide.'}</p></div>
+      <button class="mini" data-cyclevol>Change</button></div>
     <div class="item"><div class="ico">▦</div><div class="itxt"><h4>${S.split==='split'?'On a split':'Varied'}</h4>
       <p>${S.split==='split'
         ? esc(splitCycle().map(k=>DAYPLAN[k].n).join(' · '))+'. Chosen for '+S.days+' days a week.'
@@ -2745,7 +2762,17 @@ function renderSheet(){
     <div class="dose">Target for now <b>${esc(scaledDose(e))}</b>${progStep(e)?' <span class="doseup">stepped up</span>':''}</div>
     ${lockedRank?`<button class="btn" disabled>Unlocks at level ${RANK_LV[e.r]}</button>`
      :lockedEq?`<button class="btn" disabled>Needs ${esc(kit)}</button>`
-     :`<button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
+     :`${doneToday?'':`<div class="logrow">
+        <label for="lgreps">${isTimed(e)?'Seconds held':'Reps'} on your best set</label>
+        <input class="prin" id="lgreps" type="number" inputmode="numeric" min="0"
+          placeholder="${targetReps(e)||''}">
+      </div>
+      ${loaded(e)?`<div class="logrow">
+        <label for="lgload">Weight, in ${S.unit}</label>
+        <input class="prin" id="lgload" type="number" inputmode="decimal" min="0" step="0.5"
+          placeholder="${lastLoad(e)||'—'}">
+      </div>`:''}`}
+      <button class="btn" data-log="${e.id}" ${doneToday?'disabled':''}>${doneToday?'Logged today':'Log it · +'+(inQ?25:15)+' XP'}</button>`}
     <button class="btn ghost" data-close>Close</button></div>`;
   document.body.appendChild(v);
   trapFocus(v);
@@ -2994,12 +3021,18 @@ document.addEventListener('click',ev=>{
   const lg=t.closest('[data-log]');
   if(lg){
     const e=EX.find(x=>x.id===lg.dataset.log),q=rollQuest(),inQ=q.some(x=>x.id===e.id);
+    /* Whatever they typed counts the same as a guided set: it feeds Lifts and
+       it moves the target. Training your own way is not second-class. */
+    const ri=document.getElementById('lgreps'), li=document.getElementById('lgload');
+    const reps=ri&&ri.value!==''?parseInt(ri.value,10):null;
+    const load=li&&li.value!==''?parseFloat(li.value):null;
     touchStreak();
     if(inQ&&!S.questDone.includes(e.id))S.questDone.push(e.id);
     award(inQ?25:15,10,e.st);
     if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
       S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,50,null);toast('Daily quest cleared · +80 XP · +50 gold')}
     else toast(e.n+' · +'+(inQ?25:15)+' XP · +10 gold');
+    if(reps!=null)recordPerf(e,reps,load);
     noteLogged(e);checkAch();
     closeSheet();render();return}
 
@@ -3050,6 +3083,14 @@ document.addEventListener('click',ev=>{
     save();render();
     toast(S.split==='split'?'On a split · '+splitToday().n+' first':'Back to varied quests');return}
   if(t.closest('[data-cycleunit]')){S.unit=S.unit==='kg'?'lb':'kg';save();render();return}
+  if(t.closest('[data-cyclevol]')){
+    const order=['auto','short','standard','long'];
+    S.vol=order[(order.indexOf(S.vol)+1)%order.length];
+    /* Today's quest is already half done for some people; keep what they have
+       cleared and let the new length apply from the next roll. */
+    save();render();
+    toast(S.vol==='auto'?'Session length follows your days again'
+      :questLen()+' movements a quest');return}
   /* ----- guided session ----- */
   if(t.closest('[data-begin]')){
     if(S.kitAsked===today()&&sess()){keepAwake(true);tab='run';render();return}
