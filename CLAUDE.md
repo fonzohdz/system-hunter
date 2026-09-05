@@ -41,9 +41,14 @@ with animated figure demos.
   matches, and borrows its poses — a machine chest press is a bench press seen
   from the side. Every movement must resolve to a real pose that way; there are
   no generic category placeholders and there should not be.
-  Keep this simple. One painter, one loop, one timing curve. Motion types,
-  per-exercise tempo and frame stepping have all been tried and all been
-  removed again.
+  **The figures do not animate.** A card shows one authored still; tapping it
+  opens the authored positions side by side, captioned, the way an instruction
+  decal on a gym machine works. There is no tween, and there must not be one:
+  interpolating between two poses moves every joint in a straight line, so a
+  squat's knee slid forward while the hip slid back and the whole thing read as
+  sitting down oddly. Animation was tried at length and removed on purpose.
+  Because every displayed frame is now held still, each one has to stand alone —
+  `scratchpad/v13.js` checks that and writes the manifest.
 - **Author each pose from the exercise, never from its category.** `c` is a
   filter tag, not a movement description. A deadlift is `pull` but its elbows
   stay straight and the hips do the work; a calf raise is `legs` but the knee

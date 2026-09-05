@@ -4,8 +4,10 @@ const stub='var window={},document={body:{appendChild(){},classList:{toggle(){},
 exports.load=function(file){
   const s=fs.readFileSync(file||'index.html','utf8');
   const js=s.slice(s.indexOf('<script>')+8, s.lastIndexOf('</script>'));
+  /* pull the app's own card/phase logic out too, so the audit can never drift
+     from what the product actually renders */
   const M=new Function(stub+js.slice(0,js.indexOf('/* ---------------- boot'))+
-    '\nreturn {EX,framesFor,EQNAME};')();
+    '\nreturn {EX,framesFor,EQNAME,HOLDPOSE,cardPose,phaseNames,SET};')();
   M.src=s; return M;
 };
 /* geometry helpers, shared by every checker */

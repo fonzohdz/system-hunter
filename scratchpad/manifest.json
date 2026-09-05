@@ -1,0 +1,2200 @@
+[
+ {
+  "id": "wallpush",
+  "name": "Wall Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "wallr",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "incpush",
+  "name": "Incline Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "ledge",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "chairsq",
+  "name": "Chair Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "chair",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "wallsit",
+  "name": "Wall Sit",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "wall",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kneeplank",
+  "name": "Knee Plank",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bridge",
+  "name": "Glute Bridge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "march",
+  "name": "Standing March",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "calf",
+  "name": "Calf Raise",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "calfblk",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "birddog",
+  "name": "Bird Dog",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "deadbug",
+  "name": "Dead Bug",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kneepush",
+  "name": "Knee Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "squat",
+  "name": "Bodyweight Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "lunge",
+  "name": "Reverse Lunge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "plank",
+  "name": "Plank",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "stepup",
+  "name": "Step-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "box",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "hinge",
+  "name": "Hip Hinge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "sideknee",
+  "name": "Side Plank (knees)",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "climber",
+  "name": "Slow Mountain Climber",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "pushup",
+  "name": "Full Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "split",
+  "name": "Split Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "sideplank",
+  "name": "Side Plank",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "hollow",
+  "name": "Hollow Hold",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "jack",
+  "name": "Jumping Jack",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "row_table",
+  "name": "Table Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "table",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "superman",
+  "name": "Superman Hold",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bear",
+  "name": "Bear Crawl Hold",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "diamond",
+  "name": "Diamond Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "pike",
+  "name": "Pike Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "burpee_s",
+  "name": "Step-Back Burpee",
+  "card": 1,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "slbridge",
+  "name": "Single-Leg Glute Bridge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "archer",
+  "name": "Archer Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "pistol",
+  "name": "Assisted Pistol Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "wall",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "handstand",
+  "name": "Wall Handstand Hold",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "wall",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "burpee_f",
+  "name": "Full Burpee",
+  "card": 1,
+  "frames": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "phases": 4,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_curl",
+  "name": "Dumbbell Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_hammer",
+  "name": "Hammer Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_goblet",
+  "name": "Goblet Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_row",
+  "name": "One-Arm Dumbbell Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_floor",
+  "name": "Dumbbell Floor Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_lat",
+  "name": "Lateral Raise",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_press",
+  "name": "Dumbbell Shoulder Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_bench",
+  "name": "Dumbbell Bench Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench+db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_fly",
+  "name": "Dumbbell Chest Fly",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_rdl",
+  "name": "Dumbbell Romanian Deadlift",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_lunge",
+  "name": "Dumbbell Lunge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_tri",
+  "name": "Overhead Triceps Extension",
+  "card": 4,
+  "frames": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "phases": 5,
+  "context": "kb2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_carry",
+  "name": "Farmer Carry",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_thruster",
+  "name": "Dumbbell Thruster",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_bulg",
+  "name": "Bulgarian Split Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_halo",
+  "name": "Kettlebell Halo",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "phases": 5,
+  "context": "kb2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_swing",
+  "name": "Kettlebell Swing",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_cp",
+  "name": "Kettlebell Clean & Press",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "kb1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_tgu",
+  "name": "Turkish Get-Up",
+  "card": 4,
+  "frames": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "phases": 6,
+  "context": "kb1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_squat",
+  "name": "Barbell Back Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_dl",
+  "name": "Barbell Deadlift",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_bench",
+  "name": "Barbell Bench Press",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "bench+bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_ohp",
+  "name": "Overhead Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_row",
+  "name": "Bent-Over Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_thrust",
+  "name": "Barbell Hip Thrust",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_front",
+  "name": "Front Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_clean",
+  "name": "Power Clean",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "bar2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "hang",
+  "name": "Dead Hang",
+  "card": 0,
+  "frames": [
+   0
+  ],
+  "phases": 1,
+  "context": "fixbar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kneeraise",
+  "name": "Hanging Knee Raise",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "fixbar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "chinup",
+  "name": "Chin-Up / Pull-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "fixbar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "ttb",
+  "name": "Toes to Bar",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "fixbar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "band_pull",
+  "name": "Band Pull-Apart",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "band",
+  "shared": null,
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the back elbow bends one way in one phase and the other way in another"
+ },
+ {
+  "id": "band_row",
+  "name": "Band Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "band",
+  "shared": null,
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the front elbow bends one way in one phase and the other way in another"
+ },
+ {
+  "id": "band_face",
+  "name": "Face Pull",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "band",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "lat_pull",
+  "name": "Lat Pulldown",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablehi",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cable_row",
+  "name": "Seated Cable Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablemid",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "legpress",
+  "name": "Leg Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "treadmill",
+  "name": "Incline Treadmill Walk",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "tread",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "rowerg",
+  "name": "Rowing Machine",
+  "card": 0,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "erg",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_chest",
+  "name": "Machine Chest Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_incline",
+  "name": "Incline Machine Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "inclseat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_shoulder",
+  "name": "Machine Shoulder Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_pecdeck",
+  "name": "Pec Deck",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_row",
+  "name": "Chest-Supported Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "incl",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_legcurl",
+  "name": "Seated Leg Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_legext",
+  "name": "Leg Extension",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the back knee bends one way in one phase and the other way in another"
+ },
+ {
+  "id": "mch_abduct",
+  "name": "Hip Abduction Machine",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_adduct",
+  "name": "Hip Adduction Machine",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_calf",
+  "name": "Seated Calf Raise",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_hack",
+  "name": "Hack Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_assist",
+  "name": "Assisted Pull-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "fixbar+assistpad",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_crunch",
+  "name": "Ab Crunch Machine",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "seat",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_hipthrust",
+  "name": "Hip Thrust Machine",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench",
+  "shared": "bb_thrust",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mch_shrug",
+  "name": "Machine Shrug",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "shrugm+db",
+  "shared": "db_shrug",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_pushdown",
+  "name": "Triceps Pushdown",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablehi",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_ohtri",
+  "name": "Overhead Cable Extension",
+  "card": 4,
+  "frames": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "phases": 5,
+  "context": "cablelo",
+  "shared": "db_tri",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_curl",
+  "name": "Cable Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablelo",
+  "shared": "db_curl",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_lat",
+  "name": "Cable Lateral Raise",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablelo",
+  "shared": "db_lat",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_face",
+  "name": "Cable Face Pull",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablehi",
+  "shared": "band_face",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_flyhigh",
+  "name": "High Cable Fly",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cabhi2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_flylow",
+  "name": "Low Cable Fly",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablo2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_crossover",
+  "name": "Cable Crossover",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cabhi2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_straight",
+  "name": "Straight-Arm Pulldown",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "cablehi",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_pullthrough",
+  "name": "Cable Pull-Through",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablelob",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_woodchop",
+  "name": "Cable Woodchop",
+  "card": 3,
+  "frames": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "phases": 4,
+  "context": "cablehi",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_pallof",
+  "name": "Pallof Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cablemid",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "cbl_kick",
+  "name": "Cable Glute Kickback",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "cableank",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_calf",
+  "name": "Standing Calf Raise",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "calfblk+db",
+  "shared": "calf",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_walklunge",
+  "name": "Walking Lunge",
+  "card": 0,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_stepup",
+  "name": "Weighted Step-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "box+db",
+  "shared": "stepup",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_latstep",
+  "name": "Lateral Step-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "box",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_curtsy",
+  "name": "Curtsy Lunge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_sumo",
+  "name": "Dumbbell Sumo Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb2",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_singlerdl",
+  "name": "Single-Leg Romanian Deadlift",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_sumo",
+  "name": "Sumo Deadlift",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_frontlunge",
+  "name": "Front-Rack Lunge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_goodmorning",
+  "name": "Good Morning",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": null,
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the front elbow bends one way in one phase and the other way in another"
+ },
+ {
+  "id": "bb_split",
+  "name": "Barbell Split Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": "split",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "tb_dl",
+  "name": "Trap Bar Deadlift",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "tbar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "tb_shrug",
+  "name": "Trap Bar Shrug",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "tbar",
+  "shared": "db_shrug",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "ghr",
+  "name": "Glute-Ham Raise",
+  "card": 1,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "ghrpad",
+  "shared": null,
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the front elbow bends one way in one phase and the other way in another"
+ },
+ {
+  "id": "nordic",
+  "name": "Nordic Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "sissy",
+  "name": "Sissy Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "none",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_reardelt",
+  "name": "Rear Delt Fly",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_incline_curl",
+  "name": "Incline Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "incl+db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_conc",
+  "name": "Concentration Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "ez_preacher",
+  "name": "Preacher Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "preach",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "ez_skull",
+  "name": "Skull Crusher",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "ez_curl",
+  "name": "EZ Bar Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": "db_curl",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_kickback",
+  "name": "Triceps Kickback",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_shrug",
+  "name": "Dumbbell Shrug",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_wrist",
+  "name": "Wrist Curl",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench+db",
+  "shared": null,
+  "class": "RIG LIMITED",
+  "note": "no wrist joint in the eleven-point figure"
+ },
+ {
+  "id": "db_arnold",
+  "name": "Arnold Press",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_upright",
+  "name": "Upright Row",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "db",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_pullover",
+  "name": "Dumbbell Pullover",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_gobletlunge",
+  "name": "Goblet Reverse Lunge",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "db_farmerwalk",
+  "name": "Suitcase Carry",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "db1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_incline",
+  "name": "Incline Bench Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "incl+bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_closegrip",
+  "name": "Close-Grip Bench Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench+bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_pendlay",
+  "name": "Pendlay Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_rdl",
+  "name": "Barbell Romanian Deadlift",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": "db_rdl",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_pause_squat",
+  "name": "Pause Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": "bb_squat",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_ohp_push",
+  "name": "Push Press",
+  "card": 2,
+  "frames": [
+   0,
+   1,
+   2
+  ],
+  "phases": 3,
+  "context": "bar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "bb_hipthrust_bb",
+  "name": "Barbell Hip Thrust",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bench",
+  "shared": "bb_thrust",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "lm_press",
+  "name": "Landmine Press",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "lm_row",
+  "name": "Landmine Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar2",
+  "shared": "bb_row",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "lm_squat",
+  "name": "Landmine Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb",
+  "shared": "db_goblet",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "lm_twist",
+  "name": "Landmine Rotation",
+  "card": 0,
+  "frames": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "phases": 5,
+  "context": "bar",
+  "shared": null,
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the front elbow bends one way in one phase and the other way in another"
+ },
+ {
+  "id": "kb_goblet",
+  "name": "Kettlebell Goblet Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb",
+  "shared": "db_goblet",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_snatch",
+  "name": "Kettlebell Snatch",
+  "card": 3,
+  "frames": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "phases": 4,
+  "context": "kb1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_front_squat",
+  "name": "Kettlebell Front Squat",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "bar",
+  "shared": "bb_front",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_windmill",
+  "name": "Kettlebell Windmill",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "kb_carry_rack",
+  "name": "Racked Carry",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "kb1",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "dip_assist",
+  "name": "Assisted Dip",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "dipbar",
+  "shared": "dip",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "dip",
+  "name": "Parallel Bar Dip",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "dipbar",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "dip_weight",
+  "name": "Weighted Dip",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "dipbar",
+  "shared": "dip",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "trx_row",
+  "name": "Suspension Row",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "strap",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "trx_push",
+  "name": "Suspension Push-Up",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "strap",
+  "shared": "pushup",
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "trx_fallout",
+  "name": "Suspension Fallout",
+  "card": 1,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "strap",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "mb_slam",
+  "name": "Medicine Ball Slam",
+  "card": 4,
+  "frames": [
+   0,
+   1,
+   2,
+   3,
+   4
+  ],
+  "phases": 5,
+  "context": "plate",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ },
+ {
+  "id": "sled_push",
+  "name": "Sled Push",
+  "card": 0,
+  "frames": [
+   0,
+   1
+  ],
+  "phases": 2,
+  "context": "sled",
+  "shared": null,
+  "class": "STATIC VERIFIED",
+  "note": ""
+ }
+]
