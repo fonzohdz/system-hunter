@@ -128,6 +128,19 @@ rather than assuming the implementation matches the code.
 Commit before risky experiments. Do not force-push, rewrite history, or delete
 branches. Small, described commits.
 
+## Type
+
+Two faces, both from Google Fonts, loaded by the single `<link>` in the head.
+`--display` is **Cinzel** and carries the identity: brand mark, headings, level
+badge, stat numbers, the name in the halo. `--body` is **Archivo** and does the
+quiet 11–13px UI work. Archivo replaced Inter deliberately — Inter is on enough
+sites that it reads as a default rather than a choice. Do not swap `--body` back
+to Inter, Roboto, Geist or Plus Jakarta Sans.
+
+`--body` is set on `#root`, not on `body`. Anything appended to `document.body`
+(sheets, the veil, toasts) needs its own `font-family:var(--body)` or it
+inherits the browser's serif.
+
 ## Voice
 
 In-app copy is plain and direct. No corporate tone, no exclamation-point
