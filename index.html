@@ -1232,7 +1232,7 @@ const fresh=()=>({
     outgrown: movements already announced, so we only say it once. */
  perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
  /* unit is display only — loads are stored exactly as typed, in that unit. */
- unit:'lb', split:'random', cycle:0, vol:'auto',
+ unit:'lb', split:'random', cycle:0, vol:'auto', routines:[],
  /* Milestones earned, the first value of each PR so doubling can be detected,
     which categories have been logged, and whether a travel quest was cleared. */
  ach:[], prFirst:{}, catsLogged:[], travelClear:false, dg:null, dgBest:0,
@@ -1422,6 +1422,13 @@ function heal(){
   if(S.unit!=='kg'&&S.unit!=='lb')S.unit='lb';
   if(S.split!=='split')S.split='random';
   if(!VOLN[S.vol])S.vol='auto';
+  /* A routine is {id, n, ids}. Drop anything malformed and any movement id
+     that no longer exists, rather than letting a bad entry break the runner. */
+  if(!Array.isArray(S.routines))S.routines=[];
+  S.routines=S.routines.filter(r=>r&&typeof r==='object'&&r.id).map(r=>({
+    id:String(r.id), n:String(r.n||'Routine').slice(0,40),
+    ids:(Array.isArray(r.ids)?r.ids:[]).filter(id=>EX.some(x=>x.id===id)).slice(0,20)
+  }));
   if(typeof S.cycle!=='number'||!(S.cycle>=0))S.cycle=0;
   if(!S.stats||typeof S.stats!=='object')S.stats=f.stats;
   if(!S.prs||typeof S.prs!=='object')S.prs=f.prs;
@@ -1817,12 +1824,29 @@ function beep(){
 const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
 
 function questToday(){return rollQuest().map(e=>swapped(e))}
-function startSession(){
-  const q=questToday();
-  S.sess={d:today(),i:0,set:1,st:'brief',endAt:0,paused:0,left:0,
+const routine=id=>S.routines.find(r=>r.id===id)||null;
+const routineEx=r=>(r?r.ids:[]).map(id=>EX.find(x=>x.id===id)).filter(Boolean).map(swapped);
+/* What the running session is working through. A routine brings its own list;
+   otherwise it is today's quest. Swaps apply to both. */
+function sessList(){
+  const o=sess();
+  if(o&&o.r){const r=routine(o.r); if(r)return routineEx(r)}
+  return questToday();
+}
+/* The name field is uncontrolled, so grab whatever is in it before any action
+   that re-renders — otherwise typing a name and tapping Add silently loses it. */
+function saveName(){
+  const el=document.getElementById('rname'), r=routine(editing);
+  if(el&&r)r.n=(el.value||'').trim().slice(0,40)||'Routine';
+}
+function startSession(rid){
+  const r=rid?routine(rid):null;
+  const q=r?routineEx(r):questToday();
+  S.sess={d:today(),i:0,set:1,st:'brief',endAt:0,paused:0,left:0,r:r?r.id:null,
           xp:0,gold:0,cleared:[],began:Date.now()};
-  /* Skip straight past anything already logged from the checklist today. */
-  while(S.sess.i<q.length&&S.questDone.includes(q[S.sess.i].id))S.sess.i++;
+  /* Skip straight past anything already logged from the checklist today — but
+     only for the quest. A routine is yours to repeat if you want to. */
+  if(!r){while(S.sess.i<q.length&&S.questDone.includes(q[S.sess.i].id))S.sess.i++;}
   if(S.sess.i>=q.length)S.sess.st='done';
   save();keepAwake(true);tab='run';render();
 }
@@ -1837,7 +1861,9 @@ function clearMovement(e,actual,load){
   const q=questToday(),inQ=q.some(x=>x.id===e.id);
   if(!S.questDone.includes(e.id)){          // never pay twice for the same movement
     touchStreak();
-    if(inQ)S.questDone.push(e.id);
+    /* Everything logged goes in the ledger, not just quest movements —
+       otherwise anything outside the quest pays again on every tap. */
+    S.questDone.push(e.id);
     const xp=inQ?25:15;
     award(xp,10,e.st);
     o.xp+=xp;o.gold+=10;
@@ -1986,7 +2012,7 @@ function viewDungeon(){
 }
 
 /* ---------------- UI ---------------- */
-let tab='quest',filt={r:'all',c:'all',eq:'mine',m:'all'},open=null,ob;
+let tab='quest',filt={r:'all',c:'all',eq:'mine',m:'all'},open=null,ob,editing=null;
 ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,limits:[],class:'bladebound',weapon:'longsword',palette:'crimson'};
 const root=document.getElementById('root');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2324,7 +2350,7 @@ function viewKitCheck(){
 }
 function viewRun(){
   const o=sess(); if(!o)return viewQuest();
-  const q=questToday();
+  const q=sessList();
   if(o.st==='done'||o.i>=q.length)return viewRunDone(o,q);
   const e=q[o.i], sets=(doseParts(e)||{}).sets||3, tgt=targetReps(e);
   const head=`<div class="runtop">
@@ -2424,9 +2450,69 @@ function viewQuest(){
     <p class="note">Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn\'t.</p>
   </section>
   <section class="block">
+    <div class="blockhead"><h2>Your Routines</h2><span class="tally">${S.routines.length}</span></div>
+    ${S.routines.length?S.routines.map(r=>`<div class="item">
+      <div class="ico">▶</div>
+      <div class="itxt"><h4>${esc(r.n)}</h4>
+        <p>${r.ids.length?esc(routineEx(r).map(x=>x.n).join(', ')):'No movements yet'}</p></div>
+      <button class="mini" data-runroutine="${r.id}" ${r.ids.length?'':'disabled'}>Run</button>
+      <button class="mini" data-editroutine="${r.id}">Edit</button>
+    </div>`).join('')
+    :'<p class="questteaser">Build the session you already do, save it, and run it with the same timers and logging as a quest.</p>'}
+    <button class="btn ghost" data-newroutine>New routine</button>
+  </section>
+  <section class="block">
     <div class="blockhead"><h2>Instant Dungeon</h2></div>
     <p class="dgn">Six minutes, no rest. Three stations on a loop. The app counts the clock and the rounds — you just move.${S.dgBest?` Your best is <b>${S.dgBest}</b> rounds.`:''}</p>
     <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +40 gold</button>
+  </section>`;
+}
+/* Routine editor. Deliberately plain: a name, the movements in order, and a
+   filtered list to add from. Anything in the library can go in, including
+   things above your rank — it is your workout. */
+function viewRoutine(){
+  const r=routine(editing);
+  if(!r){tab='quest';return viewQuest()}
+  let list=EX.filter(e=>(filt.c==='all'||e.c===filt.c));
+  if(filt.eq==='mine')list=list.filter(hasEq);
+  if(limitsOn().length)list=list.filter(fitsLimits);
+  list=list.filter(e=>!r.ids.includes(e.id));
+  return crestBlock()+`
+  <section class="block top">
+    <div class="blockhead"><h2>Edit routine</h2>
+      <span class="tally">${r.ids.length} movement${r.ids.length===1?'':'s'}</span></div>
+    <div class="logrow" style="align-items:stretch">
+      <label for="rname">Name</label>
+      <input class="prin" id="rname" style="width:100%;text-align:left" maxlength="40"
+        value="${esc(r.n)}" placeholder="Monday · Push">
+    </div>
+    ${r.ids.length?routineEx(r).map((e,i)=>`<div class="item">
+      <div class="ico">${i+1}</div>
+      <div class="itxt"><h4>${esc(e.n)}</h4><p>${CATS[e.c]} · ${esc(scaledDose(e))}</p></div>
+      <button class="mini" data-rmove="${e.id}:-1" ${i?'':'disabled'}>↑</button>
+      <button class="mini" data-rdrop="${e.id}">Remove</button>
+    </div>`).join('')
+    :'<p class="note">Nothing in it yet. Add movements below.</p>'}
+    <button class="btn" data-rsave>Save routine</button>
+    <button class="btn ghost" data-rdelete>Delete this routine</button>
+  </section>
+  <section class="block">
+    <div class="blockhead"><h2>Add a movement</h2><span class="tally">${list.length}</span></div>
+    <div class="filters">
+      <button data-f="eq:mine" class="${filt.eq==='mine'?'on':''}">What I can do</button>
+      <button data-f="eq:all" class="${filt.eq==='all'?'on':''}">Everything</button>
+    </div>
+    <div class="filters">
+      <button data-f="c:all" class="${filt.c==='all'?'on':''}">All types</button>
+      ${Object.entries(CATS).map(([k,v])=>`<button data-f="c:${k}" class="${filt.c===k?'on':''}">${v}</button>`).join('')}
+    </div>
+    ${list.slice(0,60).map(e=>`<div class="item">
+      <div class="ico">${e.r}</div>
+      <div class="itxt"><h4>${esc(e.n)}</h4><p>${CATS[e.c]} · builds ${e.st}</p></div>
+      <button class="mini" data-radd="${e.id}" ${r.ids.length>=20?'disabled':''}>Add</button>
+    </div>`).join('')}
+    ${list.length>60?'<p class="note">Showing the first 60. Narrow it with the filters.</p>':''}
+    ${r.ids.length>=20?'<p class="note">Twenty movements is the cap for one routine.</p>':''}
   </section>`;
 }
 function viewLib(){
@@ -2733,9 +2819,10 @@ function render(){
     if(pendingLevel!==null)showLevelUp();
     return}
   const body=tab==='quest'?viewQuest():tab==='lib'?viewLib():tab==='rec'?viewRecords():
+             tab==='redit'?viewRoutine():
              tab==='eqedit'?viewEqEdit():tab==='dayeq'?viewDayEq():tab==='limits'?viewLimits():viewVault();
   root.innerHTML=body+`<nav class="tabs">
-    <button data-tab="quest" class="${tab==='quest'||tab==='dayeq'?'on':''}">Quest</button>
+    <button data-tab="quest" class="${tab==='quest'||tab==='dayeq'||tab==='redit'?'on':''}">Quest</button>
     <button data-tab="lib" class="${tab==='lib'?'on':''}">Skills</button>
     <button data-tab="rec" class="${tab==='rec'?'on':''}">Records</button>
     <button data-tab="vault" class="${tab==='vault'||tab==='eqedit'?'on':''}">Vault</button></nav>`;
@@ -3027,7 +3114,7 @@ document.addEventListener('click',ev=>{
     const reps=ri&&ri.value!==''?parseInt(ri.value,10):null;
     const load=li&&li.value!==''?parseFloat(li.value):null;
     touchStreak();
-    if(inQ&&!S.questDone.includes(e.id))S.questDone.push(e.id);
+    if(!S.questDone.includes(e.id))S.questDone.push(e.id);
     award(inQ?25:15,10,e.st);
     if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
       S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,50,null);toast('Daily quest cleared · +80 XP · +50 gold')}
@@ -3097,6 +3184,35 @@ document.addEventListener('click',ev=>{
     if(!sess())startSession();
     tab=(S.kitAsked===today())?'run':'kit';render();return}
   if(t.closest('[data-kitopen]')){tab='kit';render();return}
+  if(t.closest('[data-newroutine]')){
+    const r={id:'r'+Date.now().toString(36),n:'New routine',ids:[]};
+    S.routines.push(r);editing=r.id;save();tab='redit';render();return}
+  const er=t.closest('[data-editroutine]');
+  if(er){editing=er.dataset.editroutine;tab='redit';render();return}
+  const rr=t.closest('[data-runroutine]');
+  if(rr){const r=routine(rr.dataset.runroutine);
+    if(!r||!r.ids.length)return;
+    startSession(r.id);return}
+  const ra=t.closest('[data-radd]');
+  if(ra){const r=routine(editing);
+    if(r&&r.ids.length<20&&!r.ids.includes(ra.dataset.radd)){
+      saveName();r.ids.push(ra.dataset.radd);save();render()}
+    return}
+  const rd=t.closest('[data-rdrop]');
+  if(rd){const r=routine(editing);
+    if(r){saveName();r.ids=r.ids.filter(id=>id!==rd.dataset.rdrop);save();render()}
+    return}
+  const rm=t.closest('[data-rmove]');
+  if(rm){const r=routine(editing),[id,dir]=rm.dataset.rmove.split(':');
+    if(r){const i=r.ids.indexOf(id),j=i+ +dir;
+      if(i>=0&&j>=0&&j<r.ids.length){saveName();
+        const tmp=r.ids[i];r.ids[i]=r.ids[j];r.ids[j]=tmp;save();render()}}
+    return}
+  if(t.closest('[data-rsave]')){saveName();save();
+    toast('Routine saved');tab='quest';render();return}
+  if(t.closest('[data-rdelete]')){
+    S.routines=S.routines.filter(x=>x.id!==editing);editing=null;save();
+    toast('Routine deleted');tab='quest';render();return}
   if(t.closest('[data-kitdone]')){
     S.kitAsked=today();
     if(!sess())startSession(); else {const o=sess();o.i=0;o.set=1;o.st='brief';o.endAt=0}
@@ -3107,7 +3223,7 @@ document.addEventListener('click',ev=>{
     if(S.sound)beep();
     toast(S.sound?'Sound on':'Sound off');render();return}
   if(t.closest('[data-runstart]')){
-    const o=sess(),q=questToday(),e=q[o.i];
+    const o=sess(),q=sessList(),e=q[o.i];
     if(isTimed(e)){o.st='hold';o.total=targetReps(e);o.endAt=Date.now()+o.total*1000;o.paused=0;fired=false}
     else o.st='work';
     save();render();return}
@@ -3117,12 +3233,12 @@ document.addEventListener('click',ev=>{
     else{o.left=restLeft();o.paused=1}
     save();render();return}
   const hd=t.closest('[data-holddone]');
-  if(hd){const o=sess(),q=questToday(),e=q[o.i],sets=(doseParts(e)||{}).sets||3;
+  if(hd){const o=sess(),q=sessList(),e=q[o.i],sets=(doseParts(e)||{}).sets||3;
     buzz([0,40]);
     if(o.set>=sets){clearMovement(e,null);return}
     o.set++;o.total=restLen(e);fired=false;beginRest(o.total);return}
   const sd=t.closest('[data-setdone]');
-  if(sd){const o=sess(),q=questToday(),e=q[o.i],sets=(doseParts(e)||{}).sets||3;
+  if(sd){const o=sess(),q=sessList(),e=q[o.i],sets=(doseParts(e)||{}).sets||3;
     const inp=document.getElementById('actual');
     const got=inp&&inp.value!==''?parseInt(inp.value,10):null;
     const lin=document.getElementById('load');
@@ -3142,7 +3258,7 @@ document.addEventListener('click',ev=>{
     o.set++;o.total=restLen(e);fired=false;beginRest(o.total);return}
   if(t.closest('[data-restskip]')){const o=sess();o.st='work';o.endAt=0;fired=false;save();render();return}
   if(t.closest('[data-runskip]')){
-    const o=sess(),q=questToday();o.i++;o.set=1;o.st='brief';o.endAt=0;o.load=0;
+    const o=sess(),q=sessList();o.i++;o.set=1;o.st='brief';o.endAt=0;o.load=0;
     if(o.i>=q.length)o.st='done';
     save();render();return}
   const swp=t.closest('[data-swap]');

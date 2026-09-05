@@ -36,6 +36,21 @@ with muscle-map diagrams.
   week used to mean getting half the work of someone training six, which is
   backwards. `S.vol` can pin it to 3/5/7 for people who would rather choose.
 
+- **Three ways to train, all first-class.** The daily quest (the app decides),
+  a routine (you decide once and repeat), and the library (log anything). The
+  runner is shared: `sessList()` returns the routine's movements when
+  `S.sess.r` is set and today's quest otherwise, so timers, rests, swaps, load
+  logging and progression are never duplicated. A routine is
+  `{id, n, ids}` in `S.routines`; `heal()` drops malformed entries and movement
+  ids that no longer exist.
+
+- **`S.questDone` is the paid-today ledger, not the quest checklist.** Every
+  logged movement goes in it, including ones outside the quest — otherwise
+  anything in the library pays XP again on every tap, which routines would have
+  made trivial to farm. It is still reset daily by `rollQuest()`, and the
+  quest-cleared check asks whether every quest movement is present, so extra
+  ids in it are harmless.
+
 - **Logging from the Library is not second-class.** The `data-log` handler must
   keep calling `recordPerf`, so someone who ignores the quest and trains their
   own way still gets lift history and progression. It awarded XP but recorded
