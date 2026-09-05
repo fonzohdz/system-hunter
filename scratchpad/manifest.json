@@ -385,8 +385,8 @@
   "phases": 2,
   "context": "none",
   "shared": null,
-  "class": "STATIC VERIFIED",
-  "note": ""
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the back elbow bends one way in one phase and the other way in another"
  },
  {
   "id": "burpee_s",
@@ -598,8 +598,8 @@
   "phases": 3,
   "context": "db",
   "shared": null,
-  "class": "STATIC VERIFIED",
-  "note": ""
+  "class": "NEEDS STATIC REVIEW",
+  "note": "the back elbow bends one way in one phase and the other way in another"
  },
  {
   "id": "db_rdl",
@@ -835,7 +835,7 @@
    1
   ],
   "phases": 2,
-  "context": "bar2",
+  "context": "bench+bar2",
   "shared": null,
   "class": "STATIC VERIFIED",
   "note": ""

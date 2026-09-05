@@ -122,7 +122,7 @@ const PLANTED={
   kneeraise:['fH','bH'], ttb:['fH','bH'], nordic:['fK','bK','fF','bF'],
   sled_push:['fH','bH'], mch_legext:['fH','bH'], cbl_pushdown:['fE','bE'],
   cbl_pallof:['fF','bF'], db_conc:['fE'], db_wrist:['fE','bE'],
-  ez_skull:['fE','bE'], db_kickback:['fE','bE'], mch_calf:['fF','bF'],
+  ez_skull:['fE','bE'], db_kickback:['fE','bE'],
 };
 for(const id in PLANTED){
   if(!has(id))continue;
@@ -132,7 +132,17 @@ for(const id in PLANTED){
     if(m>5)fail(id,j+' is a support point but moves '+m.toFixed(1)+' units');
   }
 }
+/* On a calf raise the foot point is the heel and it is SUPPOSED to rise.
+   What must not happen is the toe sliding sideways. */
+for(const id of ['calf','mch_calf','db_calf']){
+  if(!has(id))continue;
+  const f=F[id];
+  for(const j of ['fF','bF']){let q=0;
+    for(const p of f)q=Math.max(q,Math.abs(p[J[j]].x-f[0][J[j]].x));
+    if(q>3)fail(id,'the toe slides '+q.toFixed(1)+' units sideways');}
+}
 console.log('  '+Object.keys(PLANTED).length+' movements checked for drifting supports');
+console.log('  calf raises lift the heel without sliding the toe');
 
 /* ---- 9. the specific corrections called out in the audit ---- */
 console.log('== named corrections ==');
