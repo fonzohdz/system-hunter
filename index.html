@@ -2997,15 +2997,16 @@ function showIntro(){
   document.body.appendChild(d);
 }
 const TOUR=[
- {sel:'.blade',t:'This is your weapon',x:'It burns as long as you keep training. Let the streak die and it goes dark and dull.'},
+ {sel:'.blade',t:'Your aura',x:'It burns as long as you keep training and goes out if the streak dies. Your weapon and palette live in the Vault.'},
  {sel:'.lvlrow',t:'Level, XP and gold',x:'Every skill you log pays both. Fill the bar and you level up, which unlocks harder skills.'},
  {sel:'.props',t:'Your stats',x:'STR, END, VIT, AGI and CORE grow from the kind of work you actually do. Level ups raise all five.'},
- {sel:'[data-begin]',t:'Begin Quest',x:'Five movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests.'},
+ {sel:'[data-begin]',t:'Begin Quest',x:'Movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests. How many you get depends on how many days a week you train.'},
  {sel:'.kitline',t:'What you have today',x:'Travelling, or stuck in a hotel room? Change it here and the quest rebuilds around what you actually have.'},
+ {sel:'[data-newroutine]',t:'Your own workouts',x:'Already know what you are doing? Save your own session and run it with the same timers, weight logging and progression as a quest. Or ignore all of it and log anything straight from the library.'},
  {sel:'[data-dungeon]',t:'Instant dungeon',x:'A six-minute timed loop for days you have extra in the tank. Three bodyweight stations, as many rounds as you can. It runs the clock for you.'},
- {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Every one animates so you can see the shape of it before you try it. Filter by muscle to find what you want.'},
- {sel:'[data-tab="rec"]',t:'Records and your card',x:'Track your max push-ups, squats and plank. Milestones live here, and the two cards worth sending to the group chat.'},
- {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — it costs nothing and resets nothing. Spend gold on titles and new palettes. Goal, kit and rest days live here too.'}
+ {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Each one shades a body map so you can see what it works, with four plain-language cues. Filter by muscle to find what you want.'},
+ {sel:'[data-tab="rec"]',t:'Records and your card',x:'Every lift you log shows up here against what you did last time. Max push-ups, squats and plank, milestones, and the two cards worth sending to the group chat.'},
+ {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — all eight palettes are free and nothing resets. Gold buys weapons, titles and the Elixir of Rest. Your goal, kit, session length and whether you train on a split live here too.'}
 ];
 let tour={on:false,i:0,els:null};
 function startTour(){
