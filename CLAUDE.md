@@ -153,12 +153,12 @@ branches. Small, described commits.
 The visual language is a status window, not a card UI: square framed panels
 with ticked corners, a monospace voice for anything that is a readout, an
 outlined accent button rather than a solid slab, and scanlines at very low
-contrast. It is set on  and  via two pseudo-elements each, so no
+contrast. It is set on `.block` and `.hero` via two pseudo-elements each, so no
 extra markup is needed to frame something — give it the class and it frames.
 
-**Nothing in it hardcodes a hue.** Every accent is , ,
- or an  built from the  /  triplets, all of which
- swaps per palette. That is why all eight palettes work and why
+**Nothing in it hardcodes a hue.** Every accent is `--crimson`, `--magenta`,
+`--core` or an `rgba()` built from the `--c1` / `--m1` triplets, all of which
+`applyLook()` swaps per palette. That is why all eight palettes work and why
 Frost renders the design in its original cyan. Do not introduce a fixed colour
 into this layer.
 
