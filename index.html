@@ -1186,12 +1186,14 @@ const XPLEVEL={new:1,some:5,trained:12,adv:20};
 
 /* Shown once to hunters who were already here when these landed. Bump v and
    rewrite the lines when there is something else worth one card. */
-const NEWS={v:1,t:'The System has been updated',l:[
+const NEWS={v:2,t:'The System has been updated',l:[
  'Weights are tracked. Loaded exercises ask what you lifted, and the target adds weight instead of endless reps.',
  'Records now lists every lift against what you did last time.',
  'Sessions can follow a split. Upper/lower, push/pull/legs — picked from the days you train.',
  'Build your own routines and run them with the same timers and logging.',
- 'Session length follows your week, so fewer days means longer sessions.'
+ 'Session length follows your week, so fewer days means longer sessions.',
+ 'Gold buys a quest reroll now, and aura styles have come off the class — your own is free, the rest are 300.',
+ 'Gold arrives at half the old rate. Nothing you had was taken; it is just worth more now.'
 ]};
 
 /* One training day: a name and the category weights the quest is drawn from.
@@ -1267,7 +1269,7 @@ const fresh=()=>({
     outgrown: movements already announced, so we only say it once. */
  perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
  /* unit is display only — loads are stored exactly as typed, in that unit. */
- unit:'lb', split:'random', cycle:0, vol:'auto', routines:[],
+ unit:'lb', split:'random', cycle:0, vol:'auto', routines:[], qroll:0, auraStyle:null,
  /* Bumped when there is something worth announcing once. A fresh hunter starts
     at the current number, so onboarding is not followed by a changelog. */
  newsSeen:0,
@@ -1461,6 +1463,8 @@ function heal(){
   if(S.split!=='split')S.split='random';
   if(!VOLN[S.vol])S.vol='auto';
   if(typeof S.newsSeen!=='number')S.newsSeen=0;
+  if(typeof S.qroll!=='number'||!(S.qroll>=0))S.qroll=0;
+  if(S.auraStyle&&!AURASTYLE[S.auraStyle])S.auraStyle=null;
   /* A routine is {id, n, ids}. Drop anything malformed and any movement id
      that no longer exists, rather than letting a bad entry break the runner. */
   if(!Array.isArray(S.routines))S.routines=[];
@@ -1554,6 +1558,13 @@ const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).tri
 const rgbOf=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
 const rgba=(hex,a)=>{const c=rgbOf(hex);return `rgba(${c[0]},${c[1]},${c[2]},${a})`};
 
+/* An aura style used to be welded to your class, so wanting Embers meant
+   becoming a Ronin and taking its tier names and titles with it. Your class's
+   own aura is free; the other five are the Vault's new paid axis. */
+const AURAPRICE=300;
+const AURALIST=()=>CLSKEYS.map(k=>({k:CLASSES[k].aura, n:CLASSES[k].an, from:CLASSES[k].n}));
+const auraOwned=k=>k===cls().aura||S.owned.includes('aur_'+k);
+const auraKey=()=>{const k=S.auraStyle;return k&&AURASTYLE[k]&&auraOwned(k)?k:cls().aura};
 const AURASTYLE={
   /* Bladebound — curling tendrils reaching outward, plus rising motes. */
   tendrils(C){
@@ -1698,7 +1709,7 @@ function auraLoop(now){
   ax.clearRect(0,0,AW,AH);
   const I=Math.min(1,auraIdx()/3.2);
   if(I>0&&!REDUCED){
-    const draw=AURASTYLE[cls().aura]||AURASTYLE.tendrils;
+    const draw=AURASTYLE[auraKey()]||AURASTYLE.tendrils;
     draw({now,I,cx:AW/2,cy:AH*.46,W:AW,H:AH,
           mag:cssv('--magenta'),core:cssv('--core'),crim:cssv('--crimson')});
     ax.globalAlpha=1;
@@ -1732,7 +1743,7 @@ function questFor(d){
      different training day genuinely rolls a different quest. */
   const plan=splitToday();
   const rnd=seeded(d+'|'+S.lvl+'|'+effEq().join('')+'|'+S.goal+'|'+curPreset()+'|'
-    +limitsOn().join('')+'|'+(plan?plan.k+S.cycle:'')+'|'+questLen()),
+    +limitsOn().join('')+'|'+(plan?plan.k+S.cycle:'')+'|'+questLen()+'|'+(S.qroll||0)),
         pl=pool(),w=plan?plan.w:GOALS[S.goal].w;
   const bag=[];for(const c in w)for(let i=0;i<w[c];i++)bag.push(c);
   const out=[],used=new Set();let guard=0;
@@ -1745,8 +1756,13 @@ function questFor(d){
   }
   return out;
 }
+const REROLL=40;
+/* Only while nothing has been cleared, so it cannot be used to walk away from
+   work already started. */
+const canReroll=()=>{const q=questFor(today());
+  return S.gold>=REROLL && !q.some(e=>S.questDone.includes(e.id))};
 function rollQuest(){const d=today();
-  if(S.questDate!==d){S.questDate=d;S.questDone=[];S.questBonus=false;save()}
+  if(S.questDate!==d){S.questDate=d;S.questDone=[];S.questBonus=false;S.qroll=0;save()}
   return questFor(d)}
 
 /* ---------------- progression ---------------- */
@@ -1904,10 +1920,10 @@ function clearMovement(e,actual,load){
        otherwise anything outside the quest pays again on every tap. */
     S.questDone.push(e.id);
     const xp=inQ?25:15;
-    award(xp,10,e.st);
-    o.xp+=xp;o.gold+=10;
+    award(xp,5,e.st);
+    o.xp+=xp;o.gold+=5;
     if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
-      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,50,null);o.xp+=80;o.gold+=50;
+      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,25,null);o.xp+=80;o.gold+=25;
     }
   }
   if(actual!=null)recordPerf(e,actual,load);
@@ -1993,7 +2009,7 @@ function endDungeon(){
   o.st='done';
   if(!o.paid){
     o.paid=1;
-    touchStreak();award(60,40,'END');
+    touchStreak();award(60,20,'END');
     if((S.dgBest||0)<o.rounds)S.dgBest=o.rounds;
     checkAch();
   }
@@ -2506,6 +2522,11 @@ function viewQuest(){
     ${(()=>{const o=sess();
       return `<button class="btn big" data-begin>${o?'Resume Quest':'Begin Quest'}</button>`})()}`}
     ${kitBar()}
+    ${all?'':`<button class="btn ghost" data-reroll ${canReroll()?'':'disabled'}>Reroll today · ${REROLL} gold</button>
+      <p class="note" style="margin-top:6px">${
+        S.gold<REROLL ? 'Not enough gold to reroll.'
+        : canReroll() ? 'Wrong exercises for today? Trade gold for a different quest.'
+        : 'Rerolling is only possible before you clear anything today.'}</p>`}
     ${q.length<5?`<p class="note" style="margin-top:0">Only ${q.length} exercise${q.length===1?'':'s'} available at this rank with today's kit. Widen the kit or level up for more.</p>`:''}
     <p class="note">Rest 60–90 seconds between sets. Sharp pain means stop and swap the exercise — soreness is fine, pain isn\'t.</p>
   </section>
@@ -2531,7 +2552,7 @@ function viewQuest(){
         Widen your kit, or your working-around list, and it comes back.</p>`;
       return `${st.length<3?`<p class="note">${st.length} station${st.length===1?'':'s'} today — the others
         need kit you do not have, or exercises you have ruled out.</p>`:''}
-      <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +40 gold</button>`;
+      <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +20 gold</button>`;
     })()}
   </section>`;
 }
@@ -2645,7 +2666,7 @@ function viewRecords(){
       <div><h4>${l}</h4><p>Best: <b>${S.prs[k]||'—'}</b> ${S.prs[k]?u:''}</p></div>
       <div class="prin-wrap"><input class="prin" type="number" inputmode="numeric" min="0" data-pr="${k}" placeholder="0">
       <button class="mini" data-prsave="${k}">Save</button></div></div>`).join('')}
-    <p class="note">Beating a record pays 3 gold per point. Going to failure is a test, not a workout — do it fresh, take the rest of the day easy.</p>
+    <p class="note">Beating a record pays 2 gold per point. Going to failure is a test, not a workout — do it fresh, take the rest of the day easy.</p>
   </section>
   ${liftsBlock()}
   <section class="block">
@@ -2737,6 +2758,14 @@ function viewVault(){
     <p class="clsline"><b>${esc(WEAPONNAME[S.weapon])}.</b> ${locked.length
       ? 'Tap a locked weapon to buy it. Gold comes from clearing quests — there is no other way to get it.'
       : 'Every weapon unlocked.'}</p>
+    <p class="picklab" style="margin-top:20px">Aura</p>
+    <div class="filters">${AURALIST().map(a=>{
+      const own=auraOwned(a.k), sel=auraKey()===a.k;
+      return `<button class="${sel?'on':''}" data-setaura="${a.k}"
+        ${!own&&S.gold<AURAPRICE?'disabled':''}>${esc(a.n)}${
+        own?'':' · '+AURAPRICE}</button>`}).join('')}</div>
+    <p class="clsline"><b>${esc((AURALIST().find(a=>a.k===auraKey())||{}).n||'')}.</b>
+      Your class aura is free. The rest are ${AURAPRICE} gold each and stay yours.</p>
     <p class="picklab" style="margin-top:20px">Palette</p>
     <div class="palrow">${palList().map(p=>palSwatch(p,S.palette===p,`data-setpal="${p}"`)).join('')}</div>
     <p class="clsline"><b>${esc(pal().n)}.</b> ${esc(pal().d)} All eight are free.</p>
@@ -3201,10 +3230,10 @@ document.addEventListener('click',ev=>{
     const load=li&&li.value!==''?parseFloat(li.value):null;
     touchStreak();
     if(!S.questDone.includes(e.id))S.questDone.push(e.id);
-    award(inQ?25:15,10,e.st);
+    award(inQ?25:15,5,e.st);
     if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
-      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,50,null);toast('Daily quest cleared · +80 XP · +50 gold')}
-    else toast(e.n+' · +'+(inQ?25:15)+' XP · +10 gold');
+      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,25,null);toast('Daily quest cleared · +80 XP · +25 gold')}
+    else toast(e.n+' · +'+(inQ?25:15)+' XP · +5 gold');
     if(reps!=null)recordPerf(e,reps,load);
     noteLogged(e);checkAch();
     closeSheet();render();return}
@@ -3228,7 +3257,7 @@ document.addEventListener('click',ev=>{
   if(ps){const k=ps.dataset.prsave,inp=document.querySelector(`[data-pr="${k}"]`),v=parseInt(inp.value,10);
     if(!v||v<0){toast('Enter a number first');return}
     const old=S.prs[k]||0;
-    if(v>old){const g=(v-old)*3;
+    if(v>old){const g=(v-old)*2;
       if(!S.prFirst[k])S.prFirst[k]=old||v;      // the baseline a doubling is measured from
       S.prs[k]=v;award(30,g,k==='plank'?'CORE':'STR');toast('New record · +'+g+' gold');checkAch()}
     else{toast('Logged. Record still '+old+'.');save()}
@@ -3256,6 +3285,15 @@ document.addEventListener('click',ev=>{
     if(S.split==='split')S.cycle=0;
     save();render();
     toast(S.split==='split'?'On a split · '+splitToday().n+' first':'Back to varied quests');return}
+  const sa=t.closest('[data-setaura]');
+  if(sa){const k=sa.dataset.setaura;
+    if(!AURASTYLE[k])return;
+    if(!auraOwned(k)){
+      if(S.gold<AURAPRICE)return;
+      S.gold-=AURAPRICE;S.owned.push('aur_'+k);
+      toast('Aura unlocked · -'+AURAPRICE+' gold');
+    }
+    S.auraStyle=k;save();render();return}
   if(t.closest('[data-cycleunit]')){S.unit=S.unit==='kg'?'lb':'kg';save();render();return}
   if(t.closest('[data-cyclevol]')){
     const order=['auto','short','standard','long'];
@@ -3271,6 +3309,12 @@ document.addEventListener('click',ev=>{
     if(!sess())startSession();
     tab=(S.kitAsked===today())?'run':'kit';render();return}
   if(t.closest('[data-newsdone]')){S.newsSeen=NEWS.v;save();render();return}
+  if(t.closest('[data-reroll]')){
+    if(!canReroll())return;
+    S.gold-=REROLL;S.qroll=(S.qroll||0)+1;
+    /* A reroll must not carry the old session, which points at the old list. */
+    S.sess=null;S.swaps=null;
+    save();render();toast('Quest rerolled · -'+REROLL+' gold');return}
   if(t.closest('[data-kitopen]')){tab='kit';render();return}
   if(t.closest('[data-newroutine]')){
     const r={id:'r'+Date.now().toString(36),n:'New routine',ids:[]};

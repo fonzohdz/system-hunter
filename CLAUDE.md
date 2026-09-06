@@ -61,6 +61,25 @@ with muscle-map diagrams.
   own way still gets lift history and progression. It awarded XP but recorded
   nothing until this was fixed.
 
+- **The gold economy is deliberately tight.** 5 a cleared exercise, 25 a cleared
+  quest, 20 a dungeon, 2 a record point — half what it was. A six-exercise day
+  pays 55, so the cheapest weapon is about eight days and the dearest title
+  about a month. The Vault felt pointless because gold arrived faster than
+  there was anything to spend it on; fix that end, not the item list.
+
+- **Gold buys training, not just decoration.** `REROLL` (40) re-rolls today's
+  quest by bumping `S.qroll`, which is part of the quest seed and resets with
+  the day. `canReroll()` blocks it once anything is cleared, so it cannot be
+  used to walk away from work already started, and the handler clears
+  `S.sess`/`S.swaps` because both point at the old list.
+
+- **Aura styles are unbundled from class.** `auraKey()` returns `S.auraStyle`
+  when owned and the class default otherwise; the canvas must draw
+  `AURASTYLE[auraKey()]`, never `cls().aura`. Your class's own aura is free,
+  the other five are 300 each. Palettes are NOT a paid axis — `refundOldCosmetics()`
+  shows they were sold once and made free with refunds, and charging again
+  would take something back.
+
 - **Splits are indexed by `S.cycle`, not the weekday.** `S.cycle` increments
   when a whole quest is cleared. Indexing by calendar day is how people never
   train legs: miss Wednesday and leg day is gone. Missing a day must delay the
