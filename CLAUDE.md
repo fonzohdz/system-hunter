@@ -61,15 +61,6 @@ with muscle-map diagrams.
   own way still gets lift history and progression. It awarded XP but recorded
   nothing until this was fixed.
 
-- **The Gate is a sink, and must stay one.** It costs gold, pays exclusive
-  titles and a record, and pays back NO gold, NO XP, NO stats and NO streak.
-  Gold is only earned by training, so a mini-game that paid XP would be a way
-  to rank up without training and would hollow out the app. The boss telegraphs
-  its intent and one attribute beats it; your stat decides whether the right
-  answer is strong enough. That makes it a decision rather than a wager, which
-  matters in an app young people use — do not turn it into a random box. The
-  sequence is fixed in `S.gt` on entry so reloading cannot reroll a bad draw.
-
 - **Splits are indexed by `S.cycle`, not the weekday.** `S.cycle` increments
   when a whole quest is cleared. Indexing by calendar day is how people never
   train legs: miss Wednesday and leg day is gone. Missing a day must delay the
