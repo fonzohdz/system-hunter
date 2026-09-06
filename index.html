@@ -169,6 +169,15 @@ html,body{margin:0;background:var(--void)}
 .wmeta{flex:1;min-width:0}
 
 /* library */
+.gatepick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:22px 0 4px}
+.gateb{background:var(--deep);border:1px solid var(--line);cursor:pointer;
+  padding:12px 2px 10px;text-align:center;font:inherit;color:var(--bone)}
+.gateb:hover{border-color:var(--crimson)}
+.gateb u{display:block;text-decoration:none;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;color:var(--ash2)}
+.gateb b{display:block;font-family:var(--display);font-size:21px;margin-top:4px}
+.gateb i{display:block;height:2px;margin:8px 5px 0;background:var(--line)}
+.gateb i.ok{background:var(--crimson)}
 .filterbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
 .filtsum{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--ash2);
   text-transform:capitalize;
@@ -983,6 +992,33 @@ const EX=[
 const RANKS=['E','D','C','B','A','S'];
 const RANK_LV={E:1,D:4,C:9,B:16,A:26,S:40};
 const RANK_TITLE={E:'Novice',D:'Adept',C:'Expert',B:'Master',A:'Grandmaster',S:'Sword Saint'};
+
+/* ---- The Gate ---------------------------------------------------------
+   Entry cost rises with the rank; so does the stat you need to answer with.
+   Thresholds are set against real progression: stats start at 5, gain 1 per
+   exercise logged in that stat and 1 across the board per level, so a C gate
+   is reachable in a few weeks and an A gate is a long way off on purpose. */
+const GATE={
+ E:{cost:60, need:8,  n:'E-Rank Gate'},
+ D:{cost:90, need:14, n:'D-Rank Gate'},
+ C:{cost:130,need:21, n:'C-Rank Gate'},
+ B:{cost:180,need:29, n:'B-Rank Gate'},
+ A:{cost:250,need:39, n:'A-Rank Gate'}
+};
+const GATEKEYS=['E','D','C','B','A'];
+/* Each intent has exactly one right answer. The telegraph is the whole game:
+   read it, pick the stat that beats it. */
+const INTENT=[
+ {t:'It winds up a crushing overhead blow.',      s:'AGI', v:'Step aside'},
+ {t:'It lunges in to grapple you.',               s:'STR', v:'Overpower it'},
+ {t:'It settles in and starts grinding you down.',s:'END', v:'Outlast it'},
+ {t:'It aims a fast strike at your ribs.',        s:'VIT', v:'Take it'},
+ {t:'It shifts its weight and feints.',           s:'CORE',v:'Hold your line'}
+];
+const STATKEYS=['STR','END','VIT','AGI','CORE'];
+const gateOn=()=>S.gt&&GATE[S.gt.r]?S.gt:null;
+/* Gates you may enter: anything up to your own rank. */
+const gatesOpen=()=>GATEKEYS.slice(0,GATEKEYS.indexOf(rankOf(S.lvl))+1);
 const CATS={push:'Push',pull:'Pull',legs:'Legs',core:'Core',cardio:'Cardio',full:'Full body'};
 const EQNAME={db:'Dumbbells',kb:'Kettlebell',bb:'Barbell',ezbar:'EZ bar',trapbar:'Trap bar',
  landmine:'Landmine',bar:'Pull-up bar',dip:'Dip bars',trx:'Suspension trainer',
@@ -1158,7 +1194,9 @@ const EARNED={
  t_earned1k:{id:'t_earned1k',n:'Thousandfold',p:0,ico:'⛬',d:'A thousand exercises logged.'},
  t_earneddbl:{id:'t_earneddbl',n:'Twice the Hunter',p:0,ico:'⇈',d:'You doubled a record you set yourself.'},
  t_earnedB:{id:'t_earnedB',n:'Master',p:0,ico:'⚔',d:'Reached B-Rank.'},
- t_earnedA:{id:'t_earnedA',n:'Grandmaster',p:0,ico:'☗',d:'Reached A-Rank.'}
+ t_earnedA:{id:'t_earnedA',n:'Grandmaster',p:0,ico:'☗',d:'Reached A-Rank.'},
+ t_gateC:{id:'t_gateC',n:'Gatebreaker',p:0,ico:'⌘',d:'Cleared a C-Rank Gate.'},
+ t_gateA:{id:'t_gateA',n:'Monarch',p:0,ico:'♜',d:'Cleared an A-Rank Gate.'}
 };
 /* Checked after anything that could move the needle. Modest moment: a toast and
    a badge, never the full level-up sequence. */
@@ -1186,10 +1224,11 @@ const XPLEVEL={new:1,some:5,trained:12,adv:20};
 
 /* Shown once to hunters who were already here when these landed. Bump v and
    rewrite the lines when there is something else worth one card. */
-const NEWS={v:1,t:'The System has been updated',l:[
+const NEWS={v:2,t:'The System has been updated',l:[
  'Weights are tracked. Loaded exercises ask what you lifted, and the target adds weight instead of endless reps.',
  'Records now lists every lift against what you did last time.',
  'Sessions can follow a split. Upper/lower, push/pull/legs — picked from the days you train.',
+ 'The Gate: spend gold, read what it is about to do, answer with the attribute that beats it. Your stats decide whether the right answer is strong enough.',
  'Build your own routines and run them with the same timers and logging.',
  'Session length follows your week, so fewer days means longer sessions.'
 ]};
@@ -1268,6 +1307,8 @@ const fresh=()=>({
  perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
  /* unit is display only — loads are stored exactly as typed, in that unit. */
  unit:'lb', split:'random', cycle:0, vol:'auto', routines:[],
+ /* gt is the run in progress; gate is the permanent record. */
+ gt:null, gate:{clears:0,best:''},
  /* Bumped when there is something worth announcing once. A fresh hunter starts
     at the current number, so onboarding is not followed by a changelog. */
  newsSeen:0,
@@ -1461,6 +1502,12 @@ function heal(){
   if(S.split!=='split')S.split='random';
   if(!VOLN[S.vol])S.vol='auto';
   if(typeof S.newsSeen!=='number')S.newsSeen=0;
+  if(!S.gate||typeof S.gate!=='object')S.gate={clears:0,best:''};
+  if(typeof S.gate.clears!=='number')S.gate.clears=0;
+  if(!GATE[S.gate.best])S.gate.best='';
+  /* A half-finished run from an older build, or a rank that no longer exists,
+     must not strand the gold — drop it rather than render a broken round. */
+  if(S.gt&&(!GATE[S.gt.r]||!Array.isArray(S.gt.seq)))S.gt=null;
   /* A routine is {id, n, ids}. Drop anything malformed and any movement id
      that no longer exists, rather than letting a bad entry break the runner. */
   if(!Array.isArray(S.routines))S.routines=[];
@@ -1984,6 +2031,36 @@ function dgLeft(){
   if(o.paused)return Math.max(0,Math.round(o.left));
   return Math.max(0,Math.round((o.endAt-Date.now())/1000));
 }
+/* Entering charges the gold and fixes the sequence, so reloading cannot
+   reroll a bad draw. Three rounds, two wins clears it. */
+function enterGate(r){
+  const g=GATE[r]; if(!g||S.gold<g.cost)return;
+  S.gold-=g.cost;
+  const seq=[0,1,2].map(()=>Math.floor(Math.random()*INTENT.length));
+  S.gt={r, i:0, wins:0, seq, res:[]};
+  save();tab='gate';render();
+}
+/* The answer is right or wrong on its own; the stat only decides whether being
+   right was enough. Both failures read differently on purpose. */
+function answerGate(stat){
+  const o=gateOn(); if(!o||o.i>=3)return;
+  const it=INTENT[o.seq[o.i]], need=GATE[o.r].need, have=S.stats[stat]||0;
+  const right=stat===it.s;
+  const win=right&&have>=need;
+  o.res.push({stat,right,have,win});
+  if(win)o.wins++;
+  o.i++;
+  if(o.i>=3&&o.wins>=2){
+    S.gate.clears++;
+    if(GATEKEYS.indexOf(o.r)>GATEKEYS.indexOf(S.gate.best||'E')||!S.gate.best)S.gate.best=o.r;
+    /* Titles only. No XP, no stats, no streak — the Gate must never be a way
+       to progress without training. */
+    if((o.r==='C'||o.r==='B'||o.r==='A')&&!S.owned.includes('t_gateC'))S.owned.push('t_gateC');
+    if(o.r==='A'&&!S.owned.includes('t_gateA'))S.owned.push('t_gateA');
+  }
+  save();render();
+}
+function leaveGate(){S.gt=null;save();tab='quest';render();}
 function startDungeon(){
   S.dg={d:today(),st:'run',endAt:Date.now()+DGLEN*1000,paused:0,left:DGLEN,step:0,rounds:0};
   save();keepAwake(true);dgFired=false;tab='dungeon';render();
@@ -2013,6 +2090,39 @@ function runDgTicker(){
     if(left<=0&&!dgFired){dgFired=true;buzz([0,80,60,140]);beep();
       clearInterval(dgTicker);dgTicker=null;endDungeon()}
   },250);
+}
+function viewGate(){
+  const o=gateOn(); if(!o)return viewQuest();
+  const g=GATE[o.r];
+  if(o.i>=3){
+    const cleared=o.wins>=2;
+    return `<div class="runwrap"><div class="run center">
+      <p class="runstep">${esc(g.n)}</p>
+      <h2 class="runh">${cleared?'Gate cleared':'Gate held'}</h2>
+      <div class="sumgrid">
+        <div><span>Rounds won</span><b>${o.wins} / 3</b></div>
+        <div><span>Deepest</span><b>${esc(S.gate.best||'—')}</b></div>
+        <div><span>Cleared</span><b>${S.gate.clears}</b></div>
+      </div>
+      <ul class="cues" style="margin-top:18px">${o.res.map((r,i)=>`<li>Round ${i+1} ·
+        ${r.win?'held':r.right?'right call, '+r.stat+' '+r.have+' against '+g.need+' needed'
+          :'wrong call'}</li>`).join('')}</ul>
+      <p class="note">${cleared
+        ? 'Nothing was paid out. Gates cost gold and give titles — they never hand back what you spent, and they never give XP.'
+        : 'The entry cost is gone. Train the stat you were short on and come back.'}</p>
+      <button class="btn big" data-gateleave>Leave the gate</button>
+    </div></div>`;
+  }
+  const it=INTENT[o.seq[o.i]];
+  return `<div class="runwrap"><div class="run center">
+    <p class="runstep">${esc(g.n)} · Round ${o.i+1} of 3 · ${o.wins} held</p>
+    <h2 class="runh">${esc(it.t)}</h2>
+    <p class="runsub">Answer with the right attribute. You need <b>${g.need}</b> in it.</p>
+    <div class="gatepick">${STATKEYS.map(k=>`<button class="gateb" data-gate="${k}">
+      <u>${k}</u><b>${S.stats[k]||0}</b>
+      <i class="${(S.stats[k]||0)>=g.need?'ok':''}"></i></button>`).join('')}</div>
+    <p class="note">The right attribute still fails if it is not high enough. That is the point.</p>
+  </div></div>`;
 }
 function viewDungeon(){
   const o=dg(); if(!o)return viewQuest();
@@ -2522,6 +2632,22 @@ function viewQuest(){
     <button class="btn ghost" data-newroutine>New routine</button>
   </section>
   <section class="block">
+    <div class="blockhead"><h2>The Gate</h2><span class="tally">${S.gate.clears} cleared${
+      S.gate.best?' · deepest '+esc(S.gate.best):''}</span></div>
+    ${gateOn()?`<p class="dgn">A gate is already open.</p>
+      <button class="btn big" data-gateresume>Back to the gate</button>`
+    :`<p class="dgn">Spend gold to open a gate. Three rounds — it tells you what it is about
+      to do, you answer with the attribute that beats it. Your training decides whether the
+      right answer is strong enough.</p>
+    ${gatesOpen().map(k=>`<div class="item">
+      <div class="ico">${k}</div>
+      <div class="itxt"><h4>${esc(GATE[k].n)}</h4><p>Needs ${GATE[k].need} in the answering attribute</p></div>
+      <button class="mini" data-gateopen="${k}" ${S.gold<GATE[k].cost?'disabled':''}>${GATE[k].cost} gold</button>
+    </div>`).join('')}
+    <p class="note">Gates pay titles and a record. They never pay gold back and never give XP —
+    the only way to level is to train.</p>`}
+  </section>
+  <section class="block">
     <div class="blockhead"><h2>Instant Dungeon</h2></div>
     <p class="dgn">Six minutes, no rest. Stations on a loop. The app counts the clock and the rounds — you just move.${S.dgBest?` Your best is <b>${S.dgBest}</b> rounds.`:''}</p>
     ${(()=>{const st=dgStations();
@@ -2892,6 +3018,7 @@ function render(){
     const n=document.getElementById('obname');
     if(n)n.oninput=e=>{ob.name=e.target.value;const b=document.querySelector('[data-obnext]');if(b)b.disabled=!ob.name.trim()};
     return}
+  if(tab==='gate'){root.innerHTML=viewGate();return}
   if(tab==='dungeon'){root.innerHTML=viewDungeon();runDgTicker();
     if(pendingLevel!==null)showLevelUp();return}
   if(tab==='run'||tab==='kit'){
@@ -3271,6 +3398,12 @@ document.addEventListener('click',ev=>{
     if(!sess())startSession();
     tab=(S.kitAsked===today())?'run':'kit';render();return}
   if(t.closest('[data-newsdone]')){S.newsSeen=NEWS.v;save();render();return}
+  const go=t.closest('[data-gateopen]');
+  if(go){enterGate(go.dataset.gateopen);return}
+  if(t.closest('[data-gateresume]')){tab='gate';render();return}
+  if(t.closest('[data-gateleave]')){leaveGate();return}
+  const ga=t.closest('[data-gate]');
+  if(ga){buzz([0,30]);answerGate(ga.dataset.gate);return}
   if(t.closest('[data-kitopen]')){tab='kit';render();return}
   if(t.closest('[data-newroutine]')){
     const r={id:'r'+Date.now().toString(36),n:'New routine',ids:[]};
