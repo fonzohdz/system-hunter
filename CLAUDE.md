@@ -148,14 +148,32 @@ rather than assuming the implementation matches the code.
 Commit before risky experiments. Do not force-push, rewrite history, or delete
 branches. Small, described commits.
 
+## Look — “System Window”
+
+The visual language is a status window, not a card UI: square framed panels
+with ticked corners, a monospace voice for anything that is a readout, an
+outlined accent button rather than a solid slab, and scanlines at very low
+contrast. It is set on  and  via two pseudo-elements each, so no
+extra markup is needed to frame something — give it the class and it frames.
+
+**Nothing in it hardcodes a hue.** Every accent is , ,
+ or an  built from the  /  triplets, all of which
+ swaps per palette. That is why all eight palettes work and why
+Frost renders the design in its original cyan. Do not introduce a fixed colour
+into this layer.
+
 ## Type
 
-Two faces, both from Google Fonts, loaded by the single `<link>` in the head.
+Three faces, all from Google Fonts, loaded by the single `<link>` in the head.
 `--display` is **Cinzel** and carries the identity: brand mark, headings, level
 badge, stat numbers, the name in the halo. `--body` is **Archivo** and does the
 quiet 11–13px UI work. Archivo replaced Inter deliberately — Inter is on enough
 sites that it reads as a default rather than a choice. Do not swap `--body` back
 to Inter, Roboto, Geist or Plus Jakarta Sans.
+
+`--mono` is **IBM Plex Mono** and is the third voice: it speaks data and
+nothing else — panel headers, tallies, stat labels, tab labels, filter chips,
+buttons, lift figures. Do not set prose in it.
 
 `--body` is set on `#root`, not on `body`. Anything appended to `document.body`
 (sheets, the veil, toasts) needs its own `font-family:var(--body)` or it

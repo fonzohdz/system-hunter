@@ -16,7 +16,7 @@
 <meta property="og:description" content="Clear the daily quest. Keep your aura lit. 73 skills, E-rank to A-rank.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23020103'/><path d='M50 12 L64 34 L64 68 L50 80 L36 68 L36 34 Z' fill='%23FF3D7F'/></svg>">
 <style>
 :root{
@@ -30,6 +30,8 @@
   --c1:232,17,79; --m1:255,61,127;
   --display:"Cinzel","Bodoni MT","Times New Roman",serif;
   --body:"Archivo","Segoe UI",system-ui,-apple-system,sans-serif;
+  /* the third voice: readouts only, never prose */
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--void)}
@@ -44,6 +46,11 @@ html,body{margin:0;background:var(--void)}
     radial-gradient(110% 50% at 50% 100%, #0A0206 0%, transparent 72%),
     var(--void);
 }
+/* Scanlines. Low enough to read as a surface, not as an effect. */
+#root::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:2;
+  background:repeating-linear-gradient(180deg,rgba(var(--c1),.05) 0 1px,transparent 1px 3px);
+}
 #root::after{
   content:"";position:fixed;inset:0;pointer-events:none;opacity:.05;z-index:3;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -51,11 +58,11 @@ html,body{margin:0;background:var(--void)}
 .boot{padding:90px 20px;text-align:center;color:var(--magenta);letter-spacing:.22em;font-size:12px;font-family:var(--body)}
 
 /* masthead + level row */
-.mast{padding:6px 18px 0}
+.mast{padding:6px 16px 0}
 .brandrow{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding-bottom:10px}
 .brand{font-family:var(--display);font-size:21px;font-weight:700;letter-spacing:.3em;text-indent:.3em}
 .matline{font-size:11.5px;color:var(--ash);letter-spacing:.13em;margin-left:auto}
-.lvlrow{display:flex;align-items:center;gap:13px;padding:14px 18px 0}
+.lvlrow{display:flex;align-items:center;gap:13px;padding:14px 16px 0}
 .lvlbadge{width:46px;height:52px;flex:0 0 46px;display:grid;place-items:center;position:relative;
   background:linear-gradient(180deg,var(--magenta),var(--deepblade));
   clip-path:polygon(50% 0,100% 26%,100% 74%,50% 100%,0 74%,0 26%)}
@@ -79,7 +86,13 @@ html,body{margin:0;background:var(--void)}
   box-shadow:0 0 11px -2px rgba(232,197,131,.7)}
 
 /* hero */
-.hero{position:relative;padding:18px 18px 22px;overflow:hidden}
+.hero{position:relative;margin:14px 16px 0;padding:18px 16px 16px;overflow:hidden;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(var(--c1),.06),transparent 55%),var(--deep)}
+.hero::before,.hero::after{content:"";position:absolute;width:9px;height:9px;
+  border:1px solid var(--crimson);opacity:.8;pointer-events:none;z-index:2}
+.hero::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.hero::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
 #aura{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .sigil{position:absolute;left:50%;top:82px;transform:translate(-50%,-50%);
   width:212px;height:212px;border-radius:50%;pointer-events:none;opacity:var(--sig,.8);
@@ -111,19 +124,30 @@ html,body{margin:0;background:var(--void)}
 
 /* stats */
 .props{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);
-  margin:0 18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  margin:14px 16px 0;border:1px solid var(--line)}
 .prop{background:var(--void);padding:12px 5px 10px;text-align:center}
-.prop span{display:block;font-size:9px;letter-spacing:.15em;color:var(--ash)}
+.prop span{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--ash2)}
 .prop b{display:block;font-family:var(--display);font-size:24px;font-weight:700;line-height:1.15;margin-top:2px}
 .prop i{display:block;height:2px;background:var(--line);margin-top:8px;position:relative}
 .prop i::after{content:"";position:absolute;left:0;top:0;height:100%;width:var(--v);background:var(--crimson)}
 
 /* blocks */
-.block{padding:28px 18px 0}
-.block.top{padding-top:calc(14px + env(safe-area-inset-top))}
-.blockhead{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
-.blockhead h2{font-family:var(--display);font-size:17px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;margin:0}
-.tally{margin-left:auto;font-size:11.5px;color:var(--ash);letter-spacing:.08em;display:flex;align-items:center;gap:6px}
+/* A panel is a framed window: square, hairline border, ticked corners. The
+   ticks are two pseudo-elements on the section itself, so no extra markup. */
+.block{position:relative;margin:14px 16px 0;padding:16px;
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(var(--c1),.04),transparent 60%),var(--deep)}
+.block::before,.block::after{content:"";position:absolute;width:9px;height:9px;
+  border:1px solid var(--crimson);opacity:.8;pointer-events:none}
+.block::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.block::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.block.top{margin-top:calc(10px + env(safe-area-inset-top))}
+.blockhead{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;
+  padding-bottom:9px;border-bottom:1px solid var(--line)}
+.blockhead h2{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.26em;
+  text-transform:uppercase;margin:0;color:var(--magenta)}
+.tally{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ash);
+  letter-spacing:.06em;display:flex;align-items:center;gap:6px}
 .note{font-size:12px;color:var(--ash);line-height:1.6;margin:14px 0 0}
 .note.big{font-size:13.5px;margin-top:4px}
 .dgn{font-size:14px;line-height:1.6;margin:6px 0 14px;color:var(--bone)}
@@ -146,7 +170,7 @@ html,body{margin:0;background:var(--void)}
 
 /* library */
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
-.filters button{background:none;border:1px solid var(--line);color:var(--ash);
+.filters button{background:none;border:1px solid var(--line);color:var(--ash);font-family:var(--mono);
   font:inherit;font-size:12px;padding:6px 11px;cursor:pointer}
 .filters button.on{border-color:var(--crimson);color:var(--magenta);background:rgba(var(--c1),.08)}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:14px}
@@ -177,10 +201,10 @@ html,body{margin:0;background:var(--void)}
 .liftn h4{margin:0;font-size:13px}
 .liftn p{margin:3px 0 0;font-size:11px;color:var(--ash2)}
 .liftv{text-align:right;flex:0 0 auto}
-.liftv b{display:block;font-family:var(--display);font-size:16px;color:var(--bone)}
+.liftv b{display:block;font-family:var(--mono);font-size:15px;font-weight:600;color:var(--core)}
 .liftv b.up{color:#4ADE80}
 .liftv b.dn{color:var(--ash)}
-.liftv span{display:block;font-size:10px;color:var(--ash2);margin-top:2px}
+.liftv span{display:block;font-family:var(--mono);font-size:10px;color:var(--ash2);margin-top:3px}
 .heat{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:12px}
 .heat i{aspect-ratio:1;display:block;background:#0C060A;border:1px solid var(--line)}
 .heat i.hm1{background:rgba(var(--c1),.3);border-color:rgba(var(--c1),.4)}
@@ -196,21 +220,26 @@ html,body{margin:0;background:var(--void)}
 .itxt{flex:1;min-width:0}
 .itxt h4{margin:0;font-size:14px;font-weight:500}
 .itxt p{margin:3px 0 0;font-size:12px;color:var(--ash);line-height:1.45}
-.mini{border:1px solid var(--gold);background:none;color:var(--gold);padding:8px 12px;
-  font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
+.mini{border:1px solid var(--line);background:none;color:var(--ash);padding:8px 11px;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;white-space:nowrap}
+.mini:hover:not(:disabled){border-color:var(--crimson);color:var(--magenta)}
 .mini:disabled{opacity:.3;cursor:default}
 .mini.on{border-color:var(--crimson);color:var(--magenta)}
 .mini.danger{border-color:#7A2233;color:#C9556B}
 
 /* buttons */
-.btn{width:100%;padding:16px;border:0;cursor:pointer;margin-top:14px;
-  font-family:var(--display);font-size:15px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
-  color:#12030A;background:linear-gradient(180deg,var(--magenta),var(--crimson));
-  box-shadow:0 0 34px -14px var(--crimson)}
+.btn{width:100%;padding:15px;cursor:pointer;margin-top:14px;
+  font-family:var(--mono);font-size:13px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;
+  border:1px solid var(--crimson);color:var(--core);
+  background:rgba(var(--c1),.10);
+  box-shadow:inset 0 0 24px -10px rgba(var(--m1),.7)}
+.btn:hover{background:rgba(var(--c1),.18)}
 .btn:active{transform:translateY(1px)}
-.btn:disabled{filter:grayscale(.7);opacity:.45;cursor:default;box-shadow:none}
+.btn:disabled{filter:grayscale(.7);opacity:.4;cursor:default;box-shadow:none}
 .btn.ghost{background:none;border:1px solid var(--line);color:var(--ash);box-shadow:none;
-  font-size:13px;letter-spacing:.16em;margin-top:8px}
+  font-size:12px;letter-spacing:.18em;margin-top:8px}
+.btn.ghost:hover{border-color:var(--crimson);color:var(--magenta);background:none}
 
 /* tabs */
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;max-width:760px;margin:0 auto;
@@ -221,6 +250,7 @@ html,body{margin:0;background:var(--void)}
   font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
   padding:11px 1px;font-weight:700;min-height:44px}
 @media(min-width:400px){.tabs button{font-size:13px;letter-spacing:.16em}}
+.tabs button{font-family:var(--mono);letter-spacing:.18em}
 .tabs button.on{color:var(--magenta)}
 .tabs button.on::after{content:"";position:absolute;top:0;left:24%;right:24%;height:2px;background:var(--magenta)}
 
@@ -396,7 +426,8 @@ html,body{margin:0;background:var(--void)}
   text-align:center;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--ash);opacity:0;animation:lineIn .5s 1.2s forwards}
 .questteaser{font-size:13.5px;color:var(--ash);line-height:1.6;margin:12px 0 0}
-.splitline{font-size:11px;color:var(--ash2);line-height:1.5;margin:8px 0 0}
+.splitline{font-family:var(--mono);font-size:10.5px;color:var(--magenta);line-height:1.5;
+  letter-spacing:.1em;text-transform:uppercase;margin:-6px 0 12px}
 .lastlog{font-size:12px;color:var(--ash);margin:-8px 0 14px;letter-spacing:.04em}
 .lastlog span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-right:8px}
 .loglist{width:100%;margin-top:6px}
@@ -2463,7 +2494,7 @@ function viewQuest(){
   <section class="block">
     <div class="blockhead"><h2>${splitToday()?esc(splitToday().n):'Daily Quest'}</h2><span class="tally">${cleared} / ${q.length} cleared</span></div>
     ${splitToday()?`<p class="splitline">Day ${splitToday().i+1} of ${splitToday().len} ·
-      advances when you clear the quest, not when the date changes</p>`:''}
+      advances on a cleared quest</p>`:''}
     ${all?'<div class="cleared">Quest cleared</div>':`
     <p class="questteaser">${q.length} movements are waiting. You will see them one at a time.</p>
     ${(()=>{const o=sess();
