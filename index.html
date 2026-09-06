@@ -169,6 +169,12 @@ html,body{margin:0;background:var(--void)}
 .wmeta{flex:1;min-width:0}
 
 /* library */
+.filterbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.filtsum{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:var(--ash2);
+  text-transform:capitalize;
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.filterpanel{border:1px solid var(--line);background:rgba(var(--c1),.03);
+  padding:4px 10px 12px;margin:0 0 14px}
 .filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
 .filters button{background:none;border:1px solid var(--line);color:var(--ash);font-family:var(--mono);
   font:inherit;font-size:12px;padding:6px 11px;cursor:pointer}
@@ -729,7 +735,7 @@ const EX=[
  cues:['Seat height so the handles sit just above your shoulders.','Press up without shrugging your ears toward your hands.','Stop just short of locking out and come straight back down.','Overhead work with a backrest is the safest way to start pressing.']},
 {id:'mch_pecdeck',strain:['shoulders'],sit:1,n:'Pec Deck',r:'E',c:'push',st:'STR',d:'3 × 12',eq:['machine'],
  mus:{p:['chest'],s:['front-delts']},
- cues:['Forearms flat on the pads, elbows at chest height.','Bring the pads together in front of you, slowly.','Stop opening when you feel a stretch, not a pull.','A chest movement with no balance demand at all.']},
+ cues:['Forearms flat on the pads, elbows at chest height.','Bring the pads together in front of you, slowly.','Stop opening when you feel a stretch, not a pull.','A chest exercise with no balance demand at all.']},
 {id:'mch_row',sit:1,n:'Chest-Supported Row',r:'E',c:'pull',st:'STR',d:'3 × 10',eq:['machine'],
  mus:{p:['midback','lats'],s:['biceps','rear-delts']},
  cues:['Chest stays on the pad from the first rep to the last.','Pull the handles to your ribs and squeeze the shoulder blades.','Let the weight stretch your back out before the next rep.','The pad takes your lower back out of it entirely.']},
@@ -759,7 +765,7 @@ const EX=[
  cues:['Grip the handles and curl your ribs toward your hips.','It is a short movement — you are rounding, not bending at the hips.','Come back slowly and stop before your back arches.','Lets you add weight to ab work, which planks cannot.']},
 {id:'mch_hipthrust',strain:['knees'],n:'Hip Thrust Machine',r:'D',c:'legs',st:'STR',d:'3 × 10',eq:['machine'],
  mus:{p:['glutes'],s:['hamstrings','quads']},
- cues:['Pad across the hips, feet flat and about shoulder width.','Drive through your heels until your hips are level with your knees.','Squeeze hard at the top for a full second, then lower under control.','The most direct glute movement in the building.']},
+ cues:['Pad across the hips, feet flat and about shoulder width.','Drive through your heels until your hips are level with your knees.','Squeeze hard at the top for a full second, then lower under control.','The most direct glute exercise in the building.']},
 {id:'mch_shrug',strain:['wrists'],sit:1,n:'Machine Shrug',r:'E',c:'pull',st:'STR',d:'3 × 12',eq:['machine'],
  mus:{p:['traps'],s:['forearms']},
  cues:['Stand tall, arms straight, grip the handles.','Lift your shoulders straight up toward your ears.','No rolling — shoulders go up and down, not around.','Straight up beats heavy and half-moving every time.']},
@@ -823,7 +829,7 @@ const EX=[
  cues:['Wide stance, toes turned out, one dumbbell held between your legs.','Sit straight down between your feet, chest tall.','Push the floor apart with your feet as you stand.','The wide stance reaches the inner thigh a normal squat skips.']},
 {id:'db_singlerdl',strain:['knees','lower-back'],n:'Single-Leg Romanian Deadlift',r:'C',c:'legs',st:'AGI',d:'3 × 8 each leg',eq:['db'],
  mus:{p:['hamstrings','glutes'],s:['lower-back']},
- cues:['One dumbbell, stand on one leg with a soft knee.','Hinge at the hip and let the free leg travel back as a counterweight.','Back flat throughout. Stop when the hamstring says so.','Balance work and hamstring work in the same movement.']},
+ cues:['One dumbbell, stand on one leg with a soft knee.','Hinge at the hip and let the free leg travel back as a counterweight.','Back flat throughout. Stop when the hamstring says so.','Balance work and hamstring work in the same exercise.']},
 {id:'bb_sumo',strain:['knees','lower-back','wrists'],n:'Sumo Deadlift',r:'B',c:'pull',st:'STR',d:'4 × 5',eq:['bb'],
  mus:{p:['glutes','quads','hamstrings'],s:['lower-back','traps','forearms']},
  cues:['Wide stance, hands inside the knees, shins close to the bar.','Chest up and hips down before anything moves. Take the slack out first.','Push the floor away and stand — do not yank it off the ground.','Kinder to the lower back than a conventional pull for most builds.']},
@@ -847,7 +853,7 @@ const EX=[
  cues:['Knees on a pad, ankles anchored under a bench or by a partner.','Lower your torso forward slowly, hips straight and locked.','Pull yourself back up with the hamstrings, hands ready to catch you.','If you cannot come back up yet, only do the lowering half.']},
 {id:'nordic',strain:['knees','lower-back'],nf:1,n:'Nordic Curl',r:'A',c:'legs',st:'STR',d:'3 × 5',eq:[],
  mus:{p:['hamstrings'],s:['glutes','abs']},
- cues:['Kneel on something soft with your ankles anchored under a heavy object.','Lower yourself forward as slowly as you can, hips straight.','Catch yourself with your hands and push back up.','The hardest hamstring movement that needs no equipment at all.']},
+ cues:['Kneel on something soft with your ankles anchored under a heavy object.','Lower yourself forward as slowly as you can, hips straight.','Catch yourself with your hands and push back up.','The hardest hamstring exercise that needs no equipment at all.']},
 {id:'sissy',strain:['knees'],nf:1,n:'Sissy Squat',r:'B',c:'legs',st:'STR',d:'3 × 10',eq:[],
  mus:{p:['quads'],s:['abs']},
  cues:['Hold a doorframe or post for balance, feet hip width.','Rise onto your toes and let your knees travel forward as you lean back.','Head, hips and knees stay in one line the whole way down.','Go shallow at first. Knees need time to tolerate this one.']},
@@ -900,7 +906,7 @@ const EX=[
  cues:['Bench at about thirty degrees. Steeper turns it into a shoulder press.','Lower the bar to your upper chest, elbows tucked around forty-five degrees.','Shoulder blades pinned back and down the whole set.','Use a spotter or a rack with pins. Do not fail this one alone.']},
 {id:'bb_closegrip',strain:['shoulders'],n:'Close-Grip Bench Press',r:'B',c:'push',st:'STR',d:'3 × 8',eq:['bb','bench'],
  mus:{p:['triceps','chest'],s:['front-delts']},
- cues:['Hands about shoulder width, not touching. Narrower hurts wrists.','Lower to the lower chest with the elbows tucked in tight.','Press straight up and lock out.','The heaviest triceps movement you can safely load.']},
+ cues:['Hands about shoulder width, not touching. Narrower hurts wrists.','Lower to the lower chest with the elbows tucked in tight.','Press straight up and lock out.','The heaviest triceps exercise you can safely load.']},
 {id:'bb_pendlay',strain:['lower-back','shoulders'],n:'Pendlay Row',r:'B',c:'pull',st:'STR',d:'4 × 6',eq:['bb'],
  mus:{p:['lats','midback'],s:['biceps','rear-delts','lower-back']},
  cues:['Torso parallel to the floor, bar resting on the ground each rep.','Pull explosively to your lower ribs, then set it back down.','Back stays flat and still — only the arms move.','Starting from a dead stop removes all the bounce and cheating.']},
@@ -964,7 +970,7 @@ const EX=[
  cues:['Straps at waist height, arms straight out in front, lean forward.','Reach the arms overhead while keeping the body one straight line.','Stop the moment the lower back starts to arch.','Go a short distance well rather than far and sagging.']},
 {id:'mb_slam',strain:['knees','shoulders'],n:'Medicine Ball Slam',r:'C',c:'cardio',st:'AGI',d:'4 × 10',eq:['medball'],
  mus:{p:['abs','lats'],s:['front-delts','glutes','quads']},
- cues:['Ball overhead, then throw it into the floor as hard as you can.','Hinge at the hips as you slam rather than folding at the waist.','Catch it on the bounce or pick it up and reset. No rush.','One of the few gym movements you can do at full speed safely.']},
+ cues:['Ball overhead, then throw it into the floor as hard as you can.','Hinge at the hips as you slam rather than folding at the waist.','Catch it on the bounce or pick it up and reset. No rush.','One of the few gym exercises you can do at full speed safely.']},
 {id:'sled_push',strain:['knees','shoulders'],n:'Sled Push',r:'C',c:'cardio',st:'END',d:'5 × 20 m',eq:['sled'],
  mus:{p:['quads','glutes'],s:['calves','abs','front-delts']},
  cues:['Low handles, arms straight, body leaning into it.','Drive with short powerful steps. Do not stand up mid-run.','Push until it slows, then walk back and rest properly.','All effort, no lowering phase, so it barely makes you sore.']}
@@ -1122,10 +1128,10 @@ const ACH=[
   title:'t_earned30'},
  {id:'a_s100',n:'The Hundred',d:'A hundred day streak.',xp:400,g:500,t:()=>S.best>=100,
   title:'t_earned100'},
- {id:'a_l50',n:'Fifty Logged',d:'Fifty movements logged.',xp:50,g:40,t:()=>S.logs>=50},
- {id:'a_l250',n:'Two Fifty',d:'Two hundred and fifty movements logged.',xp:120,g:120,
+ {id:'a_l50',n:'Fifty Logged',d:'Fifty exercises logged.',xp:50,g:40,t:()=>S.logs>=50},
+ {id:'a_l250',n:'Two Fifty',d:'Two hundred and fifty exercises logged.',xp:120,g:120,
   t:()=>S.logs>=250},
- {id:'a_l1000',n:'The Thousand',d:'A thousand movements logged.',xp:350,g:400,
+ {id:'a_l1000',n:'The Thousand',d:'A thousand exercises logged.',xp:350,g:400,
   t:()=>S.logs>=1000,title:'t_earned1k'},
  {id:'a_push',n:'First Full Push-Up',d:'Logged a full push-up.',xp:60,g:50,
   t:()=>(S.perf.pushup||[]).length>0},
@@ -1134,11 +1140,11 @@ const ACH=[
  {id:'a_double',n:'Twice What You Were',d:'Doubled any personal record.',xp:150,g:150,
   t:()=>{for(const k in S.prFirst){const f=S.prFirst[k];if(f&&S.prs[k]>=f*2)return true}return false},
   title:'t_earneddbl'},
- {id:'a_cats',n:'Well Rounded',d:'Logged a movement in every category.',xp:100,g:80,
+ {id:'a_cats',n:'Well Rounded',d:'Logged an exercise in every category.',xp:100,g:80,
   t:()=>Object.keys(CATS).every(c=>(S.catsLogged||[]).includes(c))},
  {id:'a_travel',n:'Roadworn',d:'Cleared a quest away from your full kit.',xp:80,g:70,
   t:()=>!!S.travelClear},
- {id:'a_outgrow',n:'Outgrown',d:'Outgrew a movement and moved up its chain.',xp:100,g:90,
+ {id:'a_outgrow',n:'Outgrown',d:'Outgrew an exercise and moved up its chain.',xp:100,g:90,
   t:()=>S.outgrown.length>=1},
  {id:'a_rD',n:'D-Rank',d:'Reached D-Rank.',xp:0,g:60,t:()=>S.lvl>=RANK_LV.D},
  {id:'a_rC',n:'C-Rank',d:'Reached C-Rank.',xp:0,g:120,t:()=>S.lvl>=RANK_LV.C},
@@ -1149,7 +1155,7 @@ const ACH=[
 const EARNED={
  t_earned30:{id:'t_earned30',n:'Unbroken',p:0,ico:'✦',d:'Thirty days without letting the aura die.'},
  t_earned100:{id:'t_earned100',n:'The Hundred',p:0,ico:'♛',d:'A hundred days. Earned, not bought.'},
- t_earned1k:{id:'t_earned1k',n:'Thousandfold',p:0,ico:'⛬',d:'A thousand movements logged.'},
+ t_earned1k:{id:'t_earned1k',n:'Thousandfold',p:0,ico:'⛬',d:'A thousand exercises logged.'},
  t_earneddbl:{id:'t_earneddbl',n:'Twice the Hunter',p:0,ico:'⇈',d:'You doubled a record you set yourself.'},
  t_earnedB:{id:'t_earnedB',n:'Master',p:0,ico:'⚔',d:'Reached B-Rank.'},
  t_earnedA:{id:'t_earnedA',n:'Grandmaster',p:0,ico:'☗',d:'Reached A-Rank.'}
@@ -1181,7 +1187,7 @@ const XPLEVEL={new:1,some:5,trained:12,adv:20};
 /* Shown once to hunters who were already here when these landed. Bump v and
    rewrite the lines when there is something else worth one card. */
 const NEWS={v:1,t:'The System has been updated',l:[
- 'Weights are tracked. Loaded movements ask what you lifted, and the target adds weight instead of endless reps.',
+ 'Weights are tracked. Loaded exercises ask what you lifted, and the target adds weight instead of endless reps.',
  'Records now lists every lift against what you did last time.',
  'Sessions can follow a split. Upper/lower, push/pull/legs — picked from the days you train.',
  'Build your own routines and run them with the same timers and logging.',
@@ -1365,7 +1371,7 @@ const PRESETS={
 const LIMITS=[
  {k:'knees',n:'Knees'},{k:'shoulders',n:'Shoulders'},
  {k:'lower-back',n:'Lower back'},{k:'wrists',n:'Wrists'},
- {k:'seated',n:'Seated only',d:'Only movements that work from a chair or a machine'}
+ {k:'seated',n:'Seated only',d:'Only exercises that work from a chair or a machine'}
 ];
 const limitsOn=()=>S.limits||[];
 /* True when a movement fits what the hunter has configured. */
@@ -2055,7 +2061,7 @@ function viewDungeon(){
 }
 
 /* ---------------- UI ---------------- */
-let tab='quest',filt={r:'all',c:'all',eq:'mine',m:'all'},open=null,ob,editing=null;
+let tab='quest',filt={r:'all',c:'all',eq:'mine',m:'all'},open=null,ob,editing=null,filtOpen=false;
 ob={step:0,name:'',exp:null,goal:null,eq:[],days:null,limits:[],class:'bladebound',weapon:'longsword',palette:'crimson'};
 const root=document.getElementById('root');
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -2378,7 +2384,7 @@ function viewLimits(){
     <div class="opts">${LIMITS.map(l=>
       `<button class="opt ${limitsOn().includes(l.k)?'on':''}" data-togglelim="${l.k}">
         <span>${l.n}${l.d?`<small>${l.d}</small>`:''}</span><span class="tick">✦</span></button>`).join('')}</div>
-    <p class="note">${pool().length} movements match right now.</p>
+    <p class="note">${pool().length} exercises match right now.</p>
     <button class="btn" data-limdone>Save</button></section>`;
 }
 /* Ring used by both timers. 120x120, stroke dashed to the remaining fraction. */
@@ -2415,7 +2421,7 @@ function viewRun(){
   </div>`;
 
   if(o.st==='brief')return `<div class="runwrap">${head}<div class="run">
-    <p class="runstep">Movement ${o.i+1}</p>
+    <p class="runstep">Exercise ${o.i+1}</p>
     <h2 class="runh">${esc(e.n)}</h2>
     <p class="runsub">${CATS[e.c]} · builds ${e.st} · ${esc(scaledDose(e))}</p>
     ${(S.perf[e.id]||[]).length?`<p class="lastlog"><span>Last time</span>
@@ -2423,7 +2429,7 @@ function viewRun(){
     ${bodyMap(e.mus)}
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
     <button class="btn big" data-runstart>Start · ${esc(scaledDose(e))}</button>
-    <button class="btn ghost" data-swap="${e.id}">Swap this movement</button>
+    <button class="btn ghost" data-swap="${e.id}">Swap this exercise</button>
     <button class="btn ghost" data-runskip>Skip it</button>
   </div></div>`;
 
@@ -2453,7 +2459,7 @@ function viewRun(){
       <div class="prin-wrap"><input class="prin" id="load" type="number" inputmode="decimal"
         min="0" step="0.5" placeholder="${lastLoad(e)||'—'}" value="${o.load||''}"></div>
     </div>`:''}
-    <button class="btn ghost" data-runskip>Skip the rest of this movement</button>
+    <button class="btn ghost" data-runskip>Skip the rest of this exercise</button>
   </div></div>`;
 
   if(o.st==='rest'){
@@ -2496,23 +2502,23 @@ function viewQuest(){
     ${splitToday()?`<p class="splitline">Day ${splitToday().i+1} of ${splitToday().len} ·
       advances on a cleared quest</p>`:''}
     ${all?'<div class="cleared">Quest cleared</div>':`
-    <p class="questteaser">${q.length} movements are waiting. You will see them one at a time.</p>
+    <p class="questteaser">${q.length} exercises are waiting. You will see them one at a time.</p>
     ${(()=>{const o=sess();
       return `<button class="btn big" data-begin>${o?'Resume Quest':'Begin Quest'}</button>`})()}`}
     ${kitBar()}
-    ${q.length<5?`<p class="note" style="margin-top:0">Only ${q.length} movement${q.length===1?'':'s'} available at this rank with today's kit. Widen the kit or level up for more.</p>`:''}
-    <p class="note">Rest 60–90 seconds between sets. Sharp pain means stop and swap the movement — soreness is fine, pain isn\'t.</p>
+    ${q.length<5?`<p class="note" style="margin-top:0">Only ${q.length} exercise${q.length===1?'':'s'} available at this rank with today's kit. Widen the kit or level up for more.</p>`:''}
+    <p class="note">Rest 60–90 seconds between sets. Sharp pain means stop and swap the exercise — soreness is fine, pain isn\'t.</p>
   </section>
   <section class="block">
     <div class="blockhead"><h2>Your Routines</h2><span class="tally">${S.routines.length}</span></div>
     ${S.routines.length?S.routines.map(r=>`<div class="item">
       <div class="ico">▶</div>
       <div class="itxt"><h4>${esc(r.n)}</h4>
-        <p>${r.ids.length?esc(routineEx(r).map(x=>x.n).join(', ')):'No movements yet'}</p></div>
+        <p>${r.ids.length?esc(routineEx(r).map(x=>x.n).join(', ')):'No exercises yet'}</p></div>
       <button class="mini" data-runroutine="${r.id}" ${r.ids.length?'':'disabled'}>Run</button>
       <button class="mini" data-editroutine="${r.id}">Edit</button>
     </div>`).join('')
-    :'<p class="questteaser">Build the session you already do, save it, and run it with the same timers and logging as a quest.</p>'}
+    :'<p class="questteaser">Build the workout you already do, save it, and run it with the same timers and logging as a quest.</p>'}
     <button class="btn ghost" data-newroutine>New routine</button>
   </section>
   <section class="block">
@@ -2524,7 +2530,7 @@ function viewQuest(){
       if(!st.length)return `<p class="note">Nothing in the dungeon works with what you have set today.
         Widen your kit, or your working-around list, and it comes back.</p>`;
       return `${st.length<3?`<p class="note">${st.length} station${st.length===1?'':'s'} today — the others
-        need kit you do not have, or movements you have ruled out.</p>`:''}
+        need kit you do not have, or exercises you have ruled out.</p>`:''}
       <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +40 gold</button>`;
     })()}
   </section>`;
@@ -2542,7 +2548,7 @@ function viewRoutine(){
   return crestBlock()+`
   <section class="block top">
     <div class="blockhead"><h2>Edit routine</h2>
-      <span class="tally">${r.ids.length} movement${r.ids.length===1?'':'s'}</span></div>
+      <span class="tally">${r.ids.length} exercise${r.ids.length===1?'':'s'}</span></div>
     <div class="logrow" style="align-items:stretch">
       <label for="rname">Name</label>
       <input class="prin" id="rname" style="width:100%;text-align:left" maxlength="40"
@@ -2554,12 +2560,12 @@ function viewRoutine(){
       <button class="mini" data-rmove="${e.id}:-1" ${i?'':'disabled'}>↑</button>
       <button class="mini" data-rdrop="${e.id}">Remove</button>
     </div>`).join('')
-    :'<p class="note">Nothing in it yet. Add movements below.</p>'}
+    :'<p class="note">Nothing in it yet. Add exercises below.</p>'}
     <button class="btn" data-rsave>Save routine</button>
     <button class="btn ghost" data-rdelete>Delete this routine</button>
   </section>
   <section class="block">
-    <div class="blockhead"><h2>Add a movement</h2><span class="tally">${list.length}</span></div>
+    <div class="blockhead"><h2>Add an exercise</h2><span class="tally">${list.length}</span></div>
     <div class="filters">
       <button data-f="eq:mine" class="${filt.eq==='mine'?'on':''}">What I can do</button>
       <button data-f="eq:all" class="${filt.eq==='all'?'on':''}">Everything</button>
@@ -2574,7 +2580,7 @@ function viewRoutine(){
       <button class="mini" data-radd="${e.id}" ${r.ids.length>=20?'disabled':''}>Add</button>
     </div>`).join('')}
     ${list.length>60?'<p class="note">Showing the first 60. Narrow it with the filters.</p>':''}
-    ${r.ids.length>=20?'<p class="note">Twenty movements is the cap for one routine.</p>':''}
+    ${r.ids.length>=20?'<p class="note">Twenty exercises is the cap for one routine.</p>':''}
   </section>`;
 }
 function viewLib(){
@@ -2585,8 +2591,23 @@ function viewLib(){
      and secondary both count as a hit. */
   if(filt.m!=='all')list=list.filter(e=>e.mus.p.includes(filt.m)||e.mus.s.includes(filt.m));
   if(limitsOn().length)list=list.filter(fitsLimits);
+  /* What is currently narrowing the list, in words, so the button can say it
+     without anyone opening the drawer. "What I can do" is the default and is
+     deliberately not counted as a filter. */
+  const on=[];
+  if(filt.eq==='all')on.push('Everything');
+  if(filt.r!=='all')on.push('Rank '+filt.r);
+  if(filt.c!=='all')on.push(CATS[filt.c]);
+  if(filt.m!=='all')on.push(musName(filt.m));
   return `<section class="block top">
     <div class="blockhead"><h2>Skill Library</h2><span class="tally">${list.length} of ${EX.length}</span></div>
+    <div class="filterbar">
+      <button class="mini ${filtOpen||on.length?'on':''}" data-filttoggle>
+        ${filtOpen?'Hide filters':'Filters'}${on.length?' · '+on.length:''}</button>
+      ${on.length?`<span class="filtsum">${on.map(esc).join(' · ')}</span>
+        <button class="mini" data-filtclear>Reset</button>`:''}
+    </div>
+    ${filtOpen?`<div class="filterpanel">
     <div class="filters">
       <button data-f="eq:mine" class="${filt.eq==='mine'?'on':''}">What I can do</button>
       <button data-f="eq:all" class="${filt.eq==='all'?'on':''}">Everything</button>
@@ -2602,7 +2623,7 @@ function viewLib(){
     <div class="filters">
       <button data-f="m:all" class="${filt.m==='all'?'on':''}">All muscles</button>
       ${MUSCLES.map(k=>`<button data-f="m:${k}" class="${filt.m===k?'on':''}">${musName(k)}</button>`).join('')}
-    </div>
+    </div></div>`:''}
     <div class="grid">
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
@@ -2674,7 +2695,7 @@ function liftsBlock(){
           r.dir>0?' ▲':r.dir<0?' ▼':''}</b>
         <span>${r.prev?'was '+fmtPerf(r.prev,r.e):'first time'}</span>
       </div></div>`).join('')}
-    <p class="note">The last five results per movement are kept. Two sessions at target
+    <p class="note">The last five results per exercise are kept. Two sessions at target
     steps it up${'\u2009'}— on anything you can load, that means weight, not more reps.</p>
   </section>`;
 }
@@ -2745,7 +2766,7 @@ function viewVault(){
       <button class="mini" data-editlim>Edit</button></div>
     <div class="item"><div class="ico">◷</div><div class="itxt"><h4>${S.days} days a week</h4><p>Aura survives ${gapAllowed()} idle day${gapAllowed()>1?'s':''}.</p></div><button class="mini" data-cycledays>Change</button></div>
     <div class="item"><div class="ico">≡</div><div class="itxt"><h4>${
-      S.vol==='auto'?'Session length: automatic':'Session length: '+questLen()+' movements'}</h4>
+      S.vol==='auto'?'Session length: automatic':'Session length: '+questLen()+' exercises'}</h4>
       <p>${questLen()} a day, roughly ${weekSets()} working sets a week.${S.vol==='auto'
         ? ' Set from your '+(S.days||4)+' days — fewer days means longer sessions.'
         : ' Pinned. Switch back to automatic to let your days decide.'}</p></div>
@@ -3062,11 +3083,11 @@ const TOUR=[
  {sel:'.blade',t:'Your aura',x:'It burns as long as you keep training and goes out if the streak dies. Your weapon and palette live in the Vault.'},
  {sel:'.lvlrow',t:'Level, XP and gold',x:'Every skill you log pays both. Fill the bar and you level up, which unlocks harder skills.'},
  {sel:'.props',t:'Your stats',x:'STR, END, VIT, AGI and CORE grow from the kind of work you actually do. Level ups raise all five.'},
- {sel:'[data-begin]',t:'Begin Quest',x:'Movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests. How many you get depends on how many days a week you train.'},
+ {sel:'[data-begin]',t:'Begin Quest',x:'Exercises picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests. How many you get depends on how many days a week you train.'},
  {sel:'.kitline',t:'What you have today',x:'Travelling, or stuck in a hotel room? Change it here and the quest rebuilds around what you actually have.'},
  {sel:'[data-newroutine]',t:'Your own workouts',x:'Already know what you are doing? Save your own session and run it with the same timers, weight logging and progression as a quest. Or ignore all of it and log anything straight from the library.'},
  {sel:'[data-dungeon]',t:'Instant dungeon',x:'A six-minute timed loop for days you have extra in the tank. Bodyweight stations, as many rounds as you can. It runs the clock for you.'},
- {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Each one shades a body map so you can see what it works, with four plain-language cues. Filter by muscle to find what you want.'},
+ {sel:'[data-tab="lib"]',t:'The library',x:'155 exercises from wall push-ups to power cleans, ranked E through A. Each one shades a body map so you can see what it works, with four plain-language cues. Filter by muscle to find what you want.'},
  {sel:'[data-tab="rec"]',t:'Records and your card',x:'Every lift you log shows up here against what you did last time. Max push-ups, squats and plank, milestones, and the two cards worth sending to the group chat.'},
  {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — all eight palettes are free and nothing resets. Gold buys weapons, titles and the Elixir of Rest. Your goal, kit, session length and whether you train on a split live here too.'}
 ];
@@ -3161,6 +3182,8 @@ document.addEventListener('click',ev=>{
   if(t.closest('[data-obback]')){ob.step=Math.max(0,ob.step-1);render();return}
 
   const tb=t.closest('[data-tab]');if(tb){tab=tb.dataset.tab;closeSheet();render();scrollTo(0,0);return}
+  if(t.closest('[data-filttoggle]')){filtOpen=!filtOpen;render();return}
+  if(t.closest('[data-filtclear]')){filt={r:'all',c:'all',eq:'mine',m:'all'};render();return}
   const f=t.closest('[data-f]');if(f){const [k,v]=f.dataset.f.split(':');filt[k]=v;render();return}
   const ex=t.closest('[data-ex]');if(ex){open=ex.dataset.ex;renderSheet();return}
   if(t.closest('[data-card]')){showCard();return}
@@ -3241,7 +3264,7 @@ document.addEventListener('click',ev=>{
        cleared and let the new length apply from the next roll. */
     save();render();
     toast(S.vol==='auto'?'Session length follows your days again'
-      :questLen()+' movements a quest');return}
+      :questLen()+' exercises a quest');return}
   /* ----- guided session ----- */
   if(t.closest('[data-begin]')){
     if(S.kitAsked===today()&&sess()){keepAwake(true);tab='run';render();return}
