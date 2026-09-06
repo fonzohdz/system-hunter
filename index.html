@@ -1921,17 +1921,24 @@ const DGLEN=360;
 const dg=()=>{const o=S.dg;return o&&o.d===today()?o:null};
 /* Three stations, picked to match the hunter's rank so it stays hard but doable. */
 function dgStations(){
-  const pick=(...ids)=>{for(const id of ids){const e=EX.find(x=>x.id===id);
-    if(e&&unlocked(e.r)&&fitsLimits(e))return e}
-    return EX.find(x=>x.id===ids[ids.length-1])};
-  const push=pick('pushup','kneepush','incpush','wallpush');
-  const legs=pick('squat','chairsq');
-  const core=pick('plank','kneeplank');
+  /* Same test as a quest movement. hasEq() is the one that was missing, and it
+     is the one that carries floor-only — without it the dungeon offered a wall
+     push-up and a chair squat to someone with neither. */
+  const ok=e=>!!e&&unlocked(e.r)&&hasEq(e)&&fitsLimits(e);
+  const RK=['E','D','C','B','A'];
+  const pick=(cat,...ids)=>{
+    for(const id of ids){const e=EX.find(x=>x.id===id); if(ok(e))return e}
+    /* Nothing preferred fits: take the easiest bodyweight movement in the
+       category that does. Returning the last id regardless is what caused the
+       bug, so there is deliberately no unconditional fallback here. */
+    return EX.filter(e=>e.c===cat&&!(e.eq||[]).length&&ok(e))
+      .sort((a,b)=>RK.indexOf(a.r)-RK.indexOf(b.r))[0]||null;
+  };
   return [
-    {e:push,label:'5 reps'},
-    {e:legs, label:'8 reps'},
-    {e:core, label:'20 seconds'}
-  ];
+    {e:pick('push','pushup','kneepush','incpush','wallpush'),label:'5 reps'},
+    {e:pick('legs','squat','chairsq'),                       label:'8 reps'},
+    {e:pick('core','plank','kneeplank'),                     label:'20 seconds'}
+  ].filter(s=>s.e);
 }
 function dgLeft(){
   const o=dg(); if(!o||!o.endAt)return 0;
@@ -1986,7 +1993,10 @@ function viewDungeon(){
       <button class="btn big" data-dgdone>Done</button>
     </div></div>`;
   }
-  const left=dgLeft(), cur=st[o.step%3], nextS=st[(o.step+1)%3];
+  /* st can be shorter than three if a category has nothing you can do today. */
+  if(!st.length)return viewQuest();
+  const n=st.length;
+  const left=dgLeft(), cur=st[o.step%n], nextS=st[(o.step+1)%n];
   return `<div class="runwrap">
     <div class="runtop">
       <button class="runx" data-dgexit aria-label="Leave the dungeon">✕</button>
@@ -2002,7 +2012,7 @@ function viewDungeon(){
         <div class="ringnum"><b data-count>${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}</b>
           <span>remaining</span></div>
       </div>
-      <p class="runstep" style="margin-top:14px">Station ${(o.step%3)+1} of 3</p>
+      <p class="runstep" style="margin-top:14px">Station ${(o.step%n)+1} of ${n}</p>
       <h2 class="runh">${esc(cur.e.n)}</h2>
       <p class="bignum" style="font-size:clamp(40px,14vw,68px);margin-top:4px">${cur.label}</p>
       <button class="btn big" data-dgnext>Station done</button>
@@ -2463,8 +2473,16 @@ function viewQuest(){
   </section>
   <section class="block">
     <div class="blockhead"><h2>Instant Dungeon</h2></div>
-    <p class="dgn">Six minutes, no rest. Three stations on a loop. The app counts the clock and the rounds — you just move.${S.dgBest?` Your best is <b>${S.dgBest}</b> rounds.`:''}</p>
-    <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +40 gold</button>
+    <p class="dgn">Six minutes, no rest. Stations on a loop. The app counts the clock and the rounds — you just move.${S.dgBest?` Your best is <b>${S.dgBest}</b> rounds.`:''}</p>
+    ${(()=>{const st=dgStations();
+      /* Nothing survives today's kit and limits: say so rather than offering
+         a button that bounces straight back. */
+      if(!st.length)return `<p class="note">Nothing in the dungeon works with what you have set today.
+        Widen your kit, or your working-around list, and it comes back.</p>`;
+      return `${st.length<3?`<p class="note">${st.length} station${st.length===1?'':'s'} today — the others
+        need kit you do not have, or movements you have ruled out.</p>`:''}
+      <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +40 gold</button>`;
+    })()}
   </section>`;
 }
 /* Routine editor. Deliberately plain: a name, the movements in order, and a
@@ -3003,7 +3021,7 @@ const TOUR=[
  {sel:'[data-begin]',t:'Begin Quest',x:'Movements picked for your goal and your kit, rebuilt every morning. You see them one at a time, with timers for the holds and the rests. How many you get depends on how many days a week you train.'},
  {sel:'.kitline',t:'What you have today',x:'Travelling, or stuck in a hotel room? Change it here and the quest rebuilds around what you actually have.'},
  {sel:'[data-newroutine]',t:'Your own workouts',x:'Already know what you are doing? Save your own session and run it with the same timers, weight logging and progression as a quest. Or ignore all of it and log anything straight from the library.'},
- {sel:'[data-dungeon]',t:'Instant dungeon',x:'A six-minute timed loop for days you have extra in the tank. Three bodyweight stations, as many rounds as you can. It runs the clock for you.'},
+ {sel:'[data-dungeon]',t:'Instant dungeon',x:'A six-minute timed loop for days you have extra in the tank. Bodyweight stations, as many rounds as you can. It runs the clock for you.'},
  {sel:'[data-tab="lib"]',t:'The library',x:'155 movements from wall push-ups to power cleans, ranked E through A. Each one shades a body map so you can see what it works, with four plain-language cues. Filter by muscle to find what you want.'},
  {sel:'[data-tab="rec"]',t:'Records and your card',x:'Every lift you log shows up here against what you did last time. Max push-ups, squats and plank, milestones, and the two cards worth sending to the group chat.'},
  {sel:'[data-tab="vault"]',t:'The vault',x:'Change your class or palette any time — all eight palettes are free and nothing resets. Gold buys weapons, titles and the Elixir of Rest. Your goal, kit, session length and whether you train on a split live here too.'}
@@ -3128,7 +3146,8 @@ document.addEventListener('click',ev=>{
     if(dg()&&dg().st==='run'){keepAwake(true);dgFired=false;tab='dungeon';render();return}
     startDungeon();return}
   if(t.closest('[data-dgnext]')){const o=dg();
-    o.step++; if(o.step%3===0)o.rounds++;
+    const n=dgStations().length||1;
+    o.step++; if(o.step%n===0)o.rounds++;
     buzz([0,35]);save();render();return}
   if(t.closest('[data-dgpause]')){const o=dg();
     if(o.paused){o.endAt=Date.now()+o.left*1000;o.paused=0;dgFired=false}
