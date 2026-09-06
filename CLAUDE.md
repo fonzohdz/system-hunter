@@ -8,6 +8,11 @@ with muscle-map diagrams.
 
 - **One file: `index.html`.** HTML, CSS, and JS all inline. No build step, no
   bundler, no dependencies, no npm. Do not introduce any of them without asking.
+  The three exceptions are `manifest.json`, `icon.svg` and `icon-maskable.svg`,
+  added deliberately so the app is installable — a manifest attached as a
+  `data:` URI cannot work, because `start_url` is resolved relative to the
+  manifest's own URL and a `data:` URL gives nothing to resolve against. They
+  are static files Vercel serves as-is; they are still not a build step.
 - Deployed by pushing to `main`. Vercel builds nothing — it serves the file as-is.
 - Runs in two environments: standalone in a browser, and inside a Claude
   artifact. Both must keep working.

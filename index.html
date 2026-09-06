@@ -8,8 +8,9 @@
 <meta name="theme-color" content="#020103">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Ascendant">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:title" content="Ascendant">
 <meta property="og:description" content="Clear the daily quest. Keep your aura lit. 73 skills, E-rank to A-rank.">
@@ -519,28 +520,6 @@ html,body{margin:0;background:var(--void)}
 </head>
 <body>
 <div id="root"><div class="boot">Awakening</div></div>
-<script>
-/* Web app manifest, built here and attached as a data URI so the project stays
-   a single file. This is what lets Android offer "install" and what gives the
-   installed app its name, colours and icon. It does NOT make the app work
-   offline — that needs a service worker, which must be a separate file. */
-(function(){try{
-  var icon='data:image/svg+xml;base64,'+btoa('<svg xmlns="http://www.w3.org/2000/svg" '+
-    'viewBox="0 0 512 512"><rect width="512" height="512" fill="#08070b"/>'+
-    '<path d="M256 92 L300 300 L256 420 L212 300 Z" fill="#E8114F"/>'+
-    '<circle cx="256" cy="300" r="120" fill="none" stroke="#E8114F" '+
-    'stroke-width="10" opacity=".45"/></svg>');
-  var m={name:'Ascendant',short_name:'Ascendant',
-    description:'Daily quests, ranks and records. A training log with a System attached.',
-    display:'standalone',orientation:'portrait',
-    background_color:'#08070b',theme_color:'#08070b',
-    icons:[{src:icon,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}]};
-  var l=document.createElement('link');
-  l.rel='manifest';
-  l.href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(m));
-  document.head.appendChild(l);
-}catch(e){}})();
-</script>
 <script>
 /* eq: [] = nothing needed. Codes: db kb bb bar bench band machine */
 const EX=[
@@ -1168,6 +1147,16 @@ const GOALS={
 };
 const XPLEVEL={new:1,some:5,trained:12,adv:20};
 
+/* Shown once to hunters who were already here when these landed. Bump v and
+   rewrite the lines when there is something else worth one card. */
+const NEWS={v:1,t:'The System has been updated',l:[
+ 'Weights are tracked. Loaded movements ask what you lifted, and the target adds weight instead of endless reps.',
+ 'Records now lists every lift against what you did last time.',
+ 'Sessions can follow a split. Upper/lower, push/pull/legs — picked from the days you train.',
+ 'Build your own routines and run them with the same timers and logging.',
+ 'Session length follows your week, so fewer days means longer sessions.'
+]};
+
 /* One training day: a name and the category weights the quest is drawn from.
    Weights, not fixed slots, so the generator still varies day to day and still
    falls back gracefully when the pool is thin. */
@@ -1198,6 +1187,15 @@ function questLen(){
   return VOLAUTO[Math.min(6,Math.max(3,S.days||4))]||5;
 }
 const weekMoves=()=>questLen()*(S.days||4);
+/* Working sets a week, not movements — sets are the unit the training research
+   uses, so this is a number worth comparing against something. Averaged over a
+   representative quest because each movement carries its own set count. */
+function weekSets(){
+  const q=questToday();
+  if(!q.length)return 0;
+  const per=q.reduce((n,e)=>n+((doseParts(e)||{}).sets||3),0)/q.length;
+  return Math.round(per*questLen()*(S.days||4));
+}
 /* null when you are not on a split — the quest is then goal-weighted as before. */
 function splitToday(){
   if(S.split!=='split')return null;
@@ -1233,6 +1231,9 @@ const fresh=()=>({
  perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
  /* unit is display only — loads are stored exactly as typed, in that unit. */
  unit:'lb', split:'random', cycle:0, vol:'auto', routines:[],
+ /* Bumped when there is something worth announcing once. A fresh hunter starts
+    at the current number, so onboarding is not followed by a changelog. */
+ newsSeen:0,
  /* Milestones earned, the first value of each PR so doubling can be detected,
     which categories have been logged, and whether a travel quest was cleared. */
  ach:[], prFirst:{}, catsLogged:[], travelClear:false, dg:null, dgBest:0,
@@ -1422,6 +1423,7 @@ function heal(){
   if(S.unit!=='kg'&&S.unit!=='lb')S.unit='lb';
   if(S.split!=='split')S.split='random';
   if(!VOLN[S.vol])S.vol='auto';
+  if(typeof S.newsSeen!=='number')S.newsSeen=0;
   /* A routine is {id, n, ids}. Drop anything malformed and any movement id
      that no longer exists, rather than letting a bad entry break the runner. */
   if(!Array.isArray(S.routines))S.routines=[];
@@ -2129,7 +2131,8 @@ function viewOB(){
     </div>`,'Awaken',!!ob.days);
 }
 function finishOB(){
-  S.setup=true;S.name=ob.name.trim().slice(0,18);S.exp=ob.exp;S.goal=ob.goal;
+  S.setup=true;S.newsSeen=NEWS.v;   // a new hunter just saw the tour, not a changelog
+  S.name=ob.name.trim().slice(0,18);S.exp=ob.exp;S.goal=ob.goal;
   S.eq=ob.eq.slice();S.days=ob.days;S.lvl=XPLEVEL[ob.exp]||1;
   S.class=ob.class;S.weapon=ob.weapon;S.palette=ob.palette;S.limits=ob.limits.slice();
   const bump={new:0,some:2,trained:5,adv:9}[ob.exp]||0;
@@ -2263,6 +2266,16 @@ const WEAPONS={
 function bladeSVG(w){
   const k=w||S.weapon||cls().w;
   return `<svg class="blade-svg" viewBox="0 0 120 300" aria-hidden="true">${WEAPONDEFS}${WEAPONS[k]||WEAPONS.longsword}</svg>`;
+}
+/* One card, once. Dismissing it is the only way it goes away, so it cannot
+   quietly reappear on the next render. */
+function newsBlock(){
+  if((S.newsSeen||0)>=NEWS.v)return '';
+  return `<section class="block">
+    <div class="blockhead"><h2>${esc(NEWS.t)}</h2></div>
+    <ul class="cues">${NEWS.l.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>
+    <button class="btn ghost" data-newsdone>Understood</button>
+  </section>`;
 }
 function heroBlock(){
   const i=auraIdx(),pct=Math.min(100,(i/(AURA.length-1))*100);
@@ -2446,7 +2459,7 @@ function viewRunDone(o,q){
 function viewQuest(){
   const q=rollQuest(),done=S.questDone,cleared=q.filter(e=>done.includes(e.id)).length;
   const all=q.length&&cleared===q.length;
-  return crestBlock()+heroBlock()+statsBlock()+`
+  return crestBlock()+heroBlock()+statsBlock()+newsBlock()+`
   <section class="block">
     <div class="blockhead"><h2>${splitToday()?esc(splitToday().n):'Daily Quest'}</h2><span class="tally">${cleared} / ${q.length} cleared</span></div>
     ${splitToday()?`<p class="splitline">Day ${splitToday().i+1} of ${splitToday().len} ·
@@ -2702,7 +2715,7 @@ function viewVault(){
     <div class="item"><div class="ico">◷</div><div class="itxt"><h4>${S.days} days a week</h4><p>Aura survives ${gapAllowed()} idle day${gapAllowed()>1?'s':''}.</p></div><button class="mini" data-cycledays>Change</button></div>
     <div class="item"><div class="ico">≡</div><div class="itxt"><h4>${
       S.vol==='auto'?'Session length: automatic':'Session length: '+questLen()+' movements'}</h4>
-      <p>${questLen()} a day, about ${weekMoves()} a week.${S.vol==='auto'
+      <p>${questLen()} a day, roughly ${weekSets()} working sets a week.${S.vol==='auto'
         ? ' Set from your '+(S.days||4)+' days — fewer days means longer sessions.'
         : ' Pinned. Switch back to automatic to let your days decide.'}</p></div>
       <button class="mini" data-cyclevol>Change</button></div>
@@ -3203,6 +3216,7 @@ document.addEventListener('click',ev=>{
     if(S.kitAsked===today()&&sess()){keepAwake(true);tab='run';render();return}
     if(!sess())startSession();
     tab=(S.kitAsked===today())?'run':'kit';render();return}
+  if(t.closest('[data-newsdone]')){S.newsSeen=NEWS.v;save();render();return}
   if(t.closest('[data-kitopen]')){tab='kit';render();return}
   if(t.closest('[data-newroutine]')){
     const r={id:'r'+Date.now().toString(36),n:'New routine',ids:[]};
