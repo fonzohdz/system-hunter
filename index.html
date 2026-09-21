@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
 <title>Ascendant — RPG Workout</title>
-<meta name="description" content="An RPG workout app. Daily quests, ranks, levels, and 73 skills from wall push-ups to power cleans.">
+<meta name="description" content="An RPG workout app. Daily quests, ranks, levels, and 155 skills from wall push-ups to power cleans.">
 <meta name="theme-color" content="#020103">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta property="og:title" content="Ascendant">
-<meta property="og:description" content="Clear the daily quest. Keep your aura lit. 73 skills, E-rank to A-rank.">
+<meta property="og:description" content="Clear the daily quest. Keep your aura lit. 155 skills, E-rank to A-rank.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1169,7 +1169,7 @@ function checkAch(){
     let ok=false; try{ok=!!a.t()}catch(e){ok=false}
     if(!ok)continue;
     S.ach.push(a.id);
-    if(a.xp||a.g)award(a.xp||0,a.g||0,null);
+    if(a.xp||a.g)award(a.xp||0,a.g||0,null,false);
     if(a.title&&!S.owned.includes(a.title))S.owned.push(a.title);
     got=a;
   }
@@ -1351,7 +1351,7 @@ function checkOutgrown(e){
   const p=S.prog[e.id];
   if(!p||p.step<3)return null;
   S.outgrown.push(e.id);
-  award(40,0,null);
+  award(40,0,null,false);
   save();
   return nx;
 }
@@ -1772,10 +1772,15 @@ function noteLogged(e){
   if(e&&!S.catsLogged.includes(e.c))S.catsLogged.push(e.c);
   if(curPreset()!=='kit')S.travelClear=true;
 }
-function award(xp,gold,stat){
-  S.xp+=xp;S.gold+=gold;S.logs++;
+/* `counts` says whether this payout was a piece of training. A milestone and an
+   outgrown movement pay XP and gold but are not themselves work, so they must
+   not bump the logged tally or draw a square on the heatmap — doing so put
+   training on the calendar that never happened, and fed the count back into the
+   very milestones that measure it. */
+function award(xp,gold,stat,counts){
+  S.xp+=xp;S.gold+=gold;
+  if(counts!==false){S.logs++;const d=today();S.history[d]=(S.history[d]||0)+1}
   if(stat&&S.stats[stat]!==undefined)S.stats[stat]+=1;
-  const d=today();S.history[d]=(S.history[d]||0)+1;
   let g=0;
   while(S.xp>=need(S.lvl)){S.xp-=need(S.lvl);S.lvl++;g++;for(const k in S.stats)S.stats[k]+=1}
   save();if(g)pendingLevel=S.lvl;return g;
@@ -1913,7 +1918,15 @@ function endSession(keep){
 /* Advance past the current movement, logging it unless it was already logged. */
 function clearMovement(e,actual,load){
   const o=sess();if(!o)return;
+  /* Two different lists, and they are not interchangeable. `q` is today's quest
+     and only ever answers "does this pay quest XP" and "is the quest cleared".
+     `list` is what this session is actually working through — the routine's
+     movements when one is running — and it is the only thing the cursor may be
+     advanced against. Indexing the cursor into `q` ended a ten-movement routine
+     at whatever questLen() happened to be, and skipped routine entries based on
+     whether an unrelated quest movement had been logged. */
   const q=questToday(),inQ=q.some(x=>x.id===e.id);
+  const list=sessList();
   if(!S.questDone.includes(e.id)){          // never pay twice for the same movement
     touchStreak();
     /* Everything logged goes in the ledger, not just quest movements —
@@ -1923,7 +1936,7 @@ function clearMovement(e,actual,load){
     award(xp,5,e.st);
     o.xp+=xp;o.gold+=5;
     if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
-      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,25,null);o.xp+=80;o.gold+=25;
+      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,25,null,false);o.xp+=80;o.gold+=25;
     }
   }
   if(actual!=null)recordPerf(e,actual,load);
@@ -1933,8 +1946,10 @@ function clearMovement(e,actual,load){
   checkAch();
   if(!o.cleared.includes(e.id))o.cleared.push(e.id);
   o.i++;o.set=1;o.st='brief';o.endAt=0;
-  while(o.i<q.length&&S.questDone.includes(q[o.i].id))o.i++;
-  if(o.i>=q.length)o.st='done';
+  /* Step past anything already paid for today — but only on a quest run. A
+     routine is yours to repeat, which is the same rule startSession() uses. */
+  if(!o.r)while(o.i<list.length&&S.questDone.includes(list[o.i].id))o.i++;
+  if(o.i>=list.length)o.st='done';
   save();render();
 }
 function beginRest(secs){
@@ -2494,7 +2509,7 @@ function viewRun(){
 function viewRunDone(o,q){
   const mins=Math.max(1,Math.round((Date.now()-(o.began||Date.now()))/60000));
   return `<div class="runwrap"><div class="run center">
-    <p class="runstep">Quest complete</p>
+    <p class="runstep">${o.r&&routine(o.r)?esc(routine(o.r).n)+' complete':'Quest complete'}</p>
     <h2 class="runh">${o.cleared.length} cleared</h2>
     <div class="sumgrid">
       <div><span>XP</span><b>+${o.xp}</b></div>
@@ -2813,7 +2828,8 @@ function viewVault(){
   </section>
   <section class="block">
     <div class="blockhead"><h2>How gold works</h2></div>
-    <p class="note big">Logging a skill pays 10 gold. Clearing the full daily quest pays 80 XP and 50 gold. The Instant Dungeon pays 40. Beating a record pays 3 per point. There's no way to buy gold, only to earn it.</p>
+    <p class="note big">Logging a skill pays 5 gold. Clearing the whole daily quest pays 80 XP and 25 gold on top. The Instant Dungeon pays 20. Beating a record pays 2 a point. A six-exercise day is 55 gold, so the cheapest weapon is about eight days and the dearest title about a month. There's no way to buy gold, only to earn it.</p>
+    <p class="note">It spends on training as well as looks: ${REROLL} rerolls today's quest before you have cleared anything, and an aura style you were not born with is ${AURAPRICE}.</p>
   </section>`;
 }
 function viewEqEdit(){
@@ -3232,7 +3248,7 @@ document.addEventListener('click',ev=>{
     if(!S.questDone.includes(e.id))S.questDone.push(e.id);
     award(inQ?25:15,5,e.st);
     if(q.every(x=>S.questDone.includes(x.id))&&!S.questBonus){
-      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,25,null);toast('Daily quest cleared · +80 XP · +25 gold')}
+      S.questBonus=true;S.clears++;S.cycle=(S.cycle||0)+1;award(80,25,null,false);toast('Daily quest cleared · +80 XP · +25 gold')}
     else toast(e.n+' · +'+(inQ?25:15)+' XP · +5 gold');
     if(reps!=null)recordPerf(e,reps,load);
     noteLogged(e);checkAch();
