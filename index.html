@@ -1921,11 +1921,52 @@ function paintHunter(im,now,alpha,tier){
   }
   hx.globalAlpha=1;
 }
+
+/* ---- frame animation ----
+   A tier can ship a real animation instead of a deformed still. HUNTFRAMES
+   maps a tier index to a horizontal strip: N frames of HUNTW x HUNTH laid
+   side by side on one image, played on a fixed clock.
+
+   One strip, not N images. Frames drawn together in a single pass hold the
+   character far better than frames generated one at a time, and a strip is
+   also one decode and one upload instead of N.
+
+   Tiers without a strip keep the procedural rig, so strips can land one at a
+   time rather than all twelve or nothing. A tier WITH a strip gets no
+   procedural motion on top: the frames already contain the motion, and
+   deforming them as well would fight the animator. */
+const HUNTFRAMES={};        // tier index -> {src, frames, fps}
+const HUNTFIMG={};
+function huntAnim(t){
+  const a=HUNTFRAMES[t];
+  if(!a)return null;
+  if(!HUNTFIMG[t]){const im=new Image();im.src=a.src;HUNTFIMG[t]=im}
+  const im=HUNTFIMG[t];
+  if(!im.complete||!im.naturalWidth)return null;   // still decoding: hold the rig
+  return {im,frames:a.frames,fps:a.fps||12};
+}
+function paintFrames(a,now,alpha){
+  const i=Math.floor(now/(1000/a.fps))%a.frames;
+  hx.globalAlpha=alpha;
+  hx.drawImage(a.im,i*HUNTW,0,HUNTW,HUNTH,0,0,HUNTW*hScale,HUNTH*hScale);
+  hx.globalAlpha=1;
+}
 function drawHunter(now){
   if(!hx)return;
   hx.clearRect(0,0,hc.width,hc.height);
-  if(hFade<1&&hPrev!==hTier)paintHunter(HUNTIMG[hPrev],now,1-hFade,hPrev);
-  paintHunter(HUNTIMG[hTier],now,hFade<1?hFade:1,hTier);
+  const lay=(t,alpha)=>{
+    const a=huntAnim(t);
+    if(a)paintFrames(a,now,alpha);
+    else paintHunter(HUNTIMG[t],now,alpha,t);
+  };
+  if(hFade<1&&hPrev!==hTier)lay(hPrev,1-hFade);
+  lay(hTier,hFade<1?hFade:1);
+}
+/* Attach a strip to a tier at runtime. Kept as a function rather than a
+   literal so a strip can be added without touching drawHunter. */
+function setHunterFrames(tier,src,frames,fps){
+  HUNTFRAMES[tier]={src,frames,fps:fps||12};
+  delete HUNTFIMG[tier];
 }
 function huntLoop(now){
   if(!hc||!hc.isConnected){hRun=false;return}
