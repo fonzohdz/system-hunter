@@ -166,37 +166,73 @@ rather than assuming the implementation matches the code.
 
 Commit before risky experiments. Do not force-push, rewrite history, or delete
 branches. Small, described commits.
+## Look — HD-2D
 
-## Look — “System Window”
+Modelled on *Final Fantasy Brave Exvius: Resonance*, from reference screenshots
+the owner supplied. The idea is one material: **crisp pixel-grid artwork sitting
+inside soft, deep, lit atmosphere.** The pixel art is the subject; the interface
+around it is modern and soft. Getting this backwards — retro chunky menus, bevels,
+pixel typography — is the failure mode, because the reference's own UI is none of
+those things.
 
-The visual language is a status window, not a card UI: square framed panels
-with ticked corners, a monospace voice for anything that is a readout, an
-outlined accent button rather than a solid slab, and scanlines at very low
-contrast. It is set on `.block` and `.hero` via two pseudo-elements each, so no
-extra markup is needed to frame something — give it the class and it frames.
-
-**Nothing in it hardcodes a hue.** Every accent is `--crimson`, `--magenta`,
-`--core` or an `rgba()` built from the `--c1` / `--m1` triplets, all of which
-`applyLook()` swaps per palette. That is why all eight palettes work and why
-Frost renders the design in its original cyan. Do not introduce a fixed colour
-into this layer.
+- **Atmosphere is a real layer.** `#atmos` is a fixed canvas behind every screen
+  drawing bokeh at three distances, a lit horizon and a few gold sparks, with
+  `#vig` as a vignette above it. It never scrolls and never takes a pointer event.
+  Under `REDUCED` it paints one still frame and stops.
+- **Panels are volumes of tinted air, not framed windows.** `.block` and `.hero`
+  feather at top and bottom so they dissolve into the atmosphere instead of being
+  cut out of it, with one hairline catch-light along the top edge that is
+  brightest at the centre and gone at the corners. There are no borders, no
+  ticked corners and no scanlines anywhere. Do not reintroduce a frame.
+- **The only hard edges in the app are the pixel artwork.** Icons and the muscle
+  bodies are drawn on a lattice and rendered with `shape-rendering:crispEdges`.
+  Never put `crispEdges` on smooth vector art — it produces jaggies, not pixels,
+  and reads worse than leaving it smooth.
+- **The ground lives in the palette.** Each of the eight palettes carries its own
+  `void`, `deep`, `line`, `ash`, `ash2` and `bone` alongside its accents. A fixed
+  near-black under a coloured light never looked lit, and gray secondary text on
+  a coloured ground reads as a bug. Secondary text is tinted from the ground's hue.
+- **Nothing hardcodes a hue.** Every accent is `--crimson`, `--magenta`, `--core`,
+  `--gold` or an `rgba()` built from `--c1`/`--m1`, all swapped by `applyLook()`.
+  New code should use the `--key` / `--lume` aliases, which follow them. The old
+  names are kept because `PALVARS`, the eight `PALETTES` and every weapon SVG
+  address them, and the palette ids collide with the hue words — they are role
+  names now, not hue names.
+- **Depth is real.** Shadows carry an offset and a blur; buttons have an inner
+  top highlight and a true press that moves them. A zero-offset coloured halo is
+  decoration, not depth.
+- **Motion is damped, never snapped.** Bars ease with `cubic-bezier(.16,1,.3,1)`
+  over about a second. Everything must stay legible at a glance, at arm's length.
 
 ## Type
 
-Three faces, all from Google Fonts, loaded by the single `<link>` in the head.
-`--display` is **Cinzel** and carries the identity: brand mark, headings, level
-badge, stat numbers, the name in the halo. `--body` is **Archivo** and does the
-quiet 11–13px UI work. Archivo replaced Inter deliberately — Inter is on enough
-sites that it reads as a default rather than a choice. Do not swap `--body` back
-to Inter, Roboto, Geist or Plus Jakarta Sans.
+Two faces, both from Google Fonts, loaded by the single `<link>` in the head.
 
-`--mono` is **IBM Plex Mono** and is the third voice: it speaks data and
-nothing else — panel headers, tallies, stat labels, tab labels, filter chips,
-buttons, lift figures. Do not set prose in it.
+`--display` is **Grenze** and carries identity only: the brand mark, the hunter's
+name, level and rank numerals, big figures, headings that are the screen's
+subject. `--body` is **Barlow** and carries everything meant to be read.
+
+There is no third voice. `--mono` is aliased to `--body`: the monospace was
+standing in for tabular figures, so figures are simply tabular now
+(`font-variant-numeric:tabular-nums`). Do not reintroduce a monospace face as a
+costume for "technical".
+
+Do not swap `--body` to Inter, Roboto, Geist, Plus Jakarta Sans or Archivo, and
+do not set prose in `--display`.
 
 `--body` is set on `#root`, not on `body`. Anything appended to `document.body`
-(sheets, the veil, toasts) needs its own `font-family:var(--body)` or it
-inherits the browser's serif.
+(sheets, veils, toasts, the level-up overlay) needs its own
+`font-family:var(--body)` or it inherits the browser's serif.
+
+## Icons
+
+Drawn, never a glyph. `ICONS` maps a name to a 12x12 character grid — `#` is a
+lit pixel, `+` a dimmer one — and `pxIcon()` emits it as `<rect>` runs with
+`crispEdges` and `fill:currentColor`, so an icon follows the surrounding text and
+the palette swap. Add to `ICONS` rather than reaching for a unicode symbol.
+
+Still unicode, and fine to leave: the per-title ornament glyphs in `TITLES`
+(decorative marks, not an icon system) and the `▲`/`▼` lift direction marks.
 
 ## Voice
 
