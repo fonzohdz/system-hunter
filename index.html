@@ -1943,10 +1943,20 @@ function huntAnim(t){
   if(!HUNTFIMG[t]){const im=new Image();im.src=a.src;HUNTFIMG[t]=im}
   const im=HUNTFIMG[t];
   if(!im.complete||!im.naturalWidth)return null;   // still decoding: hold the rig
-  return {im,frames:a.frames,fps:a.fps||12};
+  return {im,frames:a.frames,fps:a.fps||12,pong:a.pong};
 }
+/* Ping-pong plays 1..N then N..1. It costs nothing, it guarantees the loop
+   closes even when the last frame does not lead back into the first, and for
+   a breathing idle it is arguably more correct anyway: inhale and exhale are
+   the same motion reversed. */
 function paintFrames(a,now,alpha){
-  const i=Math.floor(now/(1000/a.fps))%a.frames;
+  const step=Math.floor(now/(1000/a.fps));
+  let i;
+  if(a.pong){
+    const span=a.frames*2-2;
+    const p=((step%span)+span)%span;
+    i=p<a.frames?p:span-p;
+  }else i=((step%a.frames)+a.frames)%a.frames;
   hx.globalAlpha=alpha;
   hx.drawImage(a.im,i*HUNTW,0,HUNTW,HUNTH,0,0,HUNTW*hScale,HUNTH*hScale);
   hx.globalAlpha=1;
@@ -1964,8 +1974,8 @@ function drawHunter(now){
 }
 /* Attach a strip to a tier at runtime. Kept as a function rather than a
    literal so a strip can be added without touching drawHunter. */
-function setHunterFrames(tier,src,frames,fps){
-  HUNTFRAMES[tier]={src,frames,fps:fps||12};
+function setHunterFrames(tier,src,frames,fps,pong){
+  HUNTFRAMES[tier]={src,frames,fps:fps||12,pong:!!pong};
   delete HUNTFIMG[tier];
 }
 function huntLoop(now){
