@@ -166,6 +166,7 @@ rather than assuming the implementation matches the code.
 
 Commit before risky experiments. Do not force-push, rewrite history, or delete
 branches. Small, described commits.
+
 ## Look — HD-2D
 
 Modelled on *Final Fantasy Brave Exvius: Resonance*, from reference screenshots
