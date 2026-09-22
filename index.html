@@ -177,10 +177,10 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.hc-stats,.props,.heat{font-variant
 /* ---- the hero: today, and the one thing to do about it ----
    The first viewport states a single imperative at poster scale. Everything
    else on this screen is below it. */
-.hero{margin-top:16px;padding:22px 18px 20px;overflow:hidden;min-height:268px;
+.hero{margin-top:16px;padding:18px 18px 20px;overflow:hidden;min-height:300px;
   display:flex;flex-direction:column}
 #aura{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.sigil{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
+.sigil{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);
   width:230px;height:230px;border-radius:50%;pointer-events:none;opacity:var(--sig,.5);z-index:0;
   background:conic-gradient(from 0deg, transparent 0 11%, rgba(var(--lume1),.30) 12%,
     transparent 13% 24%, rgba(var(--lume1),.30) 25%, transparent 26% 49%,
@@ -189,14 +189,22 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.hc-stats,.props,.heat{font-variant
   -webkit-mask:radial-gradient(circle, transparent 45%, #000 47%, #000 49.5%, transparent 51%);
   animation:spin 54s linear infinite;transition:opacity 1.6s}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
-.blade{position:relative;z-index:1;display:grid;place-items:center;padding:6px 0 2px}
-.blade-halo{position:absolute;width:250px;height:250px;border-radius:50%;
+.blade{position:relative;z-index:1;display:grid;place-items:center;padding:4px 0 0}
+/* Exactly 2x, nearest-neighbour. The drop shadow is cast from the sprite's own
+   alpha so the character sits in the scene instead of floating on it. */
+.hunter{width:144px;height:306px;display:block;position:relative;
+  image-rendering:pixelated;image-rendering:crisp-edges;
+  filter:drop-shadow(0 10px 14px rgba(0,0,0,.6))
+         drop-shadow(0 0 22px rgba(var(--lume1),.32))}
+.blade-halo{position:absolute;top:44%;width:290px;height:290px;border-radius:50%;
+  transform:translateY(-50%);
   opacity:var(--glo,1);transition:opacity 1.6s;
   background:radial-gradient(closest-side, rgba(var(--lume1),.45), rgba(var(--key1),.16) 48%, transparent 74%);
   filter:blur(30px)}
 .blade-svg{position:relative;height:250px;filter:drop-shadow(0 0 26px rgba(var(--key1),.7))}
-.name-etch{position:relative;font-family:var(--display);font-size:clamp(26px,8vw,34px);
-  font-weight:600;letter-spacing:.24em;text-indent:.24em;color:var(--core);line-height:1.1;
+.name-etch{position:relative;z-index:1;text-align:center;font-family:var(--display);
+  font-size:clamp(22px,6.5vw,28px);font-weight:600;letter-spacing:.24em;text-indent:.24em;
+  color:var(--core);line-height:1.1;margin-top:2px;
   text-shadow:0 0 30px rgba(var(--lume1),.85),0 2px 0 rgba(0,0,0,.5)}
 /* The plan for today, above the imperative. Not an eyebrow — it is the
    answer to "what is today", which is information, not a label. */
@@ -1809,6 +1817,32 @@ function bodyMap(mus){
 }
 
 
+
+/* ---------------- the hunter ----------------
+   A 72x153 pixel sprite, shown at exactly 2x so every pixel stays square;
+   a fractional scale is what makes pixel art look like a photograph of
+   pixel art. It is inlined as a data URI because the app is one file, and
+   quantised to 22 colours, which is what keeps it small enough to be.
+
+   This is NOT one of the exercise figures CLAUDE.md retired. Those tried to
+   demonstrate 155 movements from eleven keypoints at 52px and could not. This
+   is one character at one pose, and the only thing it has to communicate is
+   you. Do not read the figure ban as covering it.
+
+   HUNTERS is keyed by rank so the character gears up as you climb. Until the
+   other five exist every rank resolves to the one that does, which is why the
+   lookup walks down the rank order rather than indexing directly. */
+const HUNTERS={
+  C:'data:image/png;base64,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'
+};
+const hunterSprite=()=>{
+  const order=['S','A','B','C','D','E'], r=rankOf(S.lvl);
+  let i=order.indexOf(r);
+  for(;i<order.length;i++)if(HUNTERS[order[i]])return HUNTERS[order[i]];
+  for(const k of order)if(HUNTERS[k])return HUNTERS[k];
+  return null;
+};
+
 /* ---------------- pixel icons ----------------
    Every icon is a 12x12 character grid: '#' is a lit pixel, '+' a dimmer one.
    They are emitted as <rect> runs with shape-rendering:crispEdges, so they are
@@ -2795,8 +2829,10 @@ function heroBlock(){
     <div class="sigil" style="--sig:${dead?.12:.35+i*.14}"></div>
     <div class="blade">
       <div class="blade-halo" style="--glo:${dead?0:.3+i*.18}"></div>
-      <div class="name-etch">${esc(S.name||'HUNTER')}</div>
+      ${(()=>{const sp=hunterSprite();
+        return sp?`<img class="hunter" src="${sp}" width="72" height="153" alt="" aria-hidden="true">`:''})()}
     </div>
+    <div class="name-etch">${esc(S.name||'HUNTER')}</div>
     <p class="heroplan">${plan?`<b>${esc(plan.n)}</b> · day ${plan.i+1} of ${plan.len}`
       :`<b>${q.length} exercise${q.length===1?'':'s'}</b> today`}${
       cleared?` · ${cleared} cleared`:''}</p>
