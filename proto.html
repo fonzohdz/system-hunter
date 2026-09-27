@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>RANK UP — motion prototype</title>
+<title>RANK UP — FX prototype</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,12 +13,16 @@
   --ease:cubic-bezier(.16,1,.3,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items:center;padding:14px}
-
-.device{width:min(400px,100%);height:min(820px,94vh);position:relative;overflow:hidden;
+html,body{height:100%;overflow:hidden}
+body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items:center}
+.device{width:min(430px,100vw);height:min(880px,100vh);position:relative;overflow:hidden;
   background:var(--bg);color:var(--tx)}
-.scene{position:absolute;inset:0;
+
+/* ── layers ── */
+#bgfx,#fgfx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#bgfx{z-index:1}
+#fgfx{z-index:30}
+.scene{position:absolute;inset:0;z-index:0;
   background:radial-gradient(70% 40% at 50% 0%,rgba(66,232,245,.10),transparent 65%),
              radial-gradient(100% 60% at 50% 105%,rgba(66,232,245,.06),transparent 70%),var(--bg)}
 .scene::after{content:"";position:absolute;inset:0;opacity:.5;
@@ -26,22 +30,24 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
     linear-gradient(90deg,rgba(66,232,245,.05) 1px,transparent 1px);background-size:34px 34px;
   -webkit-mask:radial-gradient(90% 60% at 50% 40%,#000,transparent 75%);
   mask:radial-gradient(90% 60% at 50% 40%,#000,transparent 75%)}
-/* drifting motes — the scene is never fully still */
-.mote{position:absolute;border-radius:50%;background:var(--cy);pointer-events:none;
-  animation:drift linear infinite}
-@keyframes drift{from{transform:translateY(0);opacity:0}
-  12%{opacity:.5} 88%{opacity:.5} to{transform:translateY(-560px);opacity:0}}
+/* a scanline crawls the whole screen, slowly */
+.scan{position:absolute;left:0;right:0;height:130px;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(66,232,245,.045),transparent);
+  animation:scan 7s linear infinite}
+@keyframes scan{from{top:-140px}to{top:100%}}
 
-.ui{position:relative;height:100%;display:flex;flex-direction:column;padding:18px 15px 0}
-.screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.ui{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;padding:16px 15px 0}
+.screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
 
-/* ══ HUD ══ */
+/* ── HUD ── */
 .hud{display:flex;align-items:flex-end;gap:11px}
 .ab{font-size:9px;letter-spacing:.42em;color:var(--cym);font-weight:600;line-height:1}
 .hud .lv{font-size:33px;font-weight:600;line-height:.88;font-variant-numeric:tabular-nums}
 .hud .nm{font-size:17px;letter-spacing:.16em;font-weight:500;line-height:1.1}
 .hud .rk{font-size:30px;font-weight:700;line-height:.88;color:var(--amb);
-  text-shadow:0 0 18px rgba(255,184,62,.5)}
+  text-shadow:0 0 18px rgba(255,184,62,.5);transition:color .3s}
 .gauges{margin-top:9px}
 .g{display:flex;align-items:center;gap:9px;margin-top:4px}
 .g u{text-decoration:none;font-size:9.5px;letter-spacing:.22em;color:var(--cym);width:30px;font-weight:600}
@@ -53,30 +59,29 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
 .g em{font-style:normal;font-size:11px;color:var(--txm);width:36px;text-align:right;
   font-variant-numeric:tabular-nums}
 
-/* ══ the pane, and its opening sequence ══ */
-.pane{position:relative;margin-top:15px;
-  background:rgba(7,25,35,.82);border:1px solid rgba(66,232,245,.75);
+/* ── pane + entrance ── */
+.pane{position:relative;margin-top:14px;background:rgba(7,25,35,.82);
+  border:1px solid rgba(66,232,245,.75);
   box-shadow:0 0 5px rgba(0,220,255,.30),inset 0 0 12px rgba(0,190,255,.05);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .pane.m{border-color:rgba(242,52,169,.7);box-shadow:0 0 5px rgba(242,52,169,.3)}
-/* 1. a line draws across before the glass exists */
 .pane::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;
   background:linear-gradient(90deg,transparent,var(--cyb),transparent);
   transform:scaleX(0);transform-origin:left;box-shadow:0 0 10px var(--cy)}
 .anim .pane{animation:paneIn .34s var(--ease) both}
 .anim .pane::before{animation:lineDraw .5s var(--ease) both}
-@keyframes lineDraw{0%{transform:scaleX(0);opacity:1}
-  36%{transform:scaleX(1);opacity:1} 100%{transform:scaleX(1);opacity:0}}
-@keyframes paneIn{0%{opacity:0;clip-path:inset(0 0 100% 0)}
-  32%{opacity:0;clip-path:inset(0 0 100% 0)}
+@keyframes lineDraw{0%{transform:scaleX(0);opacity:1}36%{transform:scaleX(1);opacity:1}
+  100%{transform:scaleX(1);opacity:0}}
+@keyframes paneIn{0%{opacity:0;clip-path:inset(0 0 100% 0)}32%{opacity:0;clip-path:inset(0 0 100% 0)}
   100%{opacity:1;clip-path:inset(0 0 0 0)}}
-/* 2. a sweep passes through the glass once */
 .pane::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,transparent,rgba(138,249,255,.16),transparent);
-  opacity:0}
+  background:linear-gradient(180deg,transparent,rgba(138,249,255,.16),transparent);opacity:0}
 .anim .pane::after{animation:sweep .7s .18s ease-out both}
-@keyframes sweep{0%{opacity:0;transform:translateY(-100%)}
-  30%{opacity:1} 100%{opacity:0;transform:translateY(100%)}}
+@keyframes sweep{0%{opacity:0;transform:translateY(-100%)}30%{opacity:1}
+  100%{opacity:0;transform:translateY(100%)}}
+/* hologram instability — rare, single frame */
+.pane{animation:flick 11s steps(1) infinite}
+@keyframes flick{0%,97.4%,100%{opacity:1}97.6%{opacity:.72}97.8%{opacity:1}98%{opacity:.85}98.2%{opacity:1}}
 
 .ph-hd{display:flex;align-items:center;gap:8px;padding:7px 11px;
   background:rgba(66,232,245,.13);border-bottom:1px solid rgba(66,232,245,.45)}
@@ -85,16 +90,11 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
 .ph-hd.m span{color:#FFC7E8}
 .ph-hd em{margin-left:auto;font-style:normal;font-size:11.5px;letter-spacing:.14em;color:var(--txm)}
 .pbody{padding:13px 12px}
-
-/* 3. text arrives staggered, after the glass */
 .anim .stg>*{animation:txIn .34s var(--ease) both}
 @keyframes txIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.anim .stg>*:nth-child(1){animation-delay:.30s}
-.anim .stg>*:nth-child(2){animation-delay:.34s}
-.anim .stg>*:nth-child(3){animation-delay:.38s}
-.anim .stg>*:nth-child(4){animation-delay:.42s}
-.anim .stg>*:nth-child(5){animation-delay:.46s}
-.anim .stg>*:nth-child(6){animation-delay:.50s}
+.anim .stg>*:nth-child(1){animation-delay:.30s}.anim .stg>*:nth-child(2){animation-delay:.34s}
+.anim .stg>*:nth-child(3){animation-delay:.38s}.anim .stg>*:nth-child(4){animation-delay:.42s}
+.anim .stg>*:nth-child(5){animation-delay:.46s}.anim .stg>*:nth-child(6){animation-delay:.50s}
 
 .big{display:flex;align-items:baseline;gap:10px}
 .big b{font-size:74px;line-height:.86;font-weight:600;font-variant-numeric:tabular-nums}
@@ -102,92 +102,103 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
 .note{font-size:13.5px;color:var(--txm);margin-top:3px}
 
 .req{margin-top:12px;border-top:1px solid rgba(66,232,245,.22)}
-.req .r{display:flex;align-items:center;gap:9px;padding:7px 0;
-  border-bottom:1px solid rgba(66,232,245,.1);font-size:13.5px}
+.req .r{display:flex;align-items:center;gap:9px;padding:9px 6px 9px 0;
+  border-bottom:1px solid rgba(66,232,245,.1);font-size:13.5px;cursor:pointer;
+  transition:background .18s,padding-left .18s var(--ease);position:relative}
 .req .r:last-child{border-bottom:0}
+.req .r:active{background:rgba(66,232,245,.1);padding-left:6px}
 .req .r i{width:0;height:0;border-left:6px solid var(--cym);border-top:4px solid transparent;
-  border-bottom:4px solid transparent;flex:0 0 6px}
+  border-bottom:4px solid transparent;flex:0 0 6px;transition:border-left-color .2s}
 .req .r.ok i{border-left-color:var(--cy);filter:drop-shadow(0 0 5px var(--cy))}
 .req .r em{margin-left:auto;font-style:normal;color:var(--txm);font-weight:600;
   font-variant-numeric:tabular-nums}
 .req .r.ok em{color:var(--cy)}
 .req .r.lock em{color:var(--mag);font-size:10.5px;letter-spacing:.18em}
 
-/* parameters */
 .params{display:grid;grid-template-columns:1fr 1px 1fr;column-gap:15px;margin-top:3px}
 .params .rule{background:rgba(66,232,245,.25)}
 .pa{padding:8px 0;border-bottom:1px solid rgba(66,232,245,.1);display:flex;align-items:center;gap:7px}
 .pa:last-child{border-bottom:0}
-.pa .t{flex:1;min-width:0}
-.pa .lb{font-size:12px;letter-spacing:.09em;font-weight:500}
+.pa .t{flex:1;min-width:0}.pa .lb{font-size:12px;letter-spacing:.09em;font-weight:500}
 .pa b{font-size:25px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
-.pa b.a{color:var(--amb)}
-.pa .d{font-size:11px;color:var(--cy);font-weight:600}
+.pa b.a{color:var(--amb)}.pa .d{font-size:11px;color:var(--cy);font-weight:600}
 
-.today{margin-top:auto;padding-top:16px}
+.today{margin-top:auto;padding-top:14px}
 .today b{display:block;font-size:38px;font-weight:600;letter-spacing:.08em;line-height:1.05;
   margin-top:2px;text-shadow:0 0 24px rgba(66,232,245,.35)}
-.btn{margin-top:13px;padding:16px;text-align:center;font-size:15.5px;letter-spacing:.34em;
+.btn{margin-top:12px;padding:16px;text-align:center;font-size:15.5px;letter-spacing:.34em;
   font-weight:600;color:#02222b;border:0;width:100%;font-family:inherit;cursor:pointer;
   background:linear-gradient(180deg,var(--cyb),#2fc4d6);
   box-shadow:0 0 22px rgba(66,232,245,.45),inset 0 1px 0 rgba(255,255,255,.6);
-  transition:transform .12s var(--ease),box-shadow .2s;position:relative;overflow:hidden}
-.btn:active{transform:translateY(2px);box-shadow:0 0 34px rgba(66,232,245,.9)}
-.btn::after{content:"";position:absolute;inset:0;background:#fff;opacity:0}
-.btn.flash::after{animation:bflash .3s ease-out}
-@keyframes bflash{from{opacity:.85}to{opacity:0}}
+  transition:transform .1s var(--ease),box-shadow .2s;position:relative;overflow:hidden}
+.btn:active{transform:translateY(2px) scale(.985);box-shadow:0 0 40px rgba(66,232,245,1)}
+.btn.ghost{background:none;color:var(--txm);border:1px solid rgba(66,232,245,.3);
+  box-shadow:none;font-size:13px;letter-spacing:.22em;margin-top:8px}
 
-/* ══ nav — text rows, cyan marker, no icons ══ */
-.nav{display:flex;padding:11px 0 calc(11px + env(safe-area-inset-bottom));margin-top:12px;
+.nav{display:flex;padding:10px 0 calc(10px + env(safe-area-inset-bottom));margin-top:10px;
   border-top:1px solid rgba(66,232,245,.18)}
 .nav button{flex:1;background:none;border:0;font-family:inherit;cursor:pointer;
   font-size:11.5px;letter-spacing:.2em;color:var(--cym);font-weight:600;position:relative;
-  padding:4px 0;transition:color .22s}
+  padding:5px 0;transition:color .22s}
 .nav button.on{color:var(--cyb);text-shadow:0 0 12px rgba(66,232,245,.9)}
 .nav button::before{content:"▸";position:absolute;left:2px;opacity:0;color:var(--cy);
   transform:translateX(-4px);transition:opacity .22s,transform .22s var(--ease)}
 .nav button.on::before{opacity:1;transform:translateX(0)}
 
-/* ══ level-up overlay ══ */
-.lvup{position:absolute;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;
-  background:rgba(4,12,18,.72);opacity:0;visibility:hidden}
-.lvup.go{opacity:1;visibility:visible;animation:lvfade 2.6s forwards}
-@keyframes lvfade{0%{opacity:0}8%{opacity:1}82%{opacity:1}100%{opacity:0;visibility:hidden}}
-.lvup .card{text-align:center;padding:26px 40px;background:rgba(7,25,35,.9);
-  border:1px solid var(--cy);box-shadow:0 0 50px rgba(66,232,245,.55)}
-.lvup .card .t{font-size:13px;letter-spacing:.44em;color:var(--cy)}
-.lvup .card .n{font-size:58px;font-weight:700;margin-top:6px;color:var(--amb);
-  text-shadow:0 0 34px rgba(255,184,62,.8);font-variant-numeric:tabular-nums}
-.lvup.go .card{animation:glitch .5s steps(2) 2}
-@keyframes glitch{0%{transform:translate(0)}25%{transform:translate(-2px,1px)}
-  50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-1px)}100%{transform:translate(0)}}
-.flashline{position:absolute;left:0;right:0;height:2px;background:var(--cyb);
-  box-shadow:0 0 20px var(--cy);opacity:0}
-.lvup.go .flashline{animation:fl .6s ease-out}
-@keyframes fl{0%{opacity:1;top:0}100%{opacity:0;top:100%}}
+/* ── rank-up spectacle ── */
+.flash{position:absolute;inset:0;z-index:35;background:#DFFAFF;opacity:0;pointer-events:none}
+.flash.go{animation:fla .5s ease-out}
+@keyframes fla{0%{opacity:.9}100%{opacity:0}}
+.shock{position:absolute;left:50%;top:44%;z-index:33;width:10px;height:10px;border-radius:50%;
+  border:2px solid var(--cyb);transform:translate(-50%,-50%) scale(0);opacity:0;pointer-events:none}
+.shock.go{animation:sh 1s cubic-bezier(.1,.7,.3,1)}
+@keyframes sh{0%{transform:translate(-50%,-50%) scale(0);opacity:1}
+  100%{transform:translate(-50%,-50%) scale(46);opacity:0}}
+.rankcard{position:absolute;left:50%;top:44%;z-index:36;transform:translate(-50%,-50%);
+  text-align:center;padding:24px 40px;background:rgba(7,25,35,.92);border:1px solid var(--cy);
+  box-shadow:0 0 60px rgba(66,232,245,.6);opacity:0;visibility:hidden;pointer-events:none}
+.rankcard.go{animation:rc 2.8s forwards}
+@keyframes rc{0%{opacity:0;visibility:visible;transform:translate(-50%,-50%) scale(.8)}
+  10%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  86%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:0;visibility:hidden;transform:translate(-50%,-50%) scale(1.04)}}
+.rankcard .t{font-size:13px;letter-spacing:.44em;color:var(--cy)}
+.rankcard .n{font-size:56px;font-weight:700;margin-top:4px;color:var(--amb);
+  text-shadow:0 0 34px rgba(255,184,62,.9);font-variant-numeric:tabular-nums}
+.rankcard.go .n{animation:glitch .42s steps(2) 3}
+@keyframes glitch{0%{transform:translate(0)}25%{transform:translate(-3px,1px)}
+  50%{transform:translate(3px,-1px)}75%{transform:translate(-1px,-2px)}100%{transform:translate(0)}}
 
-.hint{position:absolute;left:0;right:0;top:6px;text-align:center;font-size:9px;
-  letter-spacing:.24em;color:#20404a;pointer-events:none}
+.snd{position:absolute;right:12px;top:12px;z-index:40;background:none;border:0;cursor:pointer;
+  font-family:inherit;font-size:10px;letter-spacing:.16em;color:var(--cym);font-weight:600;
+  padding:6px 8px}
+.snd.on{color:var(--cy);text-shadow:0 0 10px var(--cy)}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style></head>
 <body>
-<div class="device">
-  <div class="scene" id="scene"></div>
+<div class="device" id="dev">
+  <div class="scene"></div>
+  <canvas id="bgfx"></canvas>
+  <div class="scan"></div>
+  <canvas id="fgfx"></canvas>
+  <div class="flash" id="flash"></div>
+  <div class="shock" id="shock"></div>
+  <div class="rankcard" id="rankcard"><div class="t">RANK UP</div><div class="n" id="rcn">D → C</div></div>
+  <button class="snd" id="snd">♪ SOUND OFF</button>
+
   <div class="ui">
     <div class="hud">
       <div><div class="ab">L V</div><div class="lv" id="lv">24</div></div>
       <div style="flex:1"><div class="ab">H U N T E R</div><div class="nm">FONZO</div></div>
       <div style="text-align:right"><div class="ab" style="letter-spacing:.3em">R A N K</div>
-        <div class="rk">D</div></div>
+        <div class="rk" id="rk">D</div></div>
     </div>
     <div class="gauges">
       <div class="g"><u>BODY</u><div class="track"><i data-w="86"></i></div><em>86%</em></div>
       <div class="g"><u>STM</u><div class="track"><i data-w="61"></i></div><em>61%</em></div>
       <div class="g"><u>EXP</u><div class="track"><i class="a" data-w="73"></i></div><em id="xpv">73%</em></div>
     </div>
-
     <div class="screen anim" id="screen"></div>
-
     <nav class="nav" id="nav">
       <button class="on" data-t="today">TODAY</button>
       <button data-t="status">STATUS</button>
@@ -195,28 +206,136 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
       <button data-t="record">RECORD</button>
     </nav>
   </div>
-  <div class="lvup" id="lvup"><div class="flashline"></div>
-    <div class="card"><div class="t">RANK UP</div><div class="n">D &nbsp;→&nbsp; C</div></div></div>
-  <div class="hint">TAP TABS · TAP BEGIN</div>
 </div>
 
 <script>
-/* drifting motes, three depths */
-(function(){
-  const s=document.getElementById('scene');
-  for(let i=0;i<22;i++){
-    const m=document.createElement('i');m.className='mote';
-    const z=Math.random();
-    m.style.width=m.style.height=(1+z*2.4).toFixed(1)+'px';
-    m.style.left=(Math.random()*100)+'%';
-    m.style.top=(60+Math.random()*60)+'%';
-    m.style.opacity=.2+z*.4;
-    m.style.animationDuration=(9+Math.random()*13)+'s';
-    m.style.animationDelay=(-Math.random()*18)+'s';
-    s.appendChild(m);
+/* ═══════════ SOUND — synthesised, no files ═══════════
+   Browsers block audio until a gesture, so the context is created on the
+   first tap and every sound before that is silently dropped. */
+const SFX=(()=>{
+  let ctx=null,on=false;
+  const now=()=>ctx.currentTime;
+  function env(node,a,d,peak){
+    const g=ctx.createGain();g.gain.setValueAtTime(.0001,now());
+    g.gain.exponentialRampToValueAtTime(peak,now()+a);
+    g.gain.exponentialRampToValueAtTime(.0001,now()+a+d);
+    node.connect(g);return g;
   }
+  function tone(freq,type,a,d,peak,slideTo){
+    if(!ctx||!on)return;
+    const o=ctx.createOscillator();o.type=type;o.frequency.setValueAtTime(freq,now());
+    if(slideTo)o.frequency.exponentialRampToValueAtTime(slideTo,now()+a+d);
+    const g=env(o,a,d,peak);g.connect(ctx.destination);
+    o.start();o.stop(now()+a+d+.02);
+  }
+  function noise(dur,peak,f0,f1){
+    if(!ctx||!on)return;
+    const n=Math.floor(ctx.sampleRate*dur);
+    const buf=ctx.createBuffer(1,n,ctx.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*(1-i/n);
+    const s=ctx.createBufferSource();s.buffer=buf;
+    const bp=ctx.createBiquadFilter();bp.type='bandpass';
+    bp.frequency.setValueAtTime(f0,now());
+    bp.frequency.exponentialRampToValueAtTime(f1,now()+dur);
+    bp.Q.value=1.6;
+    const g=ctx.createGain();g.gain.setValueAtTime(peak,now());
+    g.gain.exponentialRampToValueAtTime(.0001,now()+dur);
+    s.connect(bp);bp.connect(g);g.connect(ctx.destination);s.start();
+  }
+  return {
+    boot(){ if(!ctx){try{ctx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}} },
+    toggle(){ this.boot(); on=!on; if(on)this.open(); return on; },
+    get on(){return on},
+    tick(){ tone(1180,'square',.004,.05,.06) },              // tab / row
+    move(){ tone(760,'triangle',.004,.07,.05) },
+    open(){ noise(.22,.05,600,3200); tone(520,'sine',.01,.2,.05,880) },
+    confirm(){ tone(660,'sine',.008,.10,.11,990); setTimeout(()=>tone(990,'sine',.008,.16,.09,1320),70) },
+    deny(){ tone(150,'sawtooth',.006,.16,.07,90) },
+    rank(){
+      [523,659,784,1046].forEach((f,i)=>setTimeout(()=>tone(f,'sine',.01,.7,.10),i*95));
+      setTimeout(()=>noise(.7,.06,400,5200),60);
+    }
+  };
 })();
 
+/* ═══════════ PARTICLES ═══════════ */
+const FX=(()=>{
+  const bg=document.getElementById('bgfx'),fg=document.getElementById('fgfx');
+  const bx=bg.getContext('2d'),fx=fg.getContext('2d');
+  let W=0,H=0,dpr=1;
+  const amb=[],parts=[],rings=[];
+  function size(){
+    const r=document.getElementById('dev').getBoundingClientRect();
+    dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;
+    [bg,fg].forEach(c=>{c.width=W*dpr;c.height=H*dpr});
+    bx.setTransform(dpr,0,0,dpr,0,0);fx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  addEventListener('resize',size);
+  /* ambient field: three depths of slow risers plus occasional data streaks */
+  for(let i=0;i<46;i++)amb.push({x:Math.random(),y:Math.random(),z:Math.random(),
+    ph:Math.random()*6.3,streak:Math.random()<.16});
+  function burst(x,y,n,opt){
+    opt=opt||{};
+    for(let i=0;i<n;i++){
+      const a=opt.dir!==undefined?opt.dir+(Math.random()-.5)*(opt.spread||6.3):Math.random()*6.3;
+      const s=(opt.speed||2.6)*(.3+Math.random());
+      parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-(opt.lift||0),
+        life:1,dec:.012+Math.random()*.022,r:opt.r||(.8+Math.random()*2),
+        c:opt.c||'#8AF9FF',g:opt.g===undefined?.045:opt.g});
+    }
+    if(parts.length>620)parts.splice(0,parts.length-620);
+  }
+  function ring(x,y,c){rings.push({x,y,r:4,life:1,c:c||'#8AF9FF'})}
+  /* sparks running along a horizontal edge — used when a pane draws in */
+  function edge(el){
+    const d=document.getElementById('dev').getBoundingClientRect();
+    const r=el.getBoundingClientRect();
+    const y=r.top-d.top, x0=r.left-d.left, x1=x0+r.width;
+    let t=0;
+    const iv=setInterval(()=>{
+      t+=.12; if(t>1){clearInterval(iv);return}
+      burst(x0+(x1-x0)*t,y,2,{speed:.8,r:1.1,g:.012});
+    },16);
+  }
+  function loop(){
+    bx.clearRect(0,0,W,H);
+    for(const m of amb){
+      m.y-=(0.00016+m.z*0.00042);
+      if(m.y<-.03){m.y=1.03;m.x=Math.random()}
+      const x=(m.x+Math.sin(performance.now()/5200+m.ph)*.01)*W,y=m.y*H;
+      bx.globalAlpha=(.10+m.z*.34);
+      bx.fillStyle=m.z>.8?'#8AF9FF':'#42E8F5';
+      if(m.streak){bx.fillRect(x,y,1,6+m.z*10)}
+      else{bx.beginPath();bx.arc(x,y,.5+m.z*1.9,0,6.3);bx.fill()}
+    }
+    bx.globalAlpha=1;
+
+    fx.clearRect(0,0,W,H);
+    for(let i=parts.length-1;i>=0;i--){
+      const p=parts[i];
+      p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.vx*=.985;p.vy*=.985;p.life-=p.dec;
+      if(p.life<=0){parts.splice(i,1);continue}
+      fx.globalAlpha=Math.max(0,p.life);
+      fx.fillStyle=p.c;
+      fx.beginPath();fx.arc(p.x,p.y,p.r*p.life,0,6.3);fx.fill();
+    }
+    for(let i=rings.length-1;i>=0;i--){
+      const r=rings[i];r.r+=7;r.life-=.028;
+      if(r.life<=0){rings.splice(i,1);continue}
+      fx.globalAlpha=Math.max(0,r.life)*.8;
+      fx.strokeStyle=r.c;fx.lineWidth=2*r.life;
+      fx.beginPath();fx.arc(r.x,r.y,r.r,0,6.3);fx.stroke();
+    }
+    fx.globalAlpha=1;
+    requestAnimationFrame(loop);
+  }
+  size();requestAnimationFrame(loop);
+  return {burst,ring,edge,size,
+    at(el){const d=document.getElementById('dev').getBoundingClientRect(),r=el.getBoundingClientRect();
+      return {x:r.left-d.left+r.width/2,y:r.top-d.top+r.height/2}}};
+})();
+
+/* ═══════════ SCREENS ═══════════ */
 const SCREENS={
  today:`
   <div class="pane">
@@ -233,7 +352,8 @@ const SCREENS={
     </div>
   </div>
   <div class="today stg"><div class="ab">T O D A Y</div><b>LEG DAY</b></div>
-  <button class="btn" id="begin">BEGIN</button>`,
+  <button class="btn" data-act="begin">BEGIN</button>
+  <button class="btn ghost" data-act="rank">▸ DEMO A RANK UP</button>`,
 
  status:`
   <div class="pane m">
@@ -279,8 +399,9 @@ const SCREENS={
         <div class="r ok"><i></i><span>Goblet squat</span><em>3 × 10</em></div>
         <div class="r ok"><i></i><span>Romanian deadlift</span><em>3 × 8</em></div>
         <div class="r ok"><i></i><span>Walking lunge</span><em>3 × 12</em></div>
-        <div class="r lock"><i></i><span>Barbell back squat</span><em>C-RANK</em></div>
-        <div class="r lock"><i></i><span>Power clean</span><em>B-RANK</em></div>
+        <div class="r ok"><i></i><span>Leg press</span><em>3 × 12</em></div>
+        <div class="r lock" data-lock><i></i><span>Barbell back squat</span><em>C-RANK</em></div>
+        <div class="r lock" data-lock><i></i><span>Power clean</span><em>B-RANK</em></div>
       </div>
     </div>
   </div>`,
@@ -301,11 +422,9 @@ const SCREENS={
 };
 
 const screen=document.getElementById('screen');
-
-/* numbers count up rather than appearing — the brief's "numbers are objects" */
 function countUp(){
   screen.querySelectorAll('[data-count]').forEach(el=>{
-    const to=+el.dataset.count, t0=performance.now(), dur=620;
+    const to=+el.dataset.count,t0=performance.now(),dur=640;
     (function step(now){
       const p=Math.min(1,(now-t0)/dur);
       el.textContent=Math.round(to*(1-Math.pow(1-p,3)));
@@ -316,38 +435,70 @@ function countUp(){
 function paint(k){
   screen.classList.remove('anim');
   screen.innerHTML=SCREENS[k];
-  void screen.offsetWidth;            // restart the entrance
+  void screen.offsetWidth;
   screen.classList.add('anim');
+  SFX.open();
   setTimeout(countUp,300);
-  const b=document.getElementById('begin');
-  if(b)b.onclick=()=>{b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),320);rankUp()};
+  setTimeout(()=>screen.querySelectorAll('.pane').forEach(p=>FX.edge(p)),40);
 }
-document.getElementById('nav').onclick=e=>{
-  const b=e.target.closest('button'); if(!b)return;
-  [...e.currentTarget.children].forEach(x=>x.classList.toggle('on',x===b));
-  paint(b.dataset.t);
+/* every row and button is live, not just the tabs */
+document.getElementById('dev').addEventListener('click',e=>{
+  SFX.boot();
+  const row=e.target.closest('.req .r');
+  if(row){
+    const p=FX.at(row);
+    if(row.dataset.lock!==undefined){SFX.deny();FX.burst(p.x,p.y,10,{c:'#F234A9',speed:1.6})}
+    else{SFX.tick();FX.burst(p.x,p.y,14,{c:'#8AF9FF',speed:1.8})}
+    return;
+  }
+  const b=e.target.closest('[data-act]');
+  if(b){
+    const p=FX.at(b);
+    if(b.dataset.act==='begin'){SFX.confirm();FX.ring(p.x,p.y);FX.burst(p.x,p.y,40,{speed:3.4,lift:1})}
+    else rankUp();
+    return;
+  }
+  const t=e.target.closest('.nav button');
+  if(t){
+    [...t.parentNode.children].forEach(x=>x.classList.toggle('on',x===t));
+    SFX.move();
+    const p=FX.at(t);FX.burst(p.x,p.y,16,{speed:2,dir:-Math.PI/2,spread:1.6});
+    paint(t.dataset.t);
+  }
+});
+document.getElementById('snd').onclick=e=>{
+  e.stopPropagation();
+  const on=SFX.toggle();
+  const b=document.getElementById('snd');
+  b.textContent=on?'♪ SOUND ON':'♪ SOUND OFF';
+  b.classList.toggle('on',on);
 };
-/* gauges fill on load */
 function fillGauges(){
   document.querySelectorAll('.track i').forEach(i=>{
-    i.style.width='0%';
-    setTimeout(()=>{i.style.width=i.dataset.w+'%'},120);
+    i.style.width='0%';setTimeout(()=>{i.style.width=i.dataset.w+'%'},140);
   });
 }
-/* the rank-up beat: edge flash, glitch, gold number */
+/* the full beat: flash, shockwave, 200-particle burst, glitch, gold number */
+let rank='D';
 function rankUp(){
-  const o=document.getElementById('lvup');
-  o.classList.remove('go'); void o.offsetWidth; o.classList.add('go');
+  const nx={D:'C',C:'B',B:'A',A:'S',S:'S'}[rank];
+  document.getElementById('rcn').textContent=rank+' → '+nx;
+  ['flash','shock','rankcard'].forEach(id=>{
+    const el=document.getElementById(id);el.classList.remove('go');void el.offsetWidth;el.classList.add('go');
+  });
+  SFX.rank();
+  const d=document.getElementById('dev').getBoundingClientRect();
+  FX.burst(d.width/2,d.height*.44,210,{speed:6.5,r:2.4,g:.07});
+  setTimeout(()=>FX.burst(d.width/2,d.height*.44,90,{speed:3.2,c:'#FFB83E',r:2,g:.05}),160);
   const xp=document.querySelector('.track i.a');
   xp.style.width='100%';
   setTimeout(()=>{
-    document.getElementById('lv').textContent='25';
-    document.querySelector('.rk').textContent='C';
-    xp.style.width='6%';
-    document.getElementById('xpv').textContent='6%';
-  },1300);
+    rank=nx;
+    document.getElementById('lv').textContent=+document.getElementById('lv').textContent+1;
+    document.getElementById('rk').textContent=nx;
+    xp.style.width='6%';document.getElementById('xpv').textContent='6%';
+  },1250);
 }
-paint('today');
-fillGauges();
+paint('today');fillGauges();
 </script>
 </body></html>
