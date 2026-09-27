@@ -87,7 +87,7 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
   text-transform:uppercase}
 
 /* ══ HUD: level, name, rank ══ */
-.mast{padding:0}
+.mast{padding:0 13px}
 .brandrow{display:none}
 .lvlrow{display:flex;align-items:flex-end;gap:11px;padding:0}
 .lvlbadge{width:auto;height:auto;flex:0 0 auto;display:block;background:none;clip-path:none}
@@ -136,7 +136,7 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
 .block::after,.hero::after{content:"";position:absolute;bottom:-1px;right:-1px;width:10px;height:10px;
   border:1px solid var(--cyb);border-left:0;border-top:0;pointer-events:none;z-index:2}
 
-.blockhead{display:flex;align-items:center;gap:8px;margin:0;padding:8px 12px;
+.blockhead{display:flex;align-items:center;gap:8px;margin:0;padding:8px 13px;
   background:rgba(66,232,245,.13);border-bottom:1px solid rgba(66,232,245,.45)}
 .blockhead h2{font-family:var(--ui);font-size:12.5px;letter-spacing:.28em;font-weight:600;
   color:var(--cyb);text-transform:uppercase;margin:0}
@@ -212,10 +212,14 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
 .btn.ghost:hover{color:var(--cyb);box-shadow:inset 0 0 0 1px var(--cy)}
 .btn.big{min-height:58px}
 .mini{border:0;background:rgba(66,232,245,.07);color:var(--txm);padding:8px 12px;
+  min-width:76px;text-align:center;
+  /* a glyph-only control does not need a word's worth of width; it still
+     lines up, because the button beside it sets the column */
   font-family:var(--ui);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
   font-weight:600;cursor:pointer;white-space:nowrap;
   box-shadow:inset 0 0 0 1px rgba(66,232,245,.24);transition:color .18s,background .18s}
 .mini:hover:not(:disabled){color:var(--cyb);background:rgba(66,232,245,.16)}
+.mini.narrow{min-width:44px}
 .mini:disabled{opacity:.32;cursor:default}
 .mini.on{color:#02222b;background:linear-gradient(180deg,var(--cyb),#2fc4d6)}
 .mini.danger{color:#FF8FA8;box-shadow:inset 0 0 0 1px rgba(255,64,88,.4)}
@@ -469,7 +473,7 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
 @keyframes exf2{0%,24.9%{opacity:0}25%,49.9%{opacity:1}50%,74.9%{opacity:0}
   75%,99.9%{opacity:1}100%{opacity:0}}
 @keyframes exf3{0%,49.9%{opacity:0}50%,74.9%{opacity:1}75%,100%{opacity:0}}
-.exanim.big{max-width:264px;margin:0 auto 12px}
+.exanim.big{max-width:none;aspect-ratio:4/3;margin:0 0 12px}
 .card .exanim{margin-bottom:6px}
 /* A card with no demonstration falls back to the muscle map, so give that the
    same footprint — otherwise every other row in the grid changes height. */
@@ -487,7 +491,7 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
   background:radial-gradient(80% 45% at 50% 4%,rgba(66,232,245,.14),transparent 62%),var(--bg);
   padding:calc(8px + env(safe-area-inset-top)) env(safe-area-inset-right)
    calc(18px + env(safe-area-inset-bottom)) env(safe-area-inset-left)}
-.runtop{display:flex;align-items:center;gap:10px;padding:4px 12px 0}
+.runtop{display:flex;align-items:center;gap:10px;padding:4px 16px 0}
 .runpos{flex:1;text-align:center;font-size:11px;letter-spacing:.24em;color:var(--cym);
   text-transform:uppercase;font-weight:600}
 .runx{width:44px;height:44px;flex:0 0 44px;background:rgba(66,232,245,.06);border:0;color:var(--txm);
@@ -3410,7 +3414,7 @@ function viewQuest(){
         Widen your kit, or your working-around list, and it comes back.</p>`;
       return `${st.length<3?`<p class="note">${st.length} station${st.length===1?'':'s'} today — the others
         need kit you do not have, or exercises you have ruled out.</p>`:''}
-      <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP · +20 gold</button>`;
+      <button class="btn big" data-dungeon>${dg()&&dg().st==='run'?'Resume the dungeon':'Enter the dungeon'} · +60 XP</button>`;
     })()}
   </section>`;
 }
@@ -3436,7 +3440,7 @@ function viewRoutine(){
     ${r.ids.length?routineEx(r).map((e,i)=>`<div class="item">
       <div class="ico">${i+1}</div>
       <div class="itxt"><h4>${esc(e.n)}</h4><p>${CATS[e.c]} · ${esc(scaledDose(e))}</p></div>
-      <button class="mini" data-rmove="${e.id}:-1" ${i?'':'disabled'}>↑</button>
+      <button class="mini narrow" data-rmove="${e.id}:-1" ${i?'':'disabled'}>↑</button>
       <button class="mini" data-rdrop="${e.id}">Remove</button>
     </div>`).join('')
     :'<p class="note">Nothing in it yet. Add exercises below.</p>'}
@@ -3536,7 +3540,7 @@ function viewRecords(){
     <div class="achgrid">${ACH.map(a=>{const on=S.ach.includes(a.id);
       return `<div class="ach ${on?'on':''}">
         <b>${esc(a.n)}</b><span>${esc(a.d)}</span>
-        <i>${on?'Earned':(a.xp?a.xp+' XP · ':'')+a.g+' gold'}${a.title&&!on?' · title':''}</i>
+        <i>${on?'Earned':(a.xp?a.xp+' XP':'Locked')}</i>
       </div>`}).join('')}</div>
     <p class="note">Locked ones stay visible. A goal you can see is worth more than a surprise.</p>
   </section>
