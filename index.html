@@ -259,7 +259,8 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
   box-shadow:inset 0 0 0 1px rgba(66,232,245,.24);transition:box-shadow .2s,transform .16s var(--ease)}
 .card:active{transform:translateY(1px)}
 .card:hover{box-shadow:inset 0 0 0 1px var(--cy),0 0 18px -6px rgba(66,232,245,.7)}
-.card.locked{opacity:.34}
+.card.locked{opacity:.62}
+.card.locked .exanim img,.card.locked .bodysolo{filter:grayscale(.45)}
 .card h4{margin:7px 0 0;font-size:13.5px;font-weight:600;line-height:1.2;color:var(--tx)}
 .card p{margin:3px 0 0;font-size:11.5px;color:var(--txm)}
 .cardmus{margin:3px 0 0;font-size:10.5px;color:var(--cy);opacity:.85;line-height:1.3}
@@ -475,11 +476,22 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
 @keyframes exf3{0%,49.9%{opacity:0}50%,74.9%{opacity:1}75%,100%{opacity:0}}
 .exanim.big{max-width:none;aspect-ratio:4/3;margin:0 0 12px}
 .card .exanim{margin-bottom:6px}
-/* A card with no demonstration falls back to the muscle map, so give that the
-   same footprint — otherwise every other row in the grid changes height. */
-.card .bodycard{aspect-ratio:1/1;align-content:center;padding:4px 10px;margin-bottom:6px;
+/* A card with no demonstration falls back to a single muscle figure. It takes
+   the identical frame, height and inner padding as .exanim so the grid keeps
+   one rhythm whichever kind of picture a movement has. */
+.bodysolo{position:relative;width:100%;aspect-ratio:1/1;margin:0 0 6px;
+  display:grid;place-items:center;padding:6%;
   background:rgba(66,232,245,.05);box-shadow:inset 0 0 0 1px rgba(66,232,245,.14)}
-.card .bodycard .bodyfig svg{max-height:none}
+.bodysolo .bodyfig{padding:0;margin:0;background:none;box-shadow:none;height:100%}
+.bodysolo .bodyfig svg{height:100%;width:auto;max-height:none;margin:0 auto}
+.bodysolo figcaption{display:none}
+/* The anatomy is a filled body and the demonstration is a line drawing, so at
+   card size the anatomy reads much darker. Lift it only here, where the two sit
+   side by side in one grid. */
+.bodysolo .bshell{fill:rgba(66,232,245,.20)}
+.bodysolo .mo{fill:rgba(66,232,245,.30)}
+.bodysolo .ms{fill:var(--cyb);opacity:.62}
+.bodysolo .mp{fill:var(--cyb)}
 @media (prefers-reduced-motion:reduce){
   /* the start position, held — the same information, none of the movement */
   .exanim img{animation:none;opacity:0}
@@ -1764,11 +1776,30 @@ function bodyView(v,mus){
 }
 /* A card is small, so it gets both views with no captions — enough to say at
    a glance what a movement works. */
-function bodyCard(mus){
-  return '<div class="bodycard">'+bodyView('front',mus)+bodyView('back',mus)+'</div>';
+/* Which views a muscle term appears on. Some are on both — side delts and
+   forearms are drawn front and back. */
+const MUSVIEW=(()=>{
+  const m={};
+  [['f','front'],['b','back']].forEach(([k,v])=>{
+    BODYART[k].forEach(([id])=>{const t=MUSOF[id];if(t)(m[t]=m[t]||[]).push(v)});
+  });
+  return m;
+})();
+/* The single view that shows the most of what this movement actually works.
+   Ties go to the front, which is the side people read a body from. */
+function bestView(mus){
+  let f=0,b=0;
+  for(const t of mus.p){
+    const v=MUSVIEW[t];if(!v)continue;
+    if(v.indexOf('front')>=0)f++;
+    if(v.indexOf('back')>=0)b++;
+  }
+  return b>f?'back':'front';
 }
-
-
+/* The compact version a library card uses when there is no demonstration. */
+function bodySolo(mus){
+  return '<div class="bodysolo">'+bodyView(bestView(mus),mus)+'</div>';
+}
 /* ---------------- how a movement is done ----------------
    Three line-art frames per movement — start, mid, end — cross-faded in a
    1-2-3-2 loop so it reads as a rep rather than a slideshow. This is the thing
@@ -1794,7 +1825,7 @@ function exAnim(e,cls){
     '</div>';
 }
 /* The demonstration where there is one, the muscle map where there is not. */
-const exVisual=(e,cls)=>exAnim(e,cls)||bodyCard(e.mus);
+const exVisual=(e,cls)=>exAnim(e,cls)||bodySolo(e.mus);
 
 function bodyMap(mus){
   return `<div class="bodymap">${bodyView('front',mus)}${bodyView('back',mus)}</div>`;
