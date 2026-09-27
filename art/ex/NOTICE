@@ -1,0 +1,21 @@
+Exercise demonstration frames used in RANK UP (index.html).
+
+  Artwork:  Workout Guide by Bryl Lim — https://bryllim.com
+  Based on: Everkinetic — https://github.com/everkinetic/data
+  Licence:  CC BY-SA 4.0 — https://creativecommons.org/licenses/by-sa/4.0/
+
+Three frames per movement, 512x512 transparent SVG, taken unmodified from
+github.com/bryllim/workout-guide. The app tints them with a CSS filter at
+display time; the files themselves are byte-identical to upstream.
+
+120 movement sets are included here, covering 126 of the app's 155 movements.
+The remaining 29 have no art and fall back to the muscle map, because a
+demonstration of the wrong movement is worse than no demonstration.
+
+CC BY-SA 4.0 requires attribution and ShareAlike on the artwork and on any
+adaptation of it. The credit is shown in the app under Status, and the full
+licence text is in LICENSE beside this file. Per-frame upstream sources are in
+ATTRIBUTION-upstream.md.
+
+The muscle map figures are a separate work under a separate licence; see
+art/body/NOTICE.

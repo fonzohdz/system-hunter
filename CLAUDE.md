@@ -95,14 +95,30 @@ button. No movement list, no shop, no sprite.
 
 - **The storage shim (`DB`).** It uses `window.storage` inside Claude and falls
   back to `localStorage` everywhere else. Never call `window.storage` directly.
-- **There are no exercise figures.** They were tried for a long time —
-  literal pose plotting, bone normalisation, FK, IK, contact locking, angular
-  interpolation, static pictograms, and a hand-authored pass over all 155 — and
-  none of it ever read reliably at 52px. Eleven keypoints cannot demonstrate
-  technique, and a figure that is nearly right is worse than none, because it
-  invites the viewer to trust it. The muscle map is the visual now: it says what
-  a movement works without claiming to show how to do it. Do not reintroduce
-  animated figures without a very good reason and a way to look at them.
+- **Exercise figures are drawn art, never generated.** Plotting them was tried
+  for a long time — literal pose plotting, bone normalisation, FK, IK, contact
+  locking, angular interpolation, and a hand-authored pass over all 155 — and
+  none of it read at 52px. Eleven keypoints cannot demonstrate technique, and a
+  figure that is nearly right is worse than none, because it invites the viewer
+  to trust it. What works is artwork drawn by someone who knew where the bar
+  goes: `EXART` maps a movement id to a folder in `art/ex/` holding three
+  frames, and `exAnim` cross-fades them 1-2-3-2 so it reads as a rep rather
+  than a slideshow. Do not reintroduce a generated or interpolated figure.
+
+- **126 of 155 movements have art; the other 29 must not.** `exVisual` falls
+  back to the muscle map when `EXART` has no entry, and that is the whole
+  point — a demonstration of the wrong movement is worse than no demonstration.
+  Only add to `EXART` when the drawing is of that movement, not of something
+  adjacent. A Kettlebell Halo is not a Kettlebell Swing.
+
+- **Third-party art carries obligations.** The demonstrations are CC BY-SA 4.0
+  (Workout Guide by Bryl Lim, after Everkinetic) and the muscle figures are
+  Apache 2.0 (Body Muscles by Ivan Vulović). Licences and NOTICE files live in
+  `art/ex/` and `art/body/`, and the credit is shown in the app under
+  Status. CC BY-SA is not satisfied by a file in the repo — that visible credit
+  has to stay. The files are byte-identical to upstream; the cyan is a CSS
+  filter applied at display time, which is not an adaptation.
+
 - **The muscle maps.** `BODYART` holds 89 anatomical vector paths — 40 front,
   49 back — from Body Muscles by Ivan Vulović, Apache 2.0, with the licence and
   the required NOTICE in `art/body/`. The paths are verbatim; only the colours

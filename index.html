@@ -326,7 +326,7 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
   font-family:var(--ui);color:var(--tx);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
   animation:veilin .22s ease-out}
 @keyframes veilin{from{opacity:0}to{opacity:1}}
-.sheet{width:100%;max-width:520px;max-height:92vh;overflow-y:auto;position:relative;
+.sheet{width:100%;max-width:520px;max-height:92vh;max-height:92dvh;overflow-y:auto;position:relative;
   background:rgba(7,25,35,.97);box-shadow:0 -1px 0 var(--cy),0 -24px 60px -20px #000;
   animation:rise .3s var(--ease);
   padding:18px calc(15px + env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom))
@@ -449,6 +449,38 @@ b,strong,input,.tally,.liftv,.xpnum,.sumgrid,.props,.heat{font-variant-numeric:t
 .ms{fill:var(--cy);opacity:.5}
 .mp{fill:var(--cy)}
 .bodycard .mp{filter:drop-shadow(0 0 3px rgba(66,232,245,.9))}
+
+/* ══ the demonstration ══
+   Three frames stacked, one visible at a time. steps(1,end) because a linear
+   cross-fade of line art turns into mush at the halfway point — a rep is a
+   sequence of positions, not a dissolve. */
+.exanim{position:relative;width:100%;aspect-ratio:1/1;margin:0 0 2px;
+  background:rgba(66,232,245,.05);box-shadow:inset 0 0 0 1px rgba(66,232,245,.14)}
+.exanim img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  padding:6%;opacity:0;animation:3s steps(1,end) infinite;
+  /* the art ships white; this lands it on the system cyan */
+  filter:brightness(0) saturate(100%) invert(82%) sepia(38%) saturate(1180%)
+    hue-rotate(131deg) brightness(102%) contrast(94%)}
+.exanim img:nth-child(1){animation-name:exf1}
+.exanim img:nth-child(2){animation-name:exf2}
+.exanim img:nth-child(3){animation-name:exf3}
+/* 1 → 2 → 3 → 2, so the figure comes back the way it went */
+@keyframes exf1{0%,24.9%{opacity:1}25%,100%{opacity:0}}
+@keyframes exf2{0%,24.9%{opacity:0}25%,49.9%{opacity:1}50%,74.9%{opacity:0}
+  75%,99.9%{opacity:1}100%{opacity:0}}
+@keyframes exf3{0%,49.9%{opacity:0}50%,74.9%{opacity:1}75%,100%{opacity:0}}
+.exanim.big{max-width:264px;margin:0 auto 12px}
+.card .exanim{margin-bottom:6px}
+/* A card with no demonstration falls back to the muscle map, so give that the
+   same footprint — otherwise every other row in the grid changes height. */
+.card .bodycard{aspect-ratio:1/1;align-content:center;padding:4px 10px;margin-bottom:6px;
+  background:rgba(66,232,245,.05);box-shadow:inset 0 0 0 1px rgba(66,232,245,.14)}
+.card .bodycard .bodyfig svg{max-height:none}
+@media (prefers-reduced-motion:reduce){
+  /* the start position, held — the same information, none of the movement */
+  .exanim img{animation:none;opacity:0}
+  .exanim img:nth-child(1){opacity:1}
+}
 
 /* ══ guided session ══ */
 .runwrap{position:fixed;inset:0;z-index:70;overflow-y:auto;display:flex;flex-direction:column;
@@ -1731,6 +1763,34 @@ function bodyView(v,mus){
 function bodyCard(mus){
   return '<div class="bodycard">'+bodyView('front',mus)+bodyView('back',mus)+'</div>';
 }
+
+
+/* ---------------- how a movement is done ----------------
+   Three line-art frames per movement — start, mid, end — cross-faded in a
+   1-2-3-2 loop so it reads as a rep rather than a slideshow. This is the thing
+   eleven procedural keypoints could never do: a drawn figure knows where the
+   bar is, which way the elbows go and what the feet are doing.
+
+   Artwork: Workout Guide by Bryl Lim, after Everkinetic, CC BY-SA 4.0. Licence
+   and per-frame attribution in art/ex/. Files are unmodified; only the tint is
+   ours, and a CSS filter is not a derivative work.
+
+   126 of the 155 movements have art. The other 29 fall back to the muscle map,
+   which is deliberate: a demonstration of the wrong movement is worse than no
+   demonstration, because it invites you to trust it. Only add to EXART when the
+   drawing is actually of that movement — not of something adjacent. */
+const EXART={"wallpush":"wall-push-up","incpush":"incline-push-up","wallsit":"wall-sit","bridge":"glute-bridge","calf":"calf-raise","birddog":"bird-dog","deadbug":"dead-bug","kneepush":"knee-push-up","squat":"bodyweight-squat","lunge":"reverse-lunge","plank":"plank","stepup":"step-up","split":"split-squat","sideplank":"side-plank","jack":"jumping-jack","superman":"superman-hold","diamond":"diamond-push-up","pike":"pike-push-up","slbridge":"single-leg-glute-bridge","archer":"archer-push-up","pistol":"assisted-pistol-squat","db_hammer":"hammer-curl","db_goblet":"goblet-squat","db_row":"one-arm-dumbbell-row","db_lat":"lateral-raise","db_bench":"dumbbell-bench-press","db_rdl":"dumbbell-romanian-deadlift","db_carry":"farmer-carry","db_bulg":"bulgarian-split-squat","kb_swing":"kettlebell-swing","bb_ohp":"overhead-press","bb_front":"front-squat","hang":"dead-hang","kneeraise":"hanging-knee-raise","band_pull":"band-pull-apart","band_face":"face-pull","lat_pull":"lat-pulldown","cable_row":"seated-row","legpress":"leg-press","mch_chest":"machine-chest-press","mch_shoulder":"machine-shoulder-press","mch_pecdeck":"pec-deck","mch_row":"chest-supported-row","mch_legcurl":"seated-leg-curl","mch_legext":"leg-extension","mch_abduct":"hip-abduction-machine","mch_adduct":"hip-adduction-machine","mch_calf":"seated-calf-raise","mch_hack":"hack-squat","mch_assist":"assisted-pull-up","cbl_curl":"cable-curl","cbl_lat":"cable-lateral-raise","cbl_straight":"straight-arm-pulldown","cbl_pullthrough":"cable-pull-through","cbl_woodchop":"cable-woodchop","cbl_pallof":"pallof-press","db_calf":"standing-calf-raise","db_walklunge":"walking-lunge","db_curtsy":"curtsy-lunge","db_sumo":"dumbbell-sumo-squat","db_singlerdl":"single-leg-romanian-deadlift","bb_sumo":"sumo-deadlift","bb_goodmorning":"good-morning","tb_dl":"trap-bar-deadlift","sissy":"sissy-squat","db_reardelt":"rear-delt-fly","db_conc":"concentration-curl","ez_preacher":"preacher-curl","ez_skull":"skull-crusher","ez_curl":"ez-bar-curl","db_shrug":"dumbbell-shrug","db_wrist":"wrist-curl","db_arnold":"arnold-press","db_upright":"upright-row","bb_incline":"incline-bench-press","bb_closegrip":"close-grip-bench-press","bb_pendlay":"pendlay-row","bb_ohp_push":"push-press","lm_press":"landmine-press","lm_squat":"landmine-squat","dip_assist":"assisted-dip","dip_weight":"weighted-dip","climber":"mountain-climber","pushup":"push-up","hollow":"hollow-body-hold","row_table":"inverted-row","bear":"bear-plank","burpee_s":"half-burpee","burpee_f":"burpee","db_curl":"bicep-curl","db_press":"standing-dumbbell-press","db_fly":"dumbbell-fly","db_lunge":"forward-lunge","db_tri":"overhead-tricep-extension","bb_squat":"squat","bb_dl":"deadlift","bb_bench":"bench-press","bb_row":"barbell-row","bb_thrust":"hip-thrust","chinup":"pull-up","ttb":"hanging-leg-raise","band_row":"banded-row","treadmill":"treadmill-incline-walk","rowerg":"rowing","mch_hipthrust":"smith-machine-hip-thrust","mch_shrug":"shrug","cbl_pushdown":"tricep-pushdown","cbl_ohtri":"overhead-tricep-extension","cbl_face":"banded-face-pull","cbl_flyhigh":"cable-fly","cbl_flylow":"incline-cable-fly","cbl_crossover":"cable-fly","cbl_kick":"cable-kickback","bb_split":"smith-machine-split-squat","tb_shrug":"shrug","nordic":"nordic-hamstring-curl","db_incline_curl":"incline-dumbbell-curl","db_kickback":"tricep-kickback","bb_rdl":"romanian-deadlift","bb_pause_squat":"squat","bb_hipthrust_bb":"hip-thrust","lm_row":"meadows-row","kb_goblet":"heel-elevated-goblet-squat","dip":"dip","trx_row":"inverted-row","trx_fallout":"ab-wheel"};
+function exAnim(e,cls){
+  const k=EXART[e.id];
+  if(!k)return '';
+  return '<div class="exanim '+(cls||'')+'" aria-hidden="true">'+
+    '<img src="art/ex/'+k+'/1.svg" alt="" loading="lazy" decoding="async">'+
+    '<img src="art/ex/'+k+'/2.svg" alt="" loading="lazy" decoding="async">'+
+    '<img src="art/ex/'+k+'/3.svg" alt="" loading="lazy" decoding="async">'+
+    '</div>';
+}
+/* The demonstration where there is one, the muscle map where there is not. */
+const exVisual=(e,cls)=>exAnim(e,cls)||bodyCard(e.mus);
 
 function bodyMap(mus){
   return `<div class="bodymap">${bodyView('front',mus)}${bodyView('back',mus)}</div>`;
@@ -3232,6 +3292,7 @@ function viewRun(){
     <p class="runsub">${CATS[e.c]} · builds ${e.st} · ${esc(scaledDose(e))}</p>
     ${(S.perf[e.id]||[]).length?`<p class="lastlog"><span>Last time</span>
       ${S.perf[e.id].slice(-3).map(v=>fmtPerf(v,e)).join(' · ')}</p>`:''}
+    ${exAnim(e,'big')}
     ${bodyMap(e.mus)}
     <ul class="cues">${e.cues.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
     <button class="btn big" data-runstart>Start · ${esc(scaledDose(e))}</button>
@@ -3446,7 +3507,7 @@ function viewLib(){
       ${list.map((e,i)=>`<button class="card ${unlocked(e.r)&&hasEq(e)?'':'locked'}" data-ex="${e.id}">
         <span class="rk rk-${e.r}">${e.r}</span>
         ${e.eq.length?`<span class="gearlab">${e.eq.map(x=>EQNAME[x].split(' ')[0]).join('+')}</span>`:''}
-        ${bodyCard(e.mus)}
+        ${exVisual(e)}
         <h4>${esc(e.n)}</h4><p>${esc(scaledDose(e))}</p>
         <p class="cardmus">${e.mus.p.map(musName).join(" · ")}</p></button>`).join('')}
     </div>
@@ -3606,6 +3667,13 @@ function viewVault(){
     <div class="item"><div class="ico">⟲</div><div class="itxt"><h4>Start over</h4>
       <p>Wipes your level, streak and records on this device.</p></div>
       <button class="mini danger" data-reset>Reset</button></div>
+  </section>
+  <section class="block">
+    <div class="blockhead"><h2>Credits</h2></div>
+    <p class="note">Exercise demonstrations by <b>Bryl Lim</b>, after
+      <b>Everkinetic</b> — CC BY-SA 4.0.</p>
+    <p class="note">Muscle figures by <b>Ivan Vulović</b> — Apache 2.0.</p>
+    <p class="note">Interface sounds by <b>Kenney</b> — CC0.</p>
   </section>`;
 }
 
@@ -3750,6 +3818,7 @@ function renderSheet(){
     <div class="sheet-rank rk-${e.r}" role="img" aria-label="Rank ${e.r}">${e.r}</div>
     <h2>${esc(e.n)}</h2>
     <div class="sub">${CATS[e.c]} · builds ${e.st} · ${esc(kit)}</div>
+    ${exAnim(e,'big')}
     ${bodyMap(e.mus)}
     <p class="muslist"><b>Works</b> ${e.mus.p.map(musName).join(', ')}${
       e.mus.s.length?`<br><b>Also</b> ${e.mus.s.map(musName).join(', ')}`:''}</p>
@@ -3779,7 +3848,13 @@ const FOCUSABLE='button:not([disabled]),[href],input:not([disabled]),select,text
 function trapFocus(v){
   lastFocus=document.activeElement;
   const first=v.querySelector(FOCUSABLE);
-  if(first)first.focus();
+  /* preventScroll, and then put the panel back at its own top. Focusing the
+     first control scrolls it into view, and once the sheet grew past the
+     viewport that meant opening a movement landed you halfway down it, with
+     the name and the demonstration already scrolled off. */
+  if(first)first.focus({preventScroll:true});
+  const pane=v.querySelector('.sheet')||v.firstElementChild;
+  if(pane)pane.scrollTop=0;
   v.addEventListener('keydown',ev=>{
     if(ev.key!=='Tab')return;
     const f=[...v.querySelectorAll(FOCUSABLE)];
