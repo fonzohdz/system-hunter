@@ -1,0 +1,21 @@
+Sounds in this folder are from Kenney (kenney.nl), released under
+Creative Commons Zero (CC0 1.0 Universal) — public domain, no attribution
+required. Credited here anyway because it is the decent thing to do.
+
+Source packs, from "Kenney Game Assets All-in-1":
+  nav     <- Interface Sounds / select_002
+  row     <- Interface Sounds / tick_002
+  deny    <- Interface Sounds / error_001
+  open    <- Interface Sounds / maximize_007
+  confirm <- Interface Sounds / confirmation_001
+  clear   <- Interface Sounds / confirmation_003
+  timer   <- Music Jingles (Hit) / jingles-hit_05
+  rank    <- Music Jingles (Hit) / jingles-hit_10
+
+Each was decoded from Ogg Vorbis, folded to mono, trimmed of its silent tail
+and peak-normalised, then written as 16-bit PCM WAV. Ogg Vorbis is not reliably
+decodable on every Safari and this has to work on an iPhone; the whole set is
+about 230KB as WAV, which is cheaper than being wrong about codec support.
+
+Kenney's own terms ask that the full bundle is not redistributed, only
+individual assets. These eight files are individual assets.

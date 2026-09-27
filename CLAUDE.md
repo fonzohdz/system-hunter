@@ -19,6 +19,11 @@ button. No movement list, no shop, no sprite.
   `data:` URI cannot work, because `start_url` is resolved relative to the
   manifest's own URL and a `data:` URL gives nothing to resolve against. They
   are static files Vercel serves as-is; they are still not a build step.
+- **`sfx/` is the fourth exception.** Eight CC0 WAV files and an `index.json`
+  manifest, added when the owner bought Kenney's asset bundle. They are static
+  files too. See `sfx/LICENSE.txt` for what each one is and why they are WAV
+  rather than Ogg. Anything added there must be CC0 or equivalent — not ripped
+  from a video — and must be credited in that file.
 - Deployed by pushing to `main`. Vercel builds nothing — it serves the file as-is.
 - Runs in two environments: standalone in a browser, and inside a Claude
   artifact. Both must keep working.

@@ -1399,7 +1399,7 @@ const fresh=()=>({
  /* Mission 3. perf: last few logged results per movement. prog: how far a
     movement's target has stepped up and how many hits toward the next step.
     outgrown: movements already announced, so we only say it once. */
- perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:false,
+ perf:{}, prog:{}, outgrown:[], swaps:null, avoid:{}, sess:null, kitAsked:null, sound:true,
  /* unit is display only — loads are stored exactly as typed, in that unit. */
  unit:'lb', split:'random', cycle:0, vol:'auto', routines:[], qroll:0, auraStyle:null,
  /* Bumped when there is something worth announcing once. A fresh hunter starts
@@ -2446,13 +2446,20 @@ const SFX=(()=>{
     bus.connect(ctx.destination);bus.connect(verb);verb.connect(wet);wet.connect(ctx.destination);
     loadPack();
   }
-  /* A pack is optional and its absence must cost nothing. */
+  /* The pack downloads at load and decodes at the first gesture. It cannot
+     decode earlier — decodeAudioData needs a context and a context needs a
+     gesture — but the bytes can be on the wire long before that, so the tap
+     that starts the audio is not the one tap with nothing to play. A missing
+     pack costs one 404 and the synth carries on. */
+  const raw={};
+  let packed=fetch('sfx/index.json',{cache:'force-cache'})
+    .then(r=>r.ok?r.json():null).then(m=>m?Promise.all(Object.keys(m).map(k=>
+      fetch(m[k]).then(r=>r.arrayBuffer()).then(a=>{raw[k]=a}).catch(()=>{}))):null)
+    .catch(()=>{});
   function loadPack(){
-    fetch('sfx/index.json',{cache:'force-cache'}).then(r=>r.ok?r.json():null).then(m=>{
-      if(!m)return;
-      Object.keys(m).forEach(k=>fetch(m[k]).then(r=>r.arrayBuffer())
-        .then(a=>ctx.decodeAudioData(a,d=>{buf[k]=d},()=>{})).catch(()=>{}));
-    }).catch(()=>{});
+    packed.then(()=>Object.keys(raw).forEach(k=>{
+      try{ctx.decodeAudioData(raw[k],d=>{buf[k]=d},()=>{})}catch(e){}
+    }));
   }
   const live=()=>ctx&&S.sound;
   const t=()=>ctx.currentTime;
@@ -2510,9 +2517,15 @@ const SFX=(()=>{
     /* the rest timer running out — this one has to carry across a gym */
     timer(){play('timer',()=>{[0,190,380].forEach((ms,i)=>setTimeout(()=>{
       tick(.04,.3,1600,3400,2);osc(i===2?1174:880,'triangle',.006,.34,.13)},ms))})},
+    /* the swell while the light gathers */
+    charge(){play('charge',()=>{
+      osc(180,'sawtooth',.5,.7,.07,1500);
+      osc(90,'sine',.5,.7,.09,240);
+      tick(1.2,.09,200,5000,.7);
+    })},
+    /* and the detonation itself */
     rank(){play('rank',()=>{
       osc(55,'sine',.01,1.5,.28,38);
-      osc(180,'sawtooth',.4,.5,.08,1600);
       tick(1.1,.16,260,7000,.8);
       [[261.6,0],[329.6,110],[392,210],[523.3,310],[659.3,410],[784,520]].forEach(([f,ms])=>
         setTimeout(()=>{osc(f,'triangle',.012,1.5,.075);osc(f*2,'sine',.012,1.1,.03,null,7)},ms));
@@ -3834,7 +3847,7 @@ function showLevelUp(){
   const core=el.querySelector('.acore'),flash=el.querySelector('.aflash'),
         txt=el.querySelector('.atext'),tap=el.querySelector('.atap'),
         r1=el.querySelector('.r1'),r2=el.querySelector('.r2');
-  if(ranked)SFX.rank();else SFX.confirm();
+  SFX.charge();
   /* charge: light swells while particles are pulled inward */
   setTimeout(()=>{
     core.style.transition='transform 1.05s cubic-bezier(.35,.8,.3,1)';
@@ -3846,6 +3859,7 @@ function showLevelUp(){
     core.style.transform='translate(-50%,-50%) scale(.3)'},1150);
   /* detonation */
   setTimeout(()=>{
+    if(ranked)SFX.rank();else SFX.clear();
     buzz(ranked?[0,45,40,110,40,160]:[0,40,40,90]);
     core.style.transition='transform .5s cubic-bezier(.15,1.1,.4,1)';
     core.style.transform='translate(-50%,-50%) scale(3.4)';
