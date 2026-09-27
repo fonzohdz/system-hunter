@@ -1,8 +1,14 @@
-# System Hunter — project instructions
+# RANK UP — project instructions
 
-An RPG-styled workout app. Solo Leveling / gamer aesthetic. Users get a hunter
-profile, daily quests, XP, levels, ranks, gold, and a library of 155 movements
-with muscle-map diagrams.
+An RPG-styled workout app. The name on screen is **RANK UP**; the repository and
+the Vercel project are still called system-hunter. Users get a hunter profile, a
+daily quest built for them, levels, ranks, parameters, and a library of 155
+movements with muscle-map diagrams.
+
+The product thesis, settled with the owner across a long Q&A: **motivation is
+identity, the core job is to coach properly, and the game is progression.** The
+home screen shows the gap to the next rank, what today is training, and one
+button. No movement list, no shop, no sprite.
 
 ## Shape of the project
 
@@ -61,24 +67,21 @@ with muscle-map diagrams.
   own way still gets lift history and progression. It awarded XP but recorded
   nothing until this was fixed.
 
-- **The gold economy is deliberately tight.** 5 a cleared exercise, 25 a cleared
-  quest, 20 a dungeon, 2 a record point — half what it was. A six-exercise day
-  pays 55, so the cheapest weapon is about eight days and the dearest title
-  about a month. The Vault felt pointless because gold arrived faster than
-  there was anything to spend it on; fix that end, not the item list.
+- **The economy is cut. Do not put it back.** Gold, the shop, weapons, titles,
+  aura styles, potions and the quest reroll were all removed from the interface
+  deliberately, after the owner concluded that collection was never the reason
+  this app gets opened. Progression is the game: rank, level, parameters and the
+  work behind them. `S.gold` and `S.owned` still exist in the saved object and
+  are still written to, because removing fields breaks old saves — but nothing
+  reads them on screen, and nothing should. `WEAPONS`, `CLASSES`, `TITLES`,
+  `AURASTYLE`, `REROLL`, `POTION` and their handlers are unreachable code kept
+  only until someone deletes them carefully. Do not wire them back to a screen.
 
-- **Gold buys training, not just decoration.** `REROLL` (40) re-rolls today's
-  quest by bumping `S.qroll`, which is part of the quest seed and resets with
-  the day. `canReroll()` blocks it once anything is cleared, so it cannot be
-  used to walk away from work already started, and the handler clears
-  `S.sess`/`S.swaps` because both point at the old list.
-
-- **Aura styles are unbundled from class.** `auraKey()` returns `S.auraStyle`
-  when owned and the class default otherwise; the canvas must draw
-  `AURASTYLE[auraKey()]`, never `cls().aura`. Your class's own aura is free,
-  the other five are 300 each. Palettes are NOT a paid axis — `refundOldCosmetics()`
-  shows they were sold once and made free with refunds, and charging again
-  would take something back.
+- **Rank is the spine.** It gates which movements exist, and it is what the home
+  screen counts toward. `horizon()` answers the only question that screen asks:
+  how many sessions to the next rank, expressed in sessions because sessions are
+  something you can picture doing. `rankReqs()` shows the real requirements under
+  it, never decoration.
 
 - **Splits are indexed by `S.cycle`, not the weekday.** `S.cycle` increments
   when a whole quest is cleared. Indexing by calendar day is how people never
@@ -100,16 +103,12 @@ with muscle-map diagrams.
   detail views, and `bodyCard` is the compact version the library cards use.
   Every muscle term must stay reachable by at least one exercise, or the filter
   has a dead option.
-- **The weapon is not on the home screen.** `S.weapon` only ever picks which
-  SVG `bladeSVG()` draws — it never touches quests, XP, gold, stats or the
-  aura. On the home screen it was 270px above the fold that looked identical
-  whether you had trained for a year or never opened the app, so it was
-  removed. It still renders in the Vault picker, the onboarding preview and the
-  shareable hunter card, which is where a cosmetic belongs: the home screen is
-  for you, the card is what other people see. Weapons are still the only paid
-  appearance item, so do not remove the shop entry or the card render.
-  What responds to training in the hero block is `auraIdx()` — the sigil, the
-  halo glow and the tier scale. Keep those.
+- **The home screen is for you; the card is what other people see.** Nothing
+  cosmetic belongs on the home screen — it was 270px above the fold that looked
+  identical whether you had trained for a year or never opened the app. What the
+  home screen shows is the horizon, today's split, and one button. `showCard()`
+  and `showWeek()` are the shareable artefacts, and they carry rank, level,
+  parameters and the work behind them — never a purchase.
 
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
@@ -167,73 +166,89 @@ rather than assuming the implementation matches the code.
 Commit before risky experiments. Do not force-push, rewrite history, or delete
 branches. Small, described commits.
 
-## Look — HD-2D
+## Look — the System window
 
-Modelled on *Final Fantasy Brave Exvius: Resonance*, from reference screenshots
-the owner supplied. The idea is one material: **crisp pixel-grid artwork sitting
-inside soft, deep, lit atmosphere.** The pixel art is the subject; the interface
-around it is modern and soft. Getting this backwards — retro chunky menus, bevels,
-pixel typography — is the failure mode, because the reference's own UI is none of
-those things.
+Modelled on *Shangri-La Frontier*'s interface, from reference screenshots the
+owner supplied. The idea is a **heads-up display, not a document**: smoked glass
+panes with a thin luminous perimeter, dividers instead of boxes, tiny spaced
+abbreviations over real labels, and numbers treated as objects rather than as
+text inside sentences. Rounded cards, drop shadows, soft gradients and anything
+that reads as "app chrome" are the failure mode.
 
-- **Atmosphere is a real layer.** `#atmos` is a fixed canvas behind every screen
-  drawing bokeh at three distances, a lit horizon and a few gold sparks, with
-  `#vig` as a vignette above it. It never scrolls and never takes a pointer event.
-  Under `REDUCED` it paints one still frame and stops.
-- **Panels are volumes of tinted air, not framed windows.** `.block` and `.hero`
-  feather at top and bottom so they dissolve into the atmosphere instead of being
-  cut out of it, with one hairline catch-light along the top edge that is
-  brightest at the centre and gone at the corners. There are no borders, no
-  ticked corners and no scanlines anywhere. Do not reintroduce a frame.
-- **The only hard edges in the app are the pixel artwork.** Icons and the muscle
-  bodies are drawn on a lattice and rendered with `shape-rendering:crispEdges`.
-  Never put `crispEdges` on smooth vector art — it produces jaggies, not pixels,
-  and reads worse than leaving it smooth.
-- **The ground lives in the palette.** Each of the eight palettes carries its own
-  `void`, `deep`, `line`, `ash`, `ash2` and `bone` alongside its accents. A fixed
-  near-black under a coloured light never looked lit, and gray secondary text on
-  a coloured ground reads as a bug. Secondary text is tinted from the ground's hue.
-- **Nothing hardcodes a hue.** Every accent is `--crimson`, `--magenta`, `--core`,
-  `--gold` or an `rgba()` built from `--c1`/`--m1`, all swapped by `applyLook()`.
-  New code should use the `--key` / `--lume` aliases, which follow them. The old
-  names are kept because `PALVARS`, the eight `PALETTES` and every weapon SVG
-  address them, and the palette ids collide with the hue words — they are role
-  names now, not hue names.
-- **Depth is real.** Shadows carry an offset and a blur; buttons have an inner
-  top highlight and a true press that moves them. A zero-offset coloured halo is
-  decoration, not depth.
-- **Motion is damped, never snapped.** Bars ease with `cubic-bezier(.16,1,.3,1)`
-  over about a second. Everything must stay legible at a glance, at arm's length.
+- **Three accents and no more.** Cyan `#42E8F5` is the operating system —
+  borders, labels, ticks, the default particle. Magenta `#F234A9` marks anything
+  locked, new, or a record. Amber `#FFB83E` is reserved for the single number
+  that matters most on a screen. Spend amber once per screen and hierarchy
+  appears; spend it twice and it is gone. The ground is `#040C12`.
+- **Numbers are the subject.** `.big b` is 56–80px against a 14px label. The
+  home screen's number is *sessions remaining*, not XP: "340 / 1000 XP" is a
+  loading bar, "5 sessions" is a thing you can picture doing.
+- **Dividers, not boxes.** A `.block` is a hairline perimeter with corner ticks
+  and a tinted header strip. Inside it, rows are separated by 1px rules. Do not
+  nest a bordered card inside a bordered pane.
+- **Restrained glow.** One `box-shadow` of coloured light per element, never
+  stacked. The gleam that crosses `.btn` every 3.8s is the only idle animation
+  on a control.
+- **`#fxc` is the tactile layer.** A fixed, full-viewport, pointer-events-none
+  canvas driven by `FX`. Bursts fire at `clientX/clientY` — never at an
+  element's centre, because a tap that flowers somewhere other than under your
+  finger reads as a glitch. The loop stops itself when the particle and ring
+  arrays are empty; an rAF loop that never idles costs battery all day and also
+  hangs headless capture.
+- **The rank-up is a full-screen takeover.** `.awaken` covers everything at
+  z-index 90 with `#fxc` above it at 92. Four beats — charge, snap, detonation,
+  verdict — and it is dismissible from the first frame with a visible way out.
+  A bordered panel with the app showing around it reads as a notification, and a
+  rank is not a notification.
+- **Motion is damped, never snapped.** `--ease` is `cubic-bezier(.16,1,.3,1)`.
+  Everything must stay legible at a glance, at arm's length, mid-set.
+- **`REDUCED` is honoured everywhere.** Under it `FX` draws nothing, the scan bar
+  is hidden, and the takeover shows its verdict with no animation at all.
+
+## Sound
+
+`SFX` owns one `AudioContext` for the whole app, created on the first pointer
+gesture because iOS will not start one any other way, and resumed on
+`visibilitychange` because iOS suspends it in the background. Never open another
+one — `beep()` used to open a fresh context per call, which iOS eventually stops
+honouring.
+
+Every synthesised sound is a **transient plus a body**: band-passed noise for the
+attack, which is what makes a click read as a click rather than a beep, over one
+or two detuned oscillators, through a generated convolution tail.
+
+Sound is opt-in. `S.sound` gates it, toggled from Status or from the run header.
+
+Samples are optional: if `sfx/index.json` exists it maps names to files and
+those play instead, with the synth as the per-name fallback, so the two can
+never drift apart. That is one request that 404s quietly when there is no pack
+rather than a dozen. Any audio added must be CC0 or equivalent and credited in
+this file — not ripped from a video.
 
 ## Type
 
-Two faces, both from Google Fonts, loaded by the single `<link>` in the head.
+One face: **Rajdhani**, from Google Fonts, loaded by the single `<link>` in the
+head. Squared, technical, high legibility at small sizes — the closest thing on
+Google Fonts to an MMO system font. `--display`, `--body` and `--mono` are all
+aliased to it. Figures are tabular (`font-variant-numeric:tabular-nums`).
 
-`--display` is **Grenze** and carries identity only: the brand mark, the hunter's
-name, level and rank numerals, big figures, headings that are the screen's
-subject. `--body` is **Barlow** and carries everything meant to be read.
+Do not reintroduce a second face, and do not reach for a monospace as a costume
+for "technical".
 
-There is no third voice. `--mono` is aliased to `--body`: the monospace was
-standing in for tabular figures, so figures are simply tabular now
-(`font-variant-numeric:tabular-nums`). Do not reintroduce a monospace face as a
-costume for "technical".
-
-Do not swap `--body` to Inter, Roboto, Geist, Plus Jakarta Sans or Archivo, and
-do not set prose in `--display`.
-
-`--body` is set on `#root`, not on `body`. Anything appended to `document.body`
-(sheets, veils, toasts, the level-up overlay) needs its own
-`font-family:var(--body)` or it inherits the browser's serif.
+`--ui` is set on `#root`, not on `body`. Anything appended to `document.body`
+(sheets, veils, toasts, the takeover, the cards) needs its own
+`font-family:var(--ui)` or it inherits the browser's serif.
 
 ## Icons
 
-Drawn, never a glyph. `ICONS` maps a name to a 12x12 character grid — `#` is a
-lit pixel, `+` a dimmer one — and `pxIcon()` emits it as `<rect>` runs with
-`crispEdges` and `fill:currentColor`, so an icon follows the surrounding text and
-the palette swap. Add to `ICONS` rather than reaching for a unicode symbol.
+Tab labels are words, not pictograms — at 10px with letter-spacing they read
+faster than a 12x12 glyph and they match the rest of the system's voice.
 
-Still unicode, and fine to leave: the per-title ornament glyphs in `TITLES`
-(decorative marks, not an icon system) and the `▲`/`▼` lift direction marks.
+Where an icon is still wanted, it is drawn, never a glyph. `ICONS` maps a name to
+a 12x12 character grid — `#` is a lit pixel, `+` a dimmer one — and `pxIcon()`
+emits it as `<rect>` runs with `crispEdges` and `fill:currentColor`, so an icon
+follows the surrounding text. Never put `crispEdges` on smooth vector art: it
+produces jaggies, not pixels.
 
 ## Voice
 
