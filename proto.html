@@ -13,10 +13,23 @@
   --ease:cubic-bezier(.16,1,.3,1);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden}
-body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items:center}
-.device{width:min(430px,100vw);height:min(880px,100vh);position:relative;overflow:hidden;
-  background:var(--bg);color:var(--tx)}
+html{height:100%}
+body{background:var(--bg);font-family:Rajdhani,sans-serif;
+  /* dvh, not vh: iOS measures vh against the LARGEST viewport, so with the
+     Safari toolbar showing, a 100vh box runs off the bottom of the screen and
+     takes the scroll container with it. dvh tracks the real one. */
+  min-height:100vh;min-height:100dvh;
+  overscroll-behavior:none;                 /* no rubber-band on the page itself */
+  display:flex;align-items:center;justify-content:center}
+.device{position:relative;overflow:hidden;background:var(--bg);color:var(--tx);
+  width:100%;height:100vh;height:100dvh;
+  display:flex;flex-direction:column}
+/* On a wide screen only, sit it in a phone-shaped frame so it can be judged;
+   on an actual phone it simply IS the screen. */
+@media (min-width:560px){
+  body{background:#08090b}
+  .device{width:430px;height:min(920px,96dvh);box-shadow:0 0 0 1px #1b2b33,0 30px 80px -30px #000}
+}
 
 /* ── layers ── */
 #bgfx,#fgfx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -36,9 +49,16 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
   animation:scan 7s linear infinite}
 @keyframes scan{from{top:-140px}to{top:100%}}
 
-.ui{position:relative;z-index:10;height:100%;display:flex;flex-direction:column;padding:16px 15px 0}
-.screen{flex:1;display:flex;flex-direction:column;min-height:0;overflow-y:auto;overflow-x:hidden;
-  scrollbar-width:none}
+/* The notch/Dynamic Island and the home indicator are real estate we don't own. */
+.ui{position:relative;z-index:10;flex:1;min-height:0;display:flex;flex-direction:column;
+  padding:calc(14px + env(safe-area-inset-top)) calc(15px + env(safe-area-inset-right)) 0
+          calc(15px + env(safe-area-inset-left))}
+/* The one scrolling region. flex:1 + min-height:0 is what lets a flex child
+   actually scroll instead of growing and pushing the nav off the screen. */
+.screen{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  scrollbar-width:none;padding-bottom:4px}
 .screen::-webkit-scrollbar{display:none}
 
 /* ── HUD ── */
@@ -68,7 +88,7 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
 .pane::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;
   background:linear-gradient(90deg,transparent,var(--cyb),transparent);
   transform:scaleX(0);transform-origin:left;box-shadow:0 0 10px var(--cy)}
-.anim .pane{animation:paneIn .34s var(--ease) both}
+.anim .pane{animation:paneIn .34s var(--ease) both, flick 11s steps(1) 1.2s infinite}
 .anim .pane::before{animation:lineDraw .5s var(--ease) both}
 @keyframes lineDraw{0%{transform:scaleX(0);opacity:1}36%{transform:scaleX(1);opacity:1}
   100%{transform:scaleX(1);opacity:0}}
@@ -79,8 +99,7 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
 .anim .pane::after{animation:sweep .7s .18s ease-out both}
 @keyframes sweep{0%{opacity:0;transform:translateY(-100%)}30%{opacity:1}
   100%{opacity:0;transform:translateY(100%)}}
-/* hologram instability — rare, single frame */
-.pane{animation:flick 11s steps(1) infinite}
+/* hologram instability rides along with the entrance, above */
 @keyframes flick{0%,97.4%,100%{opacity:1}97.6%{opacity:.72}97.8%{opacity:1}98%{opacity:.85}98.2%{opacity:1}}
 
 .ph-hd{display:flex;align-items:center;gap:8px;padding:7px 11px;
@@ -169,10 +188,36 @@ body{background:#08090b;font-family:Rajdhani,sans-serif;display:grid;place-items
 @keyframes glitch{0%{transform:translate(0)}25%{transform:translate(-3px,1px)}
   50%{transform:translate(3px,-1px)}75%{transform:translate(-1px,-2px)}100%{transform:translate(0)}}
 
-.snd{position:absolute;right:12px;top:12px;z-index:40;background:none;border:0;cursor:pointer;
+/* bottom-right: the top-right corner belongs to the rank, and on a notched
+   phone it is also where the Dynamic Island lives. */
+.snd{position:absolute;right:12px;z-index:40;background:none;border:0;cursor:pointer;
   font-family:inherit;font-size:10px;letter-spacing:.16em;color:var(--cym);font-weight:600;
   padding:6px 8px}
 .snd.on{color:var(--cy);text-shadow:0 0 10px var(--cy)}
+.snd{bottom:calc(52px + env(safe-area-inset-bottom));right:calc(8px + env(safe-area-inset-right))}
+
+/* ── size range: iPhone SE 375x667 up to 16 Pro Max 440x956 ──
+   Type and the big numerals scale with the viewport so the SE isn't cramped
+   and the Pro Max isn't a blown-up SE. Everything else is flow. */
+.big b{font-size:clamp(56px,17vw,78px)}
+.today b{font-size:clamp(30px,9vw,40px)}
+.hud .lv{font-size:clamp(27px,8vw,34px)}
+.hud .rk{font-size:clamp(25px,7.5vw,31px)}
+.hud .nm{font-size:clamp(15px,4.4vw,18px)}
+.pa b{font-size:clamp(21px,6vw,26px)}
+.btn{padding:clamp(14px,4vw,18px);font-size:clamp(14px,4vw,16px)}
+
+/* Short phones (SE, mini): claw back vertical space rather than scrolling the
+   primary action off the first view. */
+@media (max-height:700px){
+  .gauges{margin-top:6px}
+  .g{margin-top:3px}
+  .pane{margin-top:10px}
+  .pbody{padding:10px 11px}
+  .today{padding-top:10px}
+  .btn{margin-top:9px}
+  .nav{padding-top:8px;margin-top:8px}
+}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style></head>
 <body>
@@ -271,6 +316,10 @@ const FX=(()=>{
     bx.setTransform(dpr,0,0,dpr,0,0);fx.setTransform(dpr,0,0,dpr,0,0);
   }
   addEventListener('resize',size);
+  addEventListener('orientationchange',()=>setTimeout(size,220));
+  /* iOS collapses and expands the Safari toolbar without firing resize, which
+     leaves the particle canvases the wrong size against the real viewport. */
+  if(window.visualViewport)visualViewport.addEventListener('resize',size);
   /* ambient field: three depths of slow risers plus occasional data streaks */
   for(let i=0;i<46;i++)amb.push({x:Math.random(),y:Math.random(),z:Math.random(),
     ph:Math.random()*6.3,streak:Math.random()<.16});
@@ -329,7 +378,7 @@ const FX=(()=>{
     fx.globalAlpha=1;
     requestAnimationFrame(loop);
   }
-  size();requestAnimationFrame(loop);
+  size();if(!location.search.includes("still"))requestAnimationFrame(loop);
   return {burst,ring,edge,size,
     at(el){const d=document.getElementById('dev').getBoundingClientRect(),r=el.getBoundingClientRect();
       return {x:r.left-d.left+r.width/2,y:r.top-d.top+r.height/2}}};
