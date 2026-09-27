@@ -1,0 +1,14 @@
+Body Muscles
+Copyright 2024 Ivan Vulović
+
+This product includes software developed by Ivan Vulović.
+https://github.com/vulovix/body-muscles
+
+---
+
+Used in RANK UP (index.html) as the muscle map: the 89 anterior and posterior
+muscle paths from dist/data/muscles.front.js and muscles.back.js are embedded
+verbatim in the BODYART constant. Only the fill colours are ours. No other part
+of the library is used.
+
+Apache License 2.0 — full text in LICENSE beside this file.

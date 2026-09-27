@@ -103,18 +103,25 @@ button. No movement list, no shop, no sprite.
   invites the viewer to trust it. The muscle map is the visual now: it says what
   a movement works without claiming to show how to do it. Do not reintroduce
   animated figures without a very good reason and a way to look at them.
-- **The muscle maps.** `BODY` holds the two silhouettes, `bodyView` shades one
-  of them from an exercise's `mus`, `bodyMap` pairs front and back for the
-  detail views, and `bodyCard` is the compact version the library cards use.
-  Every muscle term must stay reachable by at least one exercise, or the filter
-  has a dead option.
-- **The home screen is for you; the card is what other people see.** Nothing
-  cosmetic belongs on the home screen — it was 270px above the fold that looked
-  identical whether you had trained for a year or never opened the app. What the
-  home screen shows is the horizon, today's split, and one button. `showCard()`
-  and `showWeek()` are the shareable artefacts, and they carry rank, level,
-  parameters and the work behind them — never a purchase.
+- **The muscle maps.** `BODYART` holds 89 anatomical vector paths — 40 front,
+  49 back — from Body Muscles by Ivan Vulović, Apache 2.0, with the licence and
+  the required NOTICE in `art/body/`. The paths are verbatim; only the colours
+  are ours. `MUSPATH` maps each of the seventeen muscle terms to the path-id
+  prefixes that belong to it and `MUSOF` inverts that once at startup.
+  `bodyView` shades one figure, `bodyMap` pairs front and back for the detail
+  views, and `bodyCard` is the compact version the library cards use.
+  Every muscle term must stay reachable by at least one exercise AND map to at
+  least one path, or the library filter has an option that highlights nothing.
 
+- **`bodyView` emits four paths, not eighty-nine.** The paths for each colour
+  are concatenated into one `d`. The library draws 155 cards at once, and at
+  178 nodes a card that is twenty-seven thousand SVG elements on a page someone
+  is scrolling with their thumb; merged it is about 850. Each path is prefixed
+  with a zero-length `M0,0` to put the pen back at the origin, because a
+  leading `m` is only absolute while it is the first command and these paths
+  carry implicit RELATIVE linetos straight after it. Rewriting that `m` to an
+  `M` instead turns those linetos absolute and shreds the figure — it looks
+  like the body exploded into shards. Do not do that.
 - **iOS safe areas.** Padding uses `env(safe-area-inset-*)`. It is installed to
   home screens and runs edge-to-edge under the Dynamic Island. Do not replace
   those with fixed pixel padding.
