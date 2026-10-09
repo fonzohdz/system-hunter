@@ -1,0 +1,136 @@
+/* Every color, font and border lives here as a token so a "menu style" picker
+   can add themes later by adding another [data-theme] block. v1 ships "night". */
+[data-theme="night"] {
+  color-scheme: dark;
+  --bg: #050608;
+  --win-top: #1b1e26;
+  --win-bot: #0c0d11;
+  --line: rgba(238, 240, 244, 0.7);
+  --line-soft: rgba(238, 240, 244, 0.1);
+  --line-mid: rgba(238, 240, 244, 0.35);
+  --fg: #eef0f4;
+  --muted: #9aa1ad;
+  --ice: #a9c8ff;
+  --ice-soft: rgba(169, 200, 255, 0.22);
+  --gold: #e2c66d;
+  --danger: #e0605a;
+  --danger-soft: rgba(224, 96, 90, 0.18);
+  --bar-from: #6f95d9;
+  --bar-to: #cfe0ff;
+  --font-pixel: 'Pixelify Sans', 'Courier New', monospace;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --radius: 4px;
+  --tabbar-h: 64px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+#app { min-height: 100%; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--ice); outline-offset: 2px; }
+button:disabled { opacity: 0.45; cursor: default; }
+h1, h2, h3, p { margin: 0; }
+
+.px { font-family: var(--font-pixel); }
+.muted { color: var(--muted); }
+.gold { color: var(--gold); }
+.ice { color: var(--ice); }
+.danger { color: var(--danger); }
+.small { font-size: 12px; color: var(--muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+.screen {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100%;
+  padding: calc(16px + env(safe-area-inset-top, 0px)) 16px calc(var(--tabbar-h) + 16px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.screen.no-tabs { padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+
+.win {
+  background: linear-gradient(180deg, var(--win-top) 0%, var(--win-bot) 100%);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 1px #000;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.win.danger-win { border-color: var(--danger); }
+.win.tight { padding: 8px; }
+
+.row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.eyebrow { font-family: var(--font-pixel); font-size: 13px; letter-spacing: 0.08em; color: var(--ice); }
+.eyebrow.danger { color: var(--danger); }
+
+.bar { height: 6px; background: #000; border: 1px solid #3a3f4b; border-radius: 2px; }
+.bar > div {
+  height: 100%;
+  background: linear-gradient(90deg, var(--bar-from), var(--bar-to));
+  border-radius: 1px;
+  transition: width 400ms ease-out;
+}
+
+.btn {
+  min-height: 44px;
+  border-radius: 3px;
+  border: 1px solid var(--line-mid);
+  background: transparent;
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 12px;
+}
+.btn[aria-pressed="true"], .btn.solid { background: var(--fg); color: var(--win-bot); border-color: var(--fg); }
+.btn:active:not(:disabled) { transform: translateY(1px); }
+
+.cta {
+  min-height: 60px;
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--fg);
+  box-shadow: 0 0 0 1px #000;
+  background: linear-gradient(180deg, #262a34 0%, #12141a 100%);
+  color: var(--fg);
+  font-family: var(--font-pixel);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.cta.done { background: var(--fg); color: var(--win-bot); }
+.cta.danger { border-color: var(--danger); color: var(--fg); background: linear-gradient(180deg, #3a1d1d 0%, #1a0d0d 100%); }
+.cta:active:not(:disabled) { transform: translateY(1px); }
+
+.choice {
+  min-height: 56px;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border-radius: 3px;
+  border: 1px solid var(--line-mid);
+  background: transparent;
+  font-size: 16px;
+}
+.choice:hover, .choice:focus-visible { background: linear-gradient(90deg, var(--ice-soft), transparent); }
+
+.cursor { width: 14px; flex: none; display: flex; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
