@@ -1,20 +1,39 @@
 import { render } from 'preact';
-import '@fontsource/pixelify-sans/400.css';
-import '@fontsource/pixelify-sans/700.css';
-import '@fontsource/ibm-plex-sans/400.css';
-import '@fontsource/ibm-plex-sans/500.css';
-import '@fontsource/ibm-plex-sans/600.css';
+import { useState } from 'preact/hooks';
+import '@fontsource/pixelify-sans/latin-400.css';
+import '@fontsource/pixelify-sans/latin-700.css';
+import '@fontsource/ibm-plex-sans/latin-400.css';
+import '@fontsource/ibm-plex-sans/latin-500.css';
+import '@fontsource/ibm-plex-sans/latin-600.css';
 import './theme.css';
-import { Window } from './ui/Window.jsx';
+import { useGame } from './ui/useGame.js';
+import { Onboarding } from './ui/Onboarding.jsx';
+import { QuestTab } from './ui/QuestTab.jsx';
+import { StatusTab } from './ui/StatusTab.jsx';
+import { SettingsTab } from './ui/SettingsTab.jsx';
+import { TabBar } from './ui/TabBar.jsx';
+import { todayMode } from './game/quest.js';
 
 function App() {
+  const game = useGame();
+  const [tab, setTab] = useState('quest');
+
+  if (!game.state) {
+    return <Onboarding onFinish={(_answers, fresh) => { setTab('quest'); game.start(fresh); }} />;
+  }
+
+  const mode = todayMode(game.state, game.today);
+  const pick = (t) => {
+    setTab(t);
+    window.scrollTo(0, 0);
+  };
   return (
-    <main class="screen no-tabs">
-      <Window label="System">
-        <div class="eyebrow">SYSTEM</div>
-        <p>Initializing…</p>
-      </Window>
-    </main>
+    <>
+      {tab === 'quest' && <QuestTab game={game} />}
+      {tab === 'status' && <StatusTab game={game} />}
+      {tab === 'settings' && <SettingsTab game={game} />}
+      <TabBar tab={tab} setTab={pick} alert={tab !== 'quest' && (mode === 'training' || mode === 'penalty')} />
+    </>
   );
 }
 

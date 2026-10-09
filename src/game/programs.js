@@ -69,17 +69,17 @@ const FALLBACK_RANGE = {
 
 const S = (ex, sets, lo, hi, opts = {}) => ({ ex, sets, lo, hi, unit: opts.sec ? 'sec' : 'reps', perSide: !!opts.side });
 
-const UPPER_A = { key: 'upperA', name: 'Upper A', slots: [S('bench', 4, 6, 10), S('barbell_row', 4, 6, 10), S('ohp', 3, 8, 12), S('lat_pulldown', 3, 8, 12), S('db_curl', 2, 10, 15), S('pushdown', 2, 10, 15)] };
-const LOWER_A = { key: 'lowerA', name: 'Lower A', slots: [S('back_squat', 4, 6, 10), S('rdl', 3, 8, 12), S('leg_press', 3, 10, 15), S('leg_curl', 3, 10, 15), S('calf_raise', 3, 12, 15)] };
-const UPPER_B = { key: 'upperB', name: 'Upper B', slots: [S('incline_db', 4, 8, 12), S('assisted_pullup', 4, 6, 10), S('db_shoulder', 3, 8, 12), S('cable_row', 3, 8, 12), S('lateral', 3, 12, 15), S('hammer_curl', 2, 10, 15)] };
-const LOWER_B = { key: 'lowerB', name: 'Lower B', slots: [S('trap_dl', 3, 5, 8), S('bulgarian', 3, 8, 12, { side: true }), S('hip_thrust', 3, 8, 12), S('leg_ext', 3, 10, 15), S('knee_raise', 3, 10, 15)] };
+const UPPER_A = { key: 'upperA', name: 'Upper I', slots: [S('bench', 4, 6, 10), S('barbell_row', 4, 6, 10), S('ohp', 3, 8, 12), S('lat_pulldown', 3, 8, 12), S('db_curl', 2, 10, 15), S('pushdown', 2, 10, 15)] };
+const LOWER_A = { key: 'lowerA', name: 'Lower I', slots: [S('back_squat', 4, 6, 10), S('rdl', 3, 8, 12), S('leg_press', 3, 10, 15), S('leg_curl', 3, 10, 15), S('calf_raise', 3, 12, 15)] };
+const UPPER_B = { key: 'upperB', name: 'Upper II', slots: [S('incline_db', 4, 8, 12), S('assisted_pullup', 4, 6, 10), S('db_shoulder', 3, 8, 12), S('cable_row', 3, 8, 12), S('lateral', 3, 12, 15), S('hammer_curl', 2, 10, 15)] };
+const LOWER_B = { key: 'lowerB', name: 'Lower II', slots: [S('trap_dl', 3, 5, 8), S('bulgarian', 3, 8, 12, { side: true }), S('hip_thrust', 3, 8, 12), S('leg_ext', 3, 10, 15), S('knee_raise', 3, 10, 15)] };
 
 /** @type {Record<string, {id:string,name:string,days:{key:string,name:string,slots:any[]}[]}>} */
 export const PROGRAMS = {
   gym_full: {
     id: 'gym_full', name: 'Full Body (Gym)', days: [
-      { key: 'gymFullA', name: 'Full Body A', slots: [S('back_squat', 3, 6, 10), S('bench', 3, 6, 10), S('lat_pulldown', 3, 8, 12), S('rdl', 3, 8, 12), S('plank', 3, 30, 45, { sec: true })] },
-      { key: 'gymFullB', name: 'Full Body B', slots: [S('trap_dl', 3, 5, 8), S('ohp', 3, 6, 10), S('cable_row', 3, 8, 12), S('walking_lunge', 3, 10, 12, { side: true }), S('knee_raise', 3, 10, 15)] }
+      { key: 'gymFullA', name: 'Full Body I', slots: [S('back_squat', 3, 6, 10), S('bench', 3, 6, 10), S('lat_pulldown', 3, 8, 12), S('rdl', 3, 8, 12), S('plank', 3, 30, 45, { sec: true })] },
+      { key: 'gymFullB', name: 'Full Body II', slots: [S('trap_dl', 3, 5, 8), S('ohp', 3, 6, 10), S('cable_row', 3, 8, 12), S('walking_lunge', 3, 10, 12, { side: true }), S('knee_raise', 3, 10, 15)] }
     ]
   },
   gym_ul: { id: 'gym_ul', name: 'Upper/Lower', days: [UPPER_A, LOWER_A, UPPER_B, LOWER_B] },
@@ -94,14 +94,14 @@ export const PROGRAMS = {
   },
   db_full: {
     id: 'db_full', name: 'Full Body (Dumbbells)', days: [
-      { key: 'dbFullA', name: 'Full Body A', slots: [S('goblet', 3, 8, 12), S('db_press', 3, 8, 12), S('db_row', 3, 8, 12, { side: true }), S('db_rdl', 3, 8, 12), S('plank', 3, 30, 45, { sec: true })] },
-      { key: 'dbFullB', name: 'Full Body B', slots: [S('db_split', 3, 8, 12, { side: true }), S('db_ohp', 3, 8, 12), S('pushup', 3, 8, 15), S('glute_bridge', 3, 12, 20), S('db_curl', 2, 10, 15)] }
+      { key: 'dbFullA', name: 'Full Body I', slots: [S('goblet', 3, 8, 12), S('db_press', 3, 8, 12), S('db_row', 3, 8, 12, { side: true }), S('db_rdl', 3, 8, 12), S('plank', 3, 30, 45, { sec: true })] },
+      { key: 'dbFullB', name: 'Full Body II', slots: [S('db_split', 3, 8, 12, { side: true }), S('db_ohp', 3, 8, 12), S('pushup', 3, 8, 15), S('glute_bridge', 3, 12, 20), S('db_curl', 2, 10, 15)] }
     ]
   },
   bw_full: {
     id: 'bw_full', name: 'Full Body (Bodyweight)', days: [
-      { key: 'bwFullA', name: 'Full Body A', slots: [S('bw_squat', 3, 15, 20), S('pushup', 3, 8, 15), S('sl_rdl', 3, 8, 12, { side: true }), S('superman', 3, 10, 15), S('plank', 3, 30, 45, { sec: true })] },
-      { key: 'bwFullB', name: 'Full Body B', slots: [S('reverse_lunge', 3, 10, 12, { side: true }), S('pike', 3, 6, 10), S('glute_bridge', 3, 12, 20), S('chair_dip', 3, 8, 12), S('shoulder_tap', 3, 16, 24)] }
+      { key: 'bwFullA', name: 'Full Body I', slots: [S('bw_squat', 3, 15, 20), S('pushup', 3, 8, 15), S('sl_rdl', 3, 8, 12, { side: true }), S('superman', 3, 10, 15), S('plank', 3, 30, 45, { sec: true })] },
+      { key: 'bwFullB', name: 'Full Body II', slots: [S('reverse_lunge', 3, 10, 12, { side: true }), S('pike', 3, 6, 10), S('glute_bridge', 3, 12, 20), S('chair_dip', 3, 8, 12), S('shoulder_tap', 3, 16, 24)] }
     ]
   }
 };

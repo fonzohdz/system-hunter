@@ -66,7 +66,7 @@ describe('quest', () => {
 
   it('builds the current day with targets, cues and rest', () => {
     const q = buildQuest(player());
-    expect(q.name).toBe('Full Body A');
+    expect(q.name).toBe('Full Body I');
     expect(q.dayNumber).toBe(1);
     expect(q.dayCount).toBe(2);
     expect(q.xp).toBe(100);
@@ -82,7 +82,7 @@ describe('quest', () => {
   it('cycles days by cleared quests, wrapping around', () => {
     const s = player({ cycleIndex: 3 });
     expect(currentDay(s).day.key).toBe('gymFullB');
-    expect(buildQuest({ ...s, cycleIndex: 4 }).name).toBe('Full Body A');
+    expect(buildQuest({ ...s, cycleIndex: 4 }).name).toBe('Full Body I');
   });
 
   it('no gym today swaps to bodyweight', () => {
