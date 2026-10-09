@@ -1,8 +1,9 @@
 // Calendar helpers. Days are local-date strings 'YYYY-MM-DD'. Arithmetic runs
 // at UTC noon so DST shifts can never push a date onto the wrong day.
 
-/** @param {Date} d @returns {string} the local calendar date of `d` */
-export function localDate(d) {
+/** @param {Date|number} t a Date or epoch ms @returns {string} its local calendar date */
+export function localDate(t) {
+  const d = t instanceof Date ? t : new Date(t);
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
