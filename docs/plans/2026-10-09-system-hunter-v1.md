@@ -1,4 +1,4 @@
-# System Hunter v1: build plan
+# Limit Break (formerly System Hunter) v1: build plan
 
 ## 1. Goal
 
@@ -29,7 +29,7 @@ If evidence shows one of these is genuinely a problem, stop and report. Do not c
 - No notifications in v1, but System messages must come from one pure function so push can reuse it later.
 - No food or diet features.
 - No sign-up to start. Progress lives on the device. A "Save progress" account (Phase 2) backs it up to the cloud.
-- Name stays "System Hunter".
+- Name: **Limit Break** (renamed from System Hunter on 2026-10-09). Repo, Vercel project and save key keep the old system-hunter names.
 
 **Look**
 - Dark Final Fantasy menu style (FFXV-ish night palette) on the classic FF window layout. Pixel font (Pixelify Sans) for headings, numbers and buttons only. IBM Plex Sans for exercise names, how-to text and System sentences. *Rejected:* all-pixel (unreadable mid-set), the blue classic windows, the gold serif "Gilded" look, the cyan Solo Leveling look.

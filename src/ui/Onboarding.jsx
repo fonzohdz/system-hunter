@@ -54,6 +54,7 @@ export function Onboarding({ onFinish, initial, onCancel }) {
   if (step === -1) {
     return (
       <main class="screen no-tabs onboard">
+        <h1 class="px wordmark">LIMIT BREAK</h1>
         <Window label="System" class="system-intro">
           <div class="eyebrow">SYSTEM</div>
           <p class="intro-text"><Typed text="A Player has been detected." onDone={() => setLine2(true)} /></p>

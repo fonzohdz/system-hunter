@@ -1,6 +1,6 @@
-# System Hunter: project rules
+# Limit Break: project rules
 
-An RPG workout web app: open it, today's quest is waiting, one tap clears it, the System levels you up. Rebuilt from scratch in October 2026. The full spec is `docs/plans/2026-10-09-system-hunter-v1.md` and its "Decisions already made" section is binding. Don't reopen those decisions. If one looks wrong, stop and ask Fonzo.
+Limit Break (renamed from System Hunter on 2026-10-09; repo and Vercel project are still called system-hunter) is an RPG workout web app: open it, today's quest is waiting, one tap clears it, the System levels you up. Rebuilt from scratch in October 2026. The full spec is `docs/plans/2026-10-09-system-hunter-v1.md` and its "Decisions already made" section is binding. Don't reopen those decisions. If one looks wrong, stop and ask Fonzo.
 
 ## Shape
 

@@ -142,6 +142,7 @@ h1, h2, h3, p { margin: 0; }
 
 /* onboarding */
 .onboard { justify-content: center; }
+.wordmark { font-size: 40px; font-weight: 700; letter-spacing: 0.08em; text-align: center; margin-bottom: 12px; text-shadow: 0 0 18px var(--ice-soft); }
 .system-intro { min-height: 160px; }
 .intro-text { font-size: 18px; line-height: 1.5; }
 .caret { color: var(--ice); }

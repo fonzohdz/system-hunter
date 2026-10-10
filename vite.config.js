@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icon.svg', 'icon-maskable.svg'],
       manifest: {
-        name: 'System Hunter',
-        short_name: 'System Hunter',
+        name: 'Limit Break',
+        short_name: 'Limit Break',
         description: 'Your daily quest. Train, clear it, level up.',
         theme_color: '#050608',
         background_color: '#050608',
