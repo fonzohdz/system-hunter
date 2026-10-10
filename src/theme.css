@@ -21,6 +21,14 @@
   --font-body: 'IBM Plex Sans', system-ui, sans-serif;
   --radius: 4px;
   --tabbar-h: 64px;
+  --glow-ice: rgba(169, 200, 255, 0.3);
+  --glow-danger: rgba(224, 96, 90, 0.45);
+  --glow-gold: rgba(226, 198, 109, 0.6);
+  --flash: #ffffff;
+  --split-a: rgba(224, 96, 90, 0.9);
+  --split-b: rgba(169, 200, 255, 0.7);
+  --ease-out: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --ease-spring: cubic-bezier(0.3, 1.6, 0.5, 1);
 }
 
 * { box-sizing: border-box; }
@@ -114,6 +122,10 @@ h1, h2, h3, p { margin: 0; }
   font-weight: 700;
   letter-spacing: 0.06em;
 }
+.cta:not(:disabled) { --glow: var(--glow-ice); }
+.cta.danger:not(:disabled) { --glow: var(--glow-danger); }
+.cta:active:not(:disabled) { background: var(--fg); color: var(--win-bot); }
+.cta.danger:active:not(:disabled) { background: var(--danger); color: var(--fg); }
 .cta.done { background: var(--fg); color: var(--win-bot); }
 .cta.danger { border-color: var(--danger); color: var(--fg); background: linear-gradient(180deg, #3a1d1d 0%, #1a0d0d 100%); }
 .cta:active:not(:disabled) { transform: translateY(1px); }
@@ -131,7 +143,7 @@ h1, h2, h3, p { margin: 0; }
   background: transparent;
   font-size: 16px;
 }
-.choice:hover, .choice:focus-visible { background: linear-gradient(90deg, var(--ice-soft), transparent); }
+.choice:hover, .choice:focus-visible, .choice.sel { background: linear-gradient(90deg, var(--ice-soft), transparent); }
 
 .cursor { width: 14px; flex: none; display: flex; }
 
@@ -145,7 +157,7 @@ h1, h2, h3, p { margin: 0; }
 .wordmark { font-size: 48px; font-weight: 700; letter-spacing: 0.08em; text-align: center; margin-bottom: 12px; text-shadow: 0 0 18px var(--ice-soft); }
 .system-intro { min-height: 160px; }
 .intro-text { font-size: 18px; line-height: 1.5; }
-.caret { color: var(--ice); }
+.caret { display: inline-block; width: 0; color: var(--ice); }
 .q-title { font-size: 30px; font-weight: 700; line-height: 1.15; text-wrap: balance; }
 .choices { display: flex; flex-direction: column; gap: 8px; }
 .choice-label { display: flex; flex-direction: column; gap: 2px; }
@@ -309,6 +321,101 @@ h1, h2, h3, p { margin: 0; }
 .tab.on { color: var(--fg); }
 .tab-dot { position: absolute; top: 16px; right: calc(50% - 34px); width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
 
+/* ---------- motion: every window opens, every tap reacts ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.typed-rest { visibility: hidden; }
+
+/* Windows unroll from a line like the old menus, one after another down the screen. */
+.screen > :nth-child(2) { --i: 1; }
+.screen > :nth-child(3) { --i: 2; }
+.screen > :nth-child(4) { --i: 3; }
+.screen > :nth-child(5) { --i: 4; }
+.screen > :nth-child(6) { --i: 5; }
+.screen > :nth-child(7) { --i: 6; }
+.screen > :nth-child(n+8) { --i: 7; }
+.win { animation: win-open 260ms var(--ease-out) calc(var(--i, 0) * 55ms) backwards; }
+.screen > .cta, .screen > .btn { animation: rise 260ms ease-out calc(var(--i, 0) * 55ms) backwards; }
+.screen > .cta:not(:disabled) { animation: rise 260ms ease-out calc(var(--i, 0) * 55ms) backwards, cta-glow 2.6s ease-in-out 1s infinite; }
+@keyframes win-open {
+  from { clip-path: inset(50% 0 50% 0); opacity: 0.4; }
+  to { clip-path: inset(-2px); opacity: 1; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 0 0 1px #000, 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 0 1px #000, 0 0 20px 2px var(--glow); }
+}
+
+/* Presses light up instead of just moving a pixel. */
+.btn, .move, .choice, .tab { transition: background-color 120ms ease-out, filter 120ms ease-out; }
+.btn:active:not(:disabled), .move:active, .choice:active, .tab:active { filter: brightness(1.5); }
+
+/* The pointer slides between rows and bobs while it waits. */
+.menu { position: relative; }
+.menu-cursor { position: absolute; top: 0; left: 6px; width: 14px; height: 14px; display: flex; color: var(--fg); pointer-events: none; transition: transform 110ms ease-out; }
+.choices-menu .menu-cursor { left: 14px; }
+.menu-cursor svg, .tab.on svg { animation: bob 800ms steps(1) infinite; }
+@keyframes bob { 0% { transform: translateX(0); } 50% { transform: translateX(-3px); } }
+
+/* EXP: no CSS easing on bars that count up in JS, a floating gain, a popping level. */
+.bar.live > div { transition: none; }
+.bar.timer-bar > div { transition: width 1s linear; }
+.xp { position: relative; }
+.xp-gain { position: absolute; left: 50%; top: -4px; font-size: 18px; white-space: nowrap; pointer-events: none; animation: float-up 1600ms ease-out both; }
+@keyframes float-up {
+  0% { opacity: 0; transform: translate(-50%, 6px); }
+  15% { opacity: 1; transform: translate(-50%, 0); }
+  70% { opacity: 1; transform: translate(-50%, -6px); }
+  100% { opacity: 0; transform: translate(-50%, -16px); }
+}
+.pop-in { display: inline-block; animation: pop-in 360ms var(--ease-spring); }
+@keyframes pop-in { from { transform: scale(1.7); color: var(--gold); } to { transform: scale(1); } }
+
+/* Quest cleared sequence */
+.backdrop.cleared-bg { background: var(--bg); align-items: flex-start; padding-top: max(72px, 16vh); }
+.cleared { position: relative; z-index: 2; width: min(320px, 100%); }
+.cleared-title.stamp { animation: stamp 380ms var(--ease-spring) backwards; }
+@keyframes stamp { from { transform: scale(2.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.cleared-bar { width: 100%; display: flex; flex-direction: column; gap: 6px; animation: rise 240ms ease-out 300ms backwards; }
+.bar.big { height: 10px; }
+.levelup-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.levelup { font-size: 48px; line-height: 1; color: var(--fg); text-shadow: 0 0 18px var(--glow-ice); }
+.levelup span { display: inline-block; animation: letter-drop 380ms var(--ease-spring) calc(var(--d) * 45ms) backwards; }
+@keyframes letter-drop { from { transform: translateY(-28px) scale(1.4); opacity: 0; } to { transform: none; opacity: 1; } }
+.rankup .eyebrow { color: var(--gold); }
+.rankup { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.rank-stamp { font-size: 112px; line-height: 0.9; text-shadow: 0 0 28px var(--glow-gold); animation: stamp 520ms var(--ease-spring) backwards; }
+.flash { position: fixed; inset: 0; z-index: 1; background: var(--flash); opacity: 0; pointer-events: none; animation: flash 500ms ease-out; }
+.flash.gold-flash { background: var(--gold); }
+@keyframes flash { from { opacity: 0.85; } to { opacity: 0; } }
+.shake { animation: shake 450ms ease-in-out; }
+@keyframes shake {
+  0%, 100% { transform: none; }
+  15% { transform: translate(-7px, 2px); }
+  30% { transform: translate(6px, -3px); }
+  45% { transform: translate(-5px, 3px); }
+  60% { transform: translate(4px, -2px); }
+  75% { transform: translate(-2px, 1px); }
+}
+
+/* Penalty: the window lands with a jolt, glows red, and the System line glitches. */
+.win.danger-win { box-shadow: 0 0 0 1px #000, 0 0 18px var(--danger-soft); }
+.screen > .win.quest.danger-win {
+  animation: win-open 260ms var(--ease-out) calc(var(--i, 0) * 55ms) backwards, shake 450ms ease-in-out calc(var(--i, 0) * 55ms + 300ms);
+}
+.sys-text.danger { animation: glitch 900ms steps(1) 250ms 2; }
+@keyframes glitch {
+  0%, 20%, 65%, 100% { text-shadow: none; transform: none; }
+  10% { text-shadow: 2px 0 var(--split-a), -2px 0 var(--split-b); transform: translateX(1px); }
+  55% { text-shadow: -2px 0 var(--split-a), 2px 0 var(--split-b); transform: translateX(-1px); }
+}
+
+/* Rest timer and settings toggles */
+.timer-main { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.toggle-row { align-items: center; }
+.btn.toggle { min-width: 72px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  .xp-gain, .flash { display: none; }
 }

@@ -1,5 +1,6 @@
-import { useState } from 'preact/hooks';
-import { Window, Cursor } from './Window.jsx';
+import { useState, useRef } from 'preact/hooks';
+import { Window } from './Window.jsx';
+import { Typed, MenuCursor } from './motion.jsx';
 import { HunterWindow } from './HunterWindow.jsx';
 import { ClearedOverlay, FeedbackPrompt, ExerciseCard } from './Overlays.jsx';
 import { buildQuest, buildCardio, todayMode } from '../game/quest.js';
@@ -17,6 +18,8 @@ export function QuestTab({ game }) {
   const [open, setOpen] = useState(null);
   const [celebrate, setCelebrate] = useState(null);
   const [askFeedback, setAskFeedback] = useState(false);
+  const [sel, setSel] = useState(0);
+  const listRef = useRef(null);
 
   const mode = todayMode(state, today);
   const line = systemLine(state, today, now, events);
@@ -53,25 +56,26 @@ export function QuestTab({ game }) {
     <main class="screen">
       <Window label="System message" class={`system-line ${line.tone === 'danger' ? 'danger-win' : ''}`}>
         <p class={`sys-text ${line.tone === 'danger' ? 'danger' : line.tone === 'gold' ? 'gold' : ''}`}>
-          <span class="px sys-tag">SYSTEM</span> {line.text}
+          <span class="px sys-tag">SYSTEM</span> <Typed key={line.text} text={line.text} speed={22} />
         </p>
       </Window>
 
-      <HunterWindow state={state} />
+      <HunterWindow state={state} hold={!!celebrate || askFeedback} />
 
       {active && (
-        <Window label={penalty ? 'Penalty quest' : 'Daily quest'} class={`quest ${penalty ? 'danger-win' : ''}`}>
+        <Window key={mode} label={penalty ? 'Penalty quest' : 'Daily quest'} class={`quest ${penalty ? 'danger-win' : ''}`}>
           <div class="row">
             <div class={`eyebrow ${penalty ? 'danger' : ''}`}>{penalty ? 'PENALTY QUEST' : 'DAILY QUEST'}</div>
             <div class="small num">~{quest.minutes} min</div>
           </div>
           <h1 class="px quest-name">{quest.name}</h1>
           <div class="small quest-meta">{quest.programName} · day {quest.dayNumber} of {quest.dayCount}</div>
-          <ol class="moves">
+          <div class="menu">
+          <ol class="moves" ref={listRef}>
             {quest.items.map((it, i) => (
               <li key={it.id}>
-                <button class={`move ${i === 0 ? 'sel' : ''}`} onClick={() => setOpen(it)} aria-label={`${it.name}, ${it.target}. Show details`}>
-                  <span class="cursor">{i === 0 && <Cursor />}</span>
+                <button class={`move ${i === sel ? 'sel' : ''}`} onPointerDown={() => setSel(i)} onFocus={() => setSel(i)} onClick={() => { setSel(i); setOpen(it); }} aria-label={`${it.name}, ${it.target}. Show details`}>
+                  <span class="cursor" />
                   <span class="move-main">
                     <span class="move-name">{it.name}</span>
                     {isNew && <span class="move-howto">{it.howTo}</span>}
@@ -81,6 +85,8 @@ export function QuestTab({ game }) {
               </li>
             ))}
           </ol>
+          <MenuCursor listRef={listRef} index={Math.min(sel, quest.items.length - 1)} />
+          </div>
           {quest.finisher && (
             <div class="finisher">
               <div class="eyebrow danger">FINISHER</div>
@@ -92,7 +98,7 @@ export function QuestTab({ game }) {
       )}
 
       {mode === 'cleared' && (
-        <Window label="Quest cleared" class="quest">
+        <Window key={mode} label="Quest cleared" class="quest">
           <div class="eyebrow">QUEST CLEARED</div>
           <h1 class="px quest-name">Done for today.</h1>
           <p class="muted">Next quest: {quest.name}{nextLabel && `, ${nextLabel}`}.</p>
@@ -101,7 +107,7 @@ export function QuestTab({ game }) {
       )}
 
       {(mode === 'rest' || mode === 'cardio-done') && (
-        <Window label="Rest day" class="quest">
+        <Window key="rest" label="Rest day" class="quest">
           <div class="eyebrow">REST DAY</div>
           <h1 class="px quest-name">Recovery is part of the quest.</h1>
           <p class="muted">Next quest: {quest.name}{nextLabel && `, ${nextLabel}`}.</p>
@@ -110,14 +116,14 @@ export function QuestTab({ game }) {
             <p>{buildCardio(state).text}</p>
             <p class="small">Skipping it never counts against you.</p>
             {mode === 'rest'
-              ? <button class="btn solid" onClick={clearCardio}>Cardio done</button>
+              ? <button class="btn solid" data-sfx="none" onClick={clearCardio}>Cardio done</button>
               : <p class="ice px">Cardio cleared</p>}
           </div>
         </Window>
       )}
 
       {mode === 'paused' && (
-        <Window label="Paused" class="quest">
+        <Window key={mode} label="Paused" class="quest">
           <div class="eyebrow">PAUSED</div>
           <h1 class="px quest-name">Training paused.</h1>
           <p class="muted">Nothing counts against you while you're paused.</p>
@@ -126,20 +132,20 @@ export function QuestTab({ game }) {
       )}
 
       {active && (
-        <Window label="Adjust today" class="tight ovr">
+        <Window key="ovr" label="Adjust today" class="tight ovr">
           <button class="btn" aria-pressed={override.noGym} onClick={() => toggle('noGym')}>No gym today</button>
           <button class="btn" aria-pressed={override.short} onClick={() => toggle('short')}>Short on time</button>
         </Window>
       )}
 
       {active && (
-        <button class={`cta ${penalty ? 'danger' : ''}`} onClick={clear}>
+        <button key="cta" class={`cta ${penalty ? 'danger' : ''}`} data-sfx="none" onClick={clear}>
           {penalty ? 'CLEAR PENALTY QUEST' : 'QUEST COMPLETE'}
         </button>
       )}
 
       {open && <ExerciseCard item={open} onClose={() => setOpen(null)} />}
-      {celebrate && <ClearedOverlay events={celebrate.events} streak={state.streak} onDone={afterCelebrate} />}
+      {celebrate && <ClearedOverlay events={celebrate.events} total={state.totalXp} streak={state.streak} onDone={afterCelebrate} />}
       {askFeedback && state.feedbackFor && <FeedbackPrompt onAnswer={answer} />}
     </main>
   );

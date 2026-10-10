@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'preact/hooks';
-import { Window, Cursor } from './Window.jsx';
+import { useState, useEffect, useRef } from 'preact/hooks';
+import { Window } from './Window.jsx';
+import { Typed, MenuCursor, reduceMotion } from './motion.jsx';
 import { newState } from '../game/save.js';
 import { PROGRAMS } from '../game/programs.js';
 import { WEEKDAY_SHORT, localDate } from '../game/dates.js';
@@ -24,22 +25,6 @@ const QUESTIONS = [
   }
 ];
 
-const reduceMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/** Types `text` out one character at a time. */
-function Typed({ text, onDone }) {
-  const [n, setN] = useState(reduceMotion() ? text.length : 0);
-  useEffect(() => {
-    if (n >= text.length) {
-      onDone && onDone();
-      return undefined;
-    }
-    const id = setTimeout(() => setN(n + 1), 35);
-    return () => clearTimeout(id);
-  }, [n, text]);
-  return <span>{text.slice(0, n)}<span aria-hidden="true" class="caret">{n < text.length ? '▌' : ''}</span></span>;
-}
-
 /**
  * First open: the System detects a Player, three one-tap questions, a program
  * is assigned. Also reused from Settings to change program (`initial` given).
@@ -50,6 +35,16 @@ export function Onboarding({ onFinish, initial, onCancel }) {
   const [answers, setAnswers] = useState(initial || {});
   const [line2, setLine2] = useState(false);
   const [typed, setTyped] = useState(false);
+  const [sel, setSel] = useState(0);
+  const busy = useRef(false);
+  const listRef = useRef(null);
+  const q = QUESTIONS[step];
+  useEffect(() => {
+    busy.current = false;
+    if (!q) return;
+    const i = q.options.findIndex((o) => o.value === answers[q.key]);
+    setSel(i < 0 ? 0 : i);
+  }, [step]);
 
   if (step === -1) {
     return (
@@ -66,28 +61,34 @@ export function Onboarding({ onFinish, initial, onCancel }) {
   }
 
   if (step < QUESTIONS.length) {
-    const q = QUESTIONS[step];
-    const pick = (value) => {
+    // Let the cursor land on the pick for a beat before the next question.
+    const pick = (value, i) => {
+      if (busy.current) return;
+      busy.current = true;
+      setSel(i);
       setAnswers({ ...answers, [q.key]: value });
-      setStep(step + 1);
+      setTimeout(() => setStep(step + 1), reduceMotion() ? 0 : 180);
     };
     return (
       <main class="screen no-tabs onboard">
         <div class="row small"><span>{changing ? 'CHANGE PROGRAM' : 'SETUP'}</span><span class="num">{step + 1} / {QUESTIONS.length}</span></div>
-        <Window label={q.title}>
+        <Window key={step} label={q.title}>
           <h1 class="px q-title">{q.title}</h1>
-          <div class="choices">
-            {q.options.map((o) => (
-              <button class="choice" onClick={() => pick(o.value)} aria-pressed={answers[q.key] === o.value}>
-                <span class="cursor">{answers[q.key] === o.value && <Cursor />}</span>
+          <div class="menu choices-menu">
+          <div class="choices" ref={listRef}>
+            {q.options.map((o, i) => (
+              <button class={`choice ${i === sel ? 'sel' : ''}`} data-sfx="confirm" onPointerDown={() => setSel(i)} onFocus={() => setSel(i)} onClick={() => pick(o.value, i)} aria-pressed={answers[q.key] === o.value}>
+                <span class="cursor" />
                 <span class="choice-label">{o.label}{o.hint && <span class="small choice-hint">{o.hint}</span>}</span>
               </button>
             ))}
           </div>
+          <MenuCursor listRef={listRef} index={sel} />
+          </div>
         </Window>
         <div class="row">
           {step > 0 || changing
-            ? <button class="btn" onClick={() => (step > 0 ? setStep(step - 1) : onCancel())}>{step > 0 ? 'Back' : 'Cancel'}</button>
+            ? <button class="btn" data-sfx="back" onClick={() => (step > 0 ? setStep(step - 1) : onCancel())}>{step > 0 ? 'Back' : 'Cancel'}</button>
             : <span />}
         </div>
       </main>
@@ -107,7 +108,7 @@ export function Onboarding({ onFinish, initial, onCancel }) {
         <p class="small">You can change your days anytime in Settings.</p>
       </Window>
       <button class="cta" onClick={() => onFinish(answers, fresh)}>{changing ? 'CONFIRM' : 'BEGIN'}</button>
-      <button class="btn" onClick={() => setStep(QUESTIONS.length - 1)}>Back</button>
+      <button class="btn" data-sfx="back" onClick={() => setStep(QUESTIONS.length - 1)}>Back</button>
     </main>
   );
 }

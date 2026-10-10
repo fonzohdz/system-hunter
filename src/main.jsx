@@ -12,6 +12,7 @@ import { StatusTab } from './ui/StatusTab.jsx';
 import { SettingsTab } from './ui/SettingsTab.jsx';
 import { TabBar } from './ui/TabBar.jsx';
 import { todayMode } from './game/quest.js';
+import { installTapFeedback } from './ui/sfx.js';
 
 function App() {
   const game = useGame();
@@ -36,4 +37,5 @@ function App() {
   );
 }
 
+installTapFeedback();
 render(<App />, document.getElementById('app'));

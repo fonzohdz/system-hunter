@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { Window } from './Window.jsx';
 import { Onboarding } from './Onboarding.jsx';
+import { getPrefs, setPref, canVibrate, play } from './sfx.js';
 import { PROGRAMS, defaultTrainingDays } from '../game/programs.js';
 import { changeProgram, setTrainingDays } from '../game/settings.js';
 import { pause, resume, pauseBlocker, MAX_PAUSE_DAYS } from '../game/penalty.js';
@@ -17,6 +18,12 @@ export function SettingsTab({ game }) {
   const [confirmText, setConfirmText] = useState('');
   const [resetOpen, setResetOpen] = useState(false);
   const [savedMsg, setSavedMsg] = useState('');
+  const [prefs, setPrefs] = useState(getPrefs());
+  const flip = (key) => {
+    setPref(key, !prefs[key]);
+    setPrefs(getPrefs());
+    if (key === 'sound' && !prefs.sound) play('confirm');
+  };
 
   if (changing) {
     return (
@@ -42,16 +49,16 @@ export function SettingsTab({ game }) {
 
   return (
     <main class="screen">
-      {savedMsg && <Window label="Saved" class="system-line"><p class="sys-text"><span class="px sys-tag">SYSTEM</span> {savedMsg}</p></Window>}
+      {savedMsg && <Window key={savedMsg} label="Saved" class="system-line"><p class="sys-text"><span class="px sys-tag">SYSTEM</span> {savedMsg}</p></Window>}
 
-      <Window label="Program">
+      <Window key="program" label="Program">
         <div class="eyebrow">PROGRAM</div>
         <div class="row"><span class="px setting-value">{PROGRAMS[state.programId].name}</span></div>
         <p class="small">Change where you train, how often, or your experience. Level and rank stay.</p>
         <button class="btn" onClick={() => setChanging(true)}>Change program</button>
       </Window>
 
-      <Window label="Training days">
+      <Window key="days" label="Training days">
         <div class="eyebrow">TRAINING DAYS</div>
         <div class="weekdays">
           {WEEKDAY_SHORT.map((name, d) => (
@@ -65,7 +72,7 @@ export function SettingsTab({ game }) {
         }}>Save days</button>
       </Window>
 
-      <Window label="Pause">
+      <Window key="pause" label="Pause">
         <div class="eyebrow">PAUSE</div>
         {p ? (
           <>
@@ -90,13 +97,20 @@ export function SettingsTab({ game }) {
         )}
       </Window>
 
-      <Window label="Save progress">
+      <Window key="feel" label="Sound and vibration">
+        <div class="eyebrow">SOUND & FEEL</div>
+        <div class="row toggle-row"><span>Menu sounds</span><button class="btn toggle" aria-pressed={prefs.sound} onClick={() => flip('sound')}>{prefs.sound ? 'On' : 'Off'}</button></div>
+        {canVibrate && <div class="row toggle-row"><span>Vibration</span><button class="btn toggle" aria-pressed={prefs.haptics} onClick={() => flip('haptics')}>{prefs.haptics ? 'On' : 'Off'}</button></div>}
+        <p class="small">Sounds play over your music and follow your phone's silent switch.</p>
+      </Window>
+
+      <Window key="save" label="Save progress">
         <div class="eyebrow">SAVE PROGRESS</div>
         <p class="small">Your progress lives on this phone. Accounts to back it up and switch phones are coming soon.</p>
         <button class="btn" disabled>Coming soon</button>
       </Window>
 
-      <Window label="Reset" class={resetOpen ? 'danger-win' : ''}>
+      <Window key="reset" label="Reset" class={resetOpen ? 'danger-win' : ''}>
         <div class="eyebrow danger">RESET</div>
         {!resetOpen ? (
           <button class="btn" onClick={() => setResetOpen(true)}>Reset everything</button>
@@ -105,7 +119,7 @@ export function SettingsTab({ game }) {
             <p class="small">This deletes your level, rank, streak and history on this phone. It can't be undone. Type RESET to confirm.</p>
             <input id="reset-confirm" class="input" value={confirmText} onInput={(e) => setConfirmText(e.currentTarget.value)} autocomplete="off" autocapitalize="characters" aria-label="Type RESET to confirm" />
             <div class="row">
-              <button class="btn" onClick={() => { setResetOpen(false); setConfirmText(''); }}>Cancel</button>
+              <button class="btn" data-sfx="back" onClick={() => { setResetOpen(false); setConfirmText(''); }}>Cancel</button>
               <button class="btn danger-btn" disabled={confirmText.trim().toUpperCase() !== 'RESET'} onClick={reset}>Delete everything</button>
             </div>
           </>
