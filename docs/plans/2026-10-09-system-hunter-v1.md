@@ -32,12 +32,12 @@ If evidence shows one of these is genuinely a problem, stop and report. Do not c
 - Name: **Limit Break** (renamed from System Hunter on 2026-10-09). Repo, Vercel project and save key keep the old system-hunter names.
 
 **Look**
-- Dark Final Fantasy menu style (FFXV-ish night palette) on the classic FF window layout. Pixel font (Pixelify Sans) for headings, numbers and buttons only. IBM Plex Sans for exercise names, how-to text and System sentences. *Rejected:* all-pixel (unreadable mid-set), the blue classic windows, the gold serif "Gilded" look, the cyan Solo Leveling look.
+- Dark Final Fantasy menu style (FFXV-ish night palette) on the classic FF window layout. Pixel font (Jersey 10; swapped from Pixelify Sans on 2026-10-10 because its C/O, B/8 and 5/S were hard to tell apart) for headings, numbers and buttons only. IBM Plex Sans for exercise names, how-to text and System sentences. *Rejected:* all-pixel (unreadable mid-set), the blue classic windows, the gold serif "Gilded" look, the cyan Solo Leveling look.
 - All look values live in theme tokens (CSS custom properties under `[data-theme="night"]`) so a "menu style" picker can be added later. v1 ships one theme. Fonts must be licensed for public use (OFL or similar). No "personal use only" fonts.
 
 **Tech**
 - Installable web app (PWA) on Vercel, works offline. *Rejected:* app store app.
-- Stack: Vite + Preact + plain JavaScript (ES modules, JSDoc where it helps), Vitest for tests, `vite-plugin-pwa` for offline/installability, fonts self-hosted from `@fontsource/pixelify-sans` and `@fontsource/ibm-plex-sans`. This replaces the old "one file, no build step" rule on purpose, because the game rules need real automated tests.
+- Stack: Vite + Preact + plain JavaScript (ES modules, JSDoc where it helps), Vitest for tests, `vite-plugin-pwa` for offline/installability, fonts self-hosted from `@fontsource/jersey-10` and `@fontsource/ibm-plex-sans`. This replaces the old "one file, no build step" rule on purpose, because the game rules need real automated tests.
 - Game rules are pure functions in `src/game/`, with no DOM and no `Date.now()` inside. Every function takes `now` or `today` as an argument, so tests can fake the calendar.
 - Phase 2 accounts use Supabase (Google + email magic link).
 
