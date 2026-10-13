@@ -50,7 +50,7 @@ If evidence shows one of these is genuinely a problem, stop and report. Do not c
 ## 5. Data impact
 
 - New `localStorage` key: `sh:save:v1`. It holds one JSON object with `schemaVersion: 1`.
-- `src/game/save.js` owns load/save. `load()` returns `null` for missing or corrupt data and never throws. `migrate(obj)` is the single place future schema changes get handled. v1 only checks `schemaVersion === 1`.
+- `src/game/save.js` owns load/save. `load()` returns `null` for missing or corrupt data and never throws. `migrate(obj)` is the single place future schema changes get handled. v1 checks `schemaVersion === 1` and fills in fields added later (`pendingProgram: null`, added 2026-10-13). `read()` tells "no save" apart from "damaged save" (unparseable, unknown version, or failing `isValidState`); a damaged save opens the recovery screen, which copies it to `sh:save:v1.corrupt-<epoch ms>` before starting over.
 - Every write goes through `save()`, which writes atomically: serialize first, then one `setItem`.
 - Test-link data is throwaway. At launch everyone, including Fonzo, starts at Rank E.
 - Phase 2 adds a Supabase table (§8, Task 12). That's a stop point.
@@ -64,22 +64,33 @@ vercel.json                {"buildCommand":"npm run build","outputDirectory":"di
 package.json
 CLAUDE.md                  new project rules (summary of §3–§5, §10)
 public/icon.svg, public/icon-maskable.svg
-src/main.jsx               boot: load save → onboarding or app
+src/main.jsx               boot: damaged save → recovery screen, no save → onboarding, else the 3 tabs
 src/theme.css              tokens under [data-theme="night"] + base styles
 src/game/dates.js          local-date helpers (YYYY-MM-DD strings, weekday, add days, week start Monday)
 src/game/programs.js       exercise table + program templates + override builders
-src/game/quest.js          buildQuest(state, today, override) → quest object
-src/game/progress.js       XP, levels, stats, streak, rank rules
-src/game/penalty.js        evaluateDays(state, now): misses, penalties, blowouts, pauses
-src/game/feedback.js       applyFeedback(state, dayKey, 'easy'|'right'|'hard')
-src/game/system.js         systemLine(state, today) → the System's message (pure, reused by push later)
-src/game/save.js           load/save/migrate/newState
-src/game/*.test.js         Vitest suites, one per module
-src/ui/Window.jsx          the FF window frame component
-src/ui/Onboarding.jsx
-src/ui/QuestTab.jsx, ExerciseCard.jsx, ClearedOverlay.jsx, FeedbackPrompt.jsx, PenaltyBanner.jsx
-src/ui/StatusTab.jsx, Calendar.jsx
+src/game/quest.js          buildQuest(state, override) → quest object; todayMode
+src/game/progress.js       XP, levels, stats, streak, perfect weeks, rank rules, completeQuest/completeCardio
+src/game/penalty.js        evaluate(state, now): misses, penalties, blowouts; pause/resume
+src/game/schedule.js       training days in effect, pauses, settleSchedule (pending days + pending program)
+src/game/settings.js       changeProgram, setTrainingDays (+ next-Monday program switch)
+src/game/feedback.js       applyFeedback(state, 'easy'|'right'|'hard'|null)
+src/game/system.js         systemLine(state, today, now, events) → the System's message (pure, reused by push later)
+src/game/save.js           newState/migrate/isValidState/read/load/save/wipe/backupDamaged
+src/game/testkit.js        fake-calendar helpers for tests (not used by the app)
+src/game/*.test.js         Vitest suites
+src/ui/useGame.js          the save in memory: boot, persist, minute tick, sync with other tabs, save-failure warning
+src/ui/Window.jsx          the FF window frame component + menu cursor
+src/ui/Onboarding.jsx      first open + "Change program" (same 3 questions)
+src/ui/Recovery.jsx        "The System couldn't read your save" screen (backs up, then starts over)
+src/ui/SaveWarning.jsx     red System warning when progress can't be saved
+src/ui/QuestTab.jsx        quest, rest day, cleared, paused and penalty states
+src/ui/HunterWindow.jsx    name, rank, level, EXP bar, stats
+src/ui/Overlays.jsx        Dialog, exercise card + rest timer, quest-cleared sequence, feedback prompt
+src/ui/StatusTab.jsx       rank, level, stats, streaks, month calendar
 src/ui/SettingsTab.jsx
+src/ui/motion.jsx          typed text, count-up numbers, sliding cursor
+src/ui/sfx.js              synthesized menu sounds + vibration (prefs in sh:prefs:v1)
+src/ui/*.test.js           tests for the pure helpers in the UI files
 src/ui/TabBar.jsx
 ```
 
@@ -102,7 +113,7 @@ Then "Program assigned: <name>. Training days: <weekdays>." → [BEGIN] → Ques
 
 **Status tab:** big rank letter, level, EXP to next, stats, current streak, best streak, next-rank progress ("Perfect weeks: 1 / 2"), a month calendar (cleared, cardio, missed, penalty cleared, penalty blown, paused, rest), and total quests cleared.
 
-**Settings tab:** change program (re-asks the 3 questions; level and rank are kept), training weekdays (7 toggles, 2–5 must be selected, takes effect tomorrow), pause (1–7 days), Save progress (Phase 2; v1 shows "Coming soon"), Reset everything (in-page confirm where you type RESET, never `confirm()`).
+**Settings tab:** change program (re-asks the 3 questions; level and rank are kept), training weekdays (7 toggles, 2–5 must be selected, takes effect tomorrow; if the new count calls for a different program, e.g. gym 4 → 5 days, that program starts next Monday with a System message, history kept; added 2026-10-13), pause (1–7 days), Save progress (Phase 2; v1 shows "Coming soon"), Reset everything (in-page confirm where you type RESET, never `confirm()`).
 
 ## 8. Game rules (exact)
 
