@@ -277,7 +277,8 @@ h1, h2, h3, p { margin: 0; }
 
 /* settings */
 .setting-value { font-size: 22px; }
-.weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+/* Gap 3px and 2px into the window padding: 7 toggles reach 44px wide at 390px screens. */
+.weekdays { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; margin: 0 -2px; }
 .btn.day { padding: 0; font-size: 12px; }
 .pause-row { display: flex; align-items: center; gap: 8px; }
 .select, .input {
