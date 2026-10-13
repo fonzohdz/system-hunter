@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'preact/hooks';
-import { load, save, wipe } from '../game/save.js';
+import { load, save, wipe, SAVE_KEY } from '../game/save.js';
 import { evaluate } from '../game/penalty.js';
 import { localDate } from '../game/dates.js';
 
@@ -14,6 +14,17 @@ export function boot(storage, now) {
   if (!s) return { state: null, events: [], changed: false };
   const r = evaluate(s, now);
   return { state: r.state, events: r.events, changed: r.state !== s };
+}
+
+/**
+ * A `storage` event says another tab or window of the app wrote storage.
+ * Returns what this copy should switch to (`boot` result), or undefined to ignore it.
+ * Without this, a stale copy would later save over the newer progress.
+ * @param {string|null} key the changed key (null = storage cleared)
+ */
+export function fromOtherTab(key, storage, now) {
+  if (key !== SAVE_KEY && key !== null) return undefined;
+  return boot(storage, now);
 }
 
 /**
@@ -64,12 +75,22 @@ export function useGame() {
     tick();
     const id = setInterval(tick, 60000);
     const onVis = () => document.visibilityState === 'visible' && tick();
+    // Another tab or window saved (or reset): adopt its save instead of keeping a stale copy.
+    const onStorage = (e) => {
+      const r = fromOtherTab(e.key, globalThis.localStorage, Date.now());
+      if (!r) return;
+      stateRef.current = r.state;
+      setState(r.state);
+      setEvents(r.events);
+    };
     document.addEventListener('visibilitychange', onVis);
     window.addEventListener('focus', tick);
+    window.addEventListener('storage', onStorage);
     return () => {
       clearInterval(id);
       document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('focus', tick);
+      window.removeEventListener('storage', onStorage);
     };
   }, [commit]);
 
