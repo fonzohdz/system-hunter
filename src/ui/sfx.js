@@ -51,7 +51,10 @@ function audio() {
     master.gain.value = 0.16;
     master.connect(ctx.destination);
   }
-  if (ctx.state === 'suspended') ctx.resume();
+  if (ctx.state === 'suspended') {
+    const r = ctx.resume();
+    if (r && r.catch) r.catch(() => {}); // refused (no user tap yet): stay silent
+  }
   return ctx;
 }
 
@@ -111,9 +114,10 @@ const SOUNDS = {
 
 /** Play a named sound. Silently does nothing when muted or unsupported. */
 export function play(name) {
-  const a = audio();
-  if (!a || !SOUNDS[name]) return;
+  if (!SOUNDS[name]) return;
   try {
+    const a = audio();
+    if (!a) return;
     SOUNDS[name](a.currentTime + 0.005);
   } catch {
     // A broken audio device should never break the app.
