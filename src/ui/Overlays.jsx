@@ -4,12 +4,51 @@ import { useCountUp } from './motion.jsx';
 import { play, buzz } from './sfx.js';
 import { levelFor, levelProgress } from '../game/progress.js';
 
-/** A centered dialog over a dimmed screen. Tap outside or Escape-free: buttons close it. */
+const FOCUSABLE = 'button:not([disabled]), input:not([disabled]), select:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Where Tab should go inside a dialog so focus never leaves it, or null to let
+ * the browser move normally. Wraps last → first (and first → last with Shift).
+ */
+export function trapTarget(items, active, shift) {
+  if (!items.length) return null;
+  const i = items.indexOf(active);
+  if (i === -1) return shift ? items[items.length - 1] : items[0];
+  if (shift && i === 0) return items[items.length - 1];
+  if (!shift && i === items.length - 1) return items[0];
+  return null;
+}
+
+/**
+ * A centered dialog over a dimmed screen. Tapping outside or pressing Escape
+ * calls `onBackdrop`. Focus moves in on open, stays inside, and goes back to
+ * where it was on close.
+ */
 export function Dialog({ label, children, onBackdrop, class: cls = '' }) {
   const ref = useRef(null);
+  const close = useRef(onBackdrop);
+  close.current = onBackdrop;
   useEffect(() => {
+    const before = document.activeElement;
     const first = ref.current && ref.current.querySelector('button');
     if (first) first.focus();
+    const onKey = (e) => {
+      if (e.key === 'Escape' && close.current) {
+        e.preventDefault();
+        close.current();
+      } else if (e.key === 'Tab' && ref.current) {
+        const next = trapTarget([...ref.current.querySelectorAll(FOCUSABLE)], document.activeElement, e.shiftKey);
+        if (next) {
+          e.preventDefault();
+          next.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      if (before && before.focus && document.contains(before)) before.focus();
+    };
   }, []);
   return (
     <div class="backdrop" onClick={(e) => e.target === e.currentTarget && onBackdrop && onBackdrop()}>
@@ -71,6 +110,12 @@ export function ClearedOverlay({ events, total, streak, onDone }) {
   }, [finished]);
 
   const tap = () => (finished ? onDone() : setInstant(true));
+  // Escape works like a tap: skip the sequence, then continue.
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && tap();
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  });
   const title = saved ? 'PENALTY CLEARED' : cardio ? 'CARDIO CLEARED' : 'QUEST CLEARED';
   return (
     <div class={`backdrop cleared-bg ${rankShown ? 'shake' : ''}`} onClick={tap}>
