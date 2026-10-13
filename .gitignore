@@ -3,3 +3,6 @@ dist/
 dev-dist/
 .vercel/
 *.log
+.env
+.env.*
+!.env.example
