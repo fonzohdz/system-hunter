@@ -3,7 +3,7 @@ import { Window } from './Window.jsx';
 import { SaveWarning } from './SaveWarning.jsx';
 import { levelProgress, stats, nextRankProgress } from '../game/progress.js';
 import { isScheduled, isPaused } from '../game/schedule.js';
-import { addDays, weekday } from '../game/dates.js';
+import { addDays, weekday, WEEKDAY_NAMES } from '../game/dates.js';
 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -17,7 +17,7 @@ const LEGEND = [
 ];
 
 /** What a calendar cell shows for date `d`. */
-function cellKind(state, d, today) {
+export function cellKind(state, d, today) {
   const entry = state.log[d];
   if (entry) return entry;
   if (d < state.joinDate) return 'before';
@@ -25,6 +25,28 @@ function cellKind(state, d, today) {
   if (d === today) return isScheduled(state, d) ? 'today-training' : 'today';
   if (d > today) return isScheduled(state, d) ? 'planned' : 'future';
   return 'rest';
+}
+
+/** Spoken status for each calendar kind (the legend's words, plus the unmarked days). */
+const KIND_LABEL = {
+  cleared: 'Cleared',
+  saved: 'Penalty cleared',
+  cardio: 'Cardio',
+  missed: 'Penalty open',
+  blown: 'Missed',
+  paused: 'Paused',
+  before: 'Before you joined',
+  'today-training': 'Training day',
+  today: 'Rest day',
+  planned: 'Training day',
+  future: 'Rest day',
+  rest: 'Rest day'
+};
+
+/** What a screen reader hears for a day, e.g. "Tuesday, October 6: Cleared". */
+export function cellLabel(state, d, today) {
+  const date = `${WEEKDAY_NAMES[weekday(d)]}, ${MONTHS[Number(d.slice(5, 7)) - 1]} ${Number(d.slice(8))}`;
+  return `${date}${d === today ? ', today' : ''}: ${KIND_LABEL[cellKind(state, d, today)]}`;
 }
 
 function Calendar({ state, today }) {
@@ -48,11 +70,11 @@ function Calendar({ state, today }) {
         <div class="px">{MONTHS[m]} {y}</div>
         <button class="btn icon" onClick={() => setOffset(offset + 1)} disabled={offset >= 0} aria-label="Next month">›</button>
       </div>
-      <div class="cal" role="grid">
-        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => <div key={`h${i}`} class="cal-dow small">{d}</div>)}
+      <div class="cal" role="list" aria-label={`${MONTHS[m]} ${y}`}>
+        {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => <div key={`h${i}`} class="cal-dow small" aria-hidden="true">{d}</div>)}
         {cells.map((d, i) => (d
-          ? <div key={d} class={`cal-cell k-${cellKind(state, d, today)}`} title={d}><span class="num">{Number(d.slice(8))}</span></div>
-          : <div key={`e${i}`} />))}
+          ? <div key={d} role="listitem" class={`cal-cell k-${cellKind(state, d, today)}`} title={d}><span class="num" aria-hidden="true">{Number(d.slice(8))}</span><span class="sr-only">{cellLabel(state, d, today)}</span></div>
+          : <div key={`e${i}`} aria-hidden="true" />))}
       </div>
       <div class="legend">
         {LEGEND.map(([k, label]) => <span key={k} class="legend-item"><span class={`swatch k-${k}`} />{label}</span>)}
