@@ -4,15 +4,28 @@ import { evaluate } from '../game/penalty.js';
 import { localDate } from '../game/dates.js';
 
 /**
+ * Read the save and judge every day since it was last open.
+ * `changed` says the judged state differs from what's stored, so it needs saving.
+ * @param {Storage} storage
+ * @param {number} now
+ */
+export function boot(storage, now) {
+  const s = load(storage);
+  if (!s) return { state: null, events: [], changed: false };
+  const r = evaluate(s, now);
+  return { state: r.state, events: r.events, changed: r.state !== s };
+}
+
+/**
  * Holds the save, persists every change, and re-judges the calendar whenever
  * the app opens, comes back to the foreground, or a minute passes.
  */
 export function useGame() {
-  const [state, setState] = useState(() => {
-    const s = load();
-    return s ? evaluate(s, Date.now()).state : null;
-  });
-  const [events, setEvents] = useState([]);
+  // Judge the days since the last open once, keep its events (penalty blown,
+  // rank up/down…) so the System line can report them, and save the result.
+  const [booted] = useState(() => boot(globalThis.localStorage, Date.now()));
+  const [state, setState] = useState(booted.state);
+  const [events, setEvents] = useState(booted.events);
   const [now, setNow] = useState(Date.now());
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -34,6 +47,10 @@ export function useGame() {
     commit(next, evts);
     return evts;
   }, [commit]);
+
+  useEffect(() => {
+    if (booted.changed && booted.state) save(booted.state);
+  }, []);
 
   useEffect(() => {
     const tick = () => {
