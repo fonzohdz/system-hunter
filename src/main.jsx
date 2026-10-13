@@ -7,6 +7,7 @@ import '@fontsource/ibm-plex-sans/latin-600.css';
 import './theme.css';
 import { useGame } from './ui/useGame.js';
 import { Onboarding } from './ui/Onboarding.jsx';
+import { Recovery } from './ui/Recovery.jsx';
 import { QuestTab } from './ui/QuestTab.jsx';
 import { StatusTab } from './ui/StatusTab.jsx';
 import { SettingsTab } from './ui/SettingsTab.jsx';
@@ -18,6 +19,7 @@ function App() {
   const game = useGame();
   const [tab, setTab] = useState('quest');
 
+  if (game.damaged) return <Recovery onRecover={game.recover} />;
   if (!game.state) {
     return <Onboarding onFinish={(_answers, fresh) => { setTab('quest'); game.start(fresh); }} />;
   }

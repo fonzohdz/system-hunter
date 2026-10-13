@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { boot, fromOtherTab } from './useGame.js';
+import { boot, fromOtherTab, recoverDamaged } from './useGame.js';
 import { save, load, wipe, SAVE_KEY } from '../game/save.js';
 import { completeQuest } from '../game/progress.js';
 import { evaluate } from '../game/penalty.js';
@@ -18,7 +18,7 @@ function memoryStorage() {
 
 describe('boot (app open)', () => {
   it('returns nothing to judge when there is no save', () => {
-    expect(boot(memoryStorage(), at('2026-10-09'))).toEqual({ state: null, events: [], changed: false });
+    expect(boot(memoryStorage(), at('2026-10-09'))).toEqual({ state: null, events: [], changed: false, damaged: null });
   });
 
   it('keeps the events from judging the days the app was closed', () => {
@@ -82,5 +82,33 @@ describe('two copies of the app open (tabs, or installed app + browser)', () => 
   it('ignores other keys, like sound preferences', () => {
     const { store } = twoTabs();
     expect(fromOtherTab('sh:prefs:v1', store, at('2026-10-07', 19))).toBeUndefined();
+  });
+});
+
+describe('damaged save on open', () => {
+  it('reports a damaged save instead of crashing', () => {
+    const store = memoryStorage();
+    store.setItem(SAVE_KEY, '{"schemaVersion":1,"totalXp":500}');
+    const r = boot(store, at('2026-10-07'));
+    expect(r.state).toBeNull();
+    expect(r.damaged).toBe('{"schemaVersion":1,"totalXp":500}');
+  });
+
+  it('"start over" keeps a backup, then clears the save', () => {
+    const store = memoryStorage();
+    store.setItem(SAVE_KEY, '{broken');
+    const key = recoverDamaged('{broken', 555, store);
+    expect(key).toBe(`${SAVE_KEY}.corrupt-555`);
+    expect(store.getItem(key)).toBe('{broken');
+    expect(store.getItem(SAVE_KEY)).toBeNull();
+    expect(boot(store, at('2026-10-07')).damaged).toBeNull();
+  });
+
+  it('refuses to clear anything if the backup fails', () => {
+    const store = memoryStorage();
+    store.setItem(SAVE_KEY, '{broken');
+    const full = { ...store, setItem: () => { throw new Error('QuotaExceededError'); } };
+    expect(recoverDamaged('{broken', 555, full)).toBeNull();
+    expect(store.getItem(SAVE_KEY)).toBe('{broken');
   });
 });

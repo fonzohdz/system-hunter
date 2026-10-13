@@ -1,19 +1,39 @@
 import { useState, useEffect, useCallback, useRef } from 'preact/hooks';
-import { load, save, wipe, SAVE_KEY } from '../game/save.js';
+import { read, save, wipe, backupDamaged, SAVE_KEY } from '../game/save.js';
 import { evaluate } from '../game/penalty.js';
 import { localDate } from '../game/dates.js';
 
 /**
  * Read the save and judge every day since it was last open.
  * `changed` says the judged state differs from what's stored, so it needs saving.
+ * `damaged` holds the raw stored text when a save exists but can't be used
+ * (the app shows the recovery screen instead of crashing).
  * @param {Storage} storage
  * @param {number} now
  */
 export function boot(storage, now) {
-  const s = load(storage);
-  if (!s) return { state: null, events: [], changed: false };
-  const r = evaluate(s, now);
-  return { state: r.state, events: r.events, changed: r.state !== s };
+  const found = read(storage);
+  const none = { state: null, events: [], changed: false, damaged: null };
+  if (found.status === 'none') return none;
+  if (found.status === 'damaged') return { ...none, damaged: found.raw };
+  try {
+    const r = evaluate(found.state, now);
+    return { state: r.state, events: r.events, changed: r.state !== found.state, damaged: null };
+  } catch {
+    return { ...none, damaged: found.raw }; // looked fine but the rules choked on it
+  }
+}
+
+/**
+ * Recovery screen "start over": back up the damaged save, then clear it.
+ * Refuses (returns null) if the backup couldn't be written, so nothing is lost.
+ * @returns {string|null} the backup key
+ */
+export function recoverDamaged(raw, now, storage) {
+  const key = backupDamaged(raw, now, storage);
+  if (!key) return null;
+  wipe(storage);
+  return key;
 }
 
 /**
@@ -37,6 +57,7 @@ export function useGame() {
   const [booted] = useState(() => boot(globalThis.localStorage, Date.now()));
   const [state, setState] = useState(booted.state);
   const [events, setEvents] = useState(booted.events);
+  const [damaged, setDamaged] = useState(booted.damaged);
   const [now, setNow] = useState(Date.now());
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -82,6 +103,7 @@ export function useGame() {
       stateRef.current = r.state;
       setState(r.state);
       setEvents(r.events);
+      setDamaged(r.damaged);
     };
     document.addEventListener('visibilitychange', onVis);
     window.addEventListener('focus', tick);
@@ -101,6 +123,12 @@ export function useGame() {
     setState(null);
     setEvents([]);
   }, []);
+  /** Back up the damaged save and start fresh. Returns false if the backup failed. */
+  const recover = useCallback(() => {
+    if (!recoverDamaged(damaged, Date.now(), globalThis.localStorage)) return false;
+    setDamaged(null);
+    return true;
+  }, [damaged]);
 
-  return { state, events, now, today: localDate(now), act, start, reset, clearEvents: () => setEvents([]) };
+  return { state, events, now, today: localDate(now), act, start, reset, damaged, recover, clearEvents: () => setEvents([]) };
 }
