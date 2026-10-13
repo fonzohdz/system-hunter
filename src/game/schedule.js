@@ -34,11 +34,20 @@ export function nextTrainingDay(state, d) {
   return null;
 }
 
-/** Fold a pending schedule edit into trainingDays once it's in effect. */
+/**
+ * Fold a pending schedule edit into trainingDays once it's in effect, and
+ * switch to a pending program once its Monday arrives (rotation restarts at
+ * day 1, like changing program; XP, rank, streak and history are untouched).
+ */
 export function settleSchedule(state, today) {
-  const p = state.pendingTrainingDays;
-  if (p && today >= p.from && state.lastEvaluated >= addDays(p.from, -1)) {
-    return { ...state, trainingDays: p.days, pendingTrainingDays: null };
+  let s = state;
+  const p = s.pendingTrainingDays;
+  if (p && today >= p.from && s.lastEvaluated >= addDays(p.from, -1)) {
+    s = { ...s, trainingDays: p.days, pendingTrainingDays: null };
   }
-  return state;
+  const pp = s.pendingProgram;
+  if (pp && today >= pp.from) {
+    s = { ...s, programId: pp.programId, cycleIndex: pp.programId === s.programId ? s.cycleIndex : 0, pendingProgram: null, feedbackFor: null };
+  }
+  return s;
 }

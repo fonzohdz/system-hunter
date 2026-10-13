@@ -2,6 +2,7 @@
 // Cold, precise, never guilt-tripping.
 
 import { todayMode } from './quest.js';
+import { PROGRAMS } from './programs.js';
 import { pauseOn, nextTrainingDay } from './schedule.js';
 import { WEEKDAY_NAMES, weekday } from './dates.js';
 
@@ -19,6 +20,7 @@ export function systemLine(state, today, now, events = []) {
   if (types.includes('rankDown')) return { text: `Repeated non-compliance. Rank reduced to ${state.rank}.`, tone: 'danger' };
   if (types.includes('penaltyBlown')) return { text: 'The Player has failed to comply. Penalty applied.', tone: 'danger' };
   if (types.includes('rankUp')) return { text: `Rank up. You are now Rank ${state.rank}.`, tone: 'gold' };
+  if (types.includes('programChanged')) return { text: `New program assigned: ${PROGRAMS[state.programId].name}. Rotation starts at day 1.`, tone: 'gold' };
   if (types.includes('penaltySaved')) return { text: 'Penalty cleared. Your streak survives.', tone: 'normal' };
 
   const mode = todayMode(state, today);

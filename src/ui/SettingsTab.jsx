@@ -4,7 +4,7 @@ import { SaveWarning } from './SaveWarning.jsx';
 import { Onboarding } from './Onboarding.jsx';
 import { getPrefs, setPref, canVibrate, play } from './sfx.js';
 import { PROGRAMS, defaultTrainingDays } from '../game/programs.js';
-import { changeProgram, setTrainingDays } from '../game/settings.js';
+import { changeProgram, setTrainingDays, programSwitchFor } from '../game/settings.js';
 import { pause, resume, pauseBlocker, MAX_PAUSE_DAYS } from '../game/penalty.js';
 import { trainingDaysOn, pauseOn } from '../game/schedule.js';
 import { addDays, WEEKDAY_SHORT, WEEKDAY_NAMES, weekday } from '../game/dates.js';
@@ -57,6 +57,7 @@ export function SettingsTab({ game }) {
         <div class="eyebrow">PROGRAM</div>
         <div class="row"><span class="px setting-value">{PROGRAMS[state.programId].name}</span></div>
         <p class="small">Change where you train, how often, or your experience. Level and rank stay.</p>
+        {state.pendingProgram && <p class="small"><span class="gold">Switching to {PROGRAMS[state.pendingProgram.programId].name} next Monday.</span> Rotation restarts at day 1; level, rank and history stay.</p>}
         <button class="btn" onClick={() => setChanging(true)}>Change program</button>
       </Window>
 
@@ -70,7 +71,8 @@ export function SettingsTab({ game }) {
         <p class="small">{daysValid ? `${days.length} days a week. Changes start tomorrow.` : 'Pick 2 to 5 days.'}</p>
         <button class="btn solid" disabled={!daysChanged || !daysValid} onClick={() => {
           act(setTrainingDays, days);
-          setSavedMsg(`Training days set from ${WEEKDAY_NAMES[weekday(tomorrow)]}.`);
+          const sw = programSwitchFor({ ...state, profile: { ...state.profile, daysPerWeek: days.length } }, today);
+          setSavedMsg(`Training days set from ${WEEKDAY_NAMES[weekday(tomorrow)]}.${sw ? ` ${days.length} days calls for ${PROGRAMS[sw.programId].name}. It starts next Monday.` : ''}`);
         }}>Save days</button>
       </Window>
 

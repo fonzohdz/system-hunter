@@ -22,6 +22,7 @@ export function newState(profile, today, now) {
     programId: programFor(profile.location, profile.daysPerWeek),
     trainingDays: defaultTrainingDays(profile.daysPerWeek),
     pendingTrainingDays: null, // {days, from} — schedule edits apply from tomorrow
+    pendingProgram: null, // {programId, from} — a day-count change that needs another program applies next Monday
     cycleIndex: 0,
     totalXp: 0,
     rank: 'E',
@@ -48,7 +49,11 @@ export function newState(profile, today, now) {
 /** Bring an older save up to the current schema. Returns null if it can't. */
 export function migrate(obj) {
   if (!obj || typeof obj !== 'object') return null;
-  if (obj.schemaVersion === SCHEMA_VERSION) return obj;
+  if (obj.schemaVersion === SCHEMA_VERSION) {
+    // Added 2026-10-13 (still schema 1, purely additive): older saves have no pending program.
+    if (!('pendingProgram' in obj)) return { ...obj, pendingProgram: null };
+    return obj;
+  }
   return null;
 }
 
@@ -75,6 +80,8 @@ export function isValidState(s) {
   const pt = s.pendingTrainingDays;
   if (pt !== null && !(isObj(pt) && Array.isArray(pt.days) && isDate(pt.from))) return false;
   if (s.feedbackFor !== null && typeof s.feedbackFor !== 'string') return false;
+  const pp = s.pendingProgram;
+  if (pp !== null && !(isObj(pp) && PROGRAMS[pp.programId] && isDate(pp.from))) return false;
   return true;
 }
 

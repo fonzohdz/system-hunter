@@ -38,7 +38,7 @@ export function evaluate(state, now) {
   const yesterday = addDays(today, -1);
   if (state.lastEvaluated >= yesterday && !(state.penalty && state.penalty.deadline <= now)) {
     const settled = settleSchedule(state, today);
-    return { state: settled, events: [] };
+    return { state: settled, events: programSwitch(state, settled) };
   }
   const s = structuredClone(state);
   const events = [];
@@ -61,7 +61,14 @@ export function evaluate(state, now) {
   if (s.penalty && s.penalty.deadline <= now) blow(s, s.penalty.deadline, events);
 
   judgeWeeks(s, events);
-  return { state: settleSchedule(s, today), events };
+  const settled = settleSchedule(s, today);
+  events.push(...programSwitch(s, settled));
+  return { state: settled, events };
+}
+
+/** The event for a pending program taking over (see settleSchedule). */
+function programSwitch(before, after) {
+  return after.programId !== before.programId ? [{ type: 'programChanged', programId: after.programId }] : [];
 }
 
 /** Why a pause can't start today, or null if it can. */
