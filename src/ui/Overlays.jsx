@@ -123,20 +123,48 @@ export function FeedbackPrompt({ onAnswer }) {
   );
 }
 
+/** Whole seconds of rest left at `now` for a rest ending at `end` (epoch ms). */
+export function restLeft(end, now) {
+  return Math.max(0, Math.ceil((end - now) / 1000));
+}
+
 /** Tapped exercise: target, cue, how-to, and a rest timer. */
 export function ExerciseCard({ item, onClose }) {
   const [left, setLeft] = useState(null);
+  // The timer counts against a fixed end time, so it stays right when the phone
+  // locks or the app is backgrounded mid-rest (timeouts get paused there).
+  const [end, setEnd] = useState(null);
+  // The live end time. A tick that fires after Stop/Again (before the old
+  // interval is cleaned up) sees it changed and does nothing.
+  const endRef = useRef(null);
+  const startRest = () => {
+    endRef.current = Date.now() + item.restSec * 1000;
+    setEnd(endRef.current);
+    setLeft(item.restSec);
+  };
+  const stopRest = () => {
+    endRef.current = null;
+    setEnd(null);
+    setLeft(null);
+  };
   useEffect(() => {
-    if (left === null || left <= 0) {
-      if (left === 0) {
-        play('done');
-        buzz([200, 100, 200]);
-      }
-      return undefined;
+    if (end === null) return undefined;
+    const step = () => {
+      if (endRef.current !== end) return;
+      const l = restLeft(end, Date.now());
+      setLeft(l);
+      if (l === 0) setEnd(null);
+    };
+    const id = setInterval(step, 250);
+    return () => clearInterval(id);
+  }, [end]);
+  useEffect(() => {
+    if (left === 0) {
+      play('done');
+      buzz([200, 100, 200]);
+    } else if (left !== null && left <= 3) {
+      play('tick');
     }
-    if (left <= 3) play('tick');
-    const id = setTimeout(() => setLeft(left - 1), 1000);
-    return () => clearTimeout(id);
   }, [left]);
   const mm = left === null ? '' : `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
   return (
@@ -149,20 +177,20 @@ export function ExerciseCard({ item, onClose }) {
         <p>{item.howTo}</p>
         {item.cue && <p class={item.cue.startsWith('Go up') ? 'gold' : 'muted'}>{item.cue}</p>}
         <div class="timer">
-          {left === null && <button class="btn solid" onClick={() => setLeft(item.restSec)}>Start {item.restSec}s rest</button>}
+          {left === null && <button class="btn solid" onClick={startRest}>Start {item.restSec}s rest</button>}
           {left !== null && left > 0 && (
             <>
               <div class="timer-main">
                 <div class="px timer-num num" aria-live="polite">{mm}</div>
                 <div class="bar live timer-bar"><div style={{ width: `${(left / item.restSec) * 100}%` }} /></div>
               </div>
-              <button class="btn" data-sfx="back" onClick={() => setLeft(null)}>Stop</button>
+              <button class="btn" data-sfx="back" onClick={stopRest}>Stop</button>
             </>
           )}
           {left === 0 && (
             <>
               <div class="px timer-num ice">REST COMPLETE</div>
-              <button class="btn" onClick={() => setLeft(item.restSec)}>Again</button>
+              <button class="btn" onClick={startRest}>Again</button>
             </>
           )}
         </div>
