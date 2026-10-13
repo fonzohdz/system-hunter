@@ -21,3 +21,20 @@ Limit Break (renamed from System Hunter on 2026-10-09; repo and Vercel project a
 ## Deploy
 
 Vercel builds every push (`vercel.json`). Branch pushes get preview URLs, which are the test links. `main` is production.
+
+---
+
+## AI City (added 2026-10-12)
+
+This copy lives at `C:\Users\luvce\AI-City\limit-break`, one building in Fonzo's AI City. Read `..\CLAUDE.md` (the city map) too. Everything above this section still applies. This section only adds to it.
+
+- **What it is:** Limit Break (formerly System Hunter), an RPG workout web app. Fonzo has also floated a future rebuild under the name "Ascendant". If that comes up, ask him.
+- **Status:** ACTIVE (rebuild in progress on the `rebuild` branch)
+- **GitHub:** `fonzohdz/system-hunter`. Work happens on `rebuild`. `main` is production.
+- **Where it runs and what makes it go live:** Vercel. Every push builds. A branch push gets a preview link. A push or merge to `main` goes LIVE at system-hunter.vercel.app.
+- **Run and test:** `npm install`, then `npm test`, `npm run build`, `npm run dev`.
+- **One copy:** this is the only working copy on this laptop (the old `C:\Projects\system-hunter` copy is retired). Pull before working.
+
+### MUST NOT BREAK
+- Pushing to `main` auto-deploys live on Vercel. Don't push or merge to `main` without Fonzo knowing. The rule above still applies: only when he says "ship it".
+- Never break saved progress (`sh:save:v1`). Any change to the save's shape needs a migration.
