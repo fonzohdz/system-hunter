@@ -22,3 +22,11 @@ describe('settings', () => {
     expect(setTrainingDays(s, at('2026-10-05'), [0, 1, 2, 3, 4, 5])).toBe(s);
   });
 });
+
+describe('settings input checks', () => {
+  it('ignores weekdays that are not whole numbers 0–6', () => {
+    const s = player();
+    const c = setTrainingDays(s, at('2026-10-05'), [0, 1.5, '2', 3, 9, -1]);
+    expect(c.pendingTrainingDays.days).toEqual([0, 3]);
+  });
+});

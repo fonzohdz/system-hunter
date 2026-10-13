@@ -18,7 +18,7 @@ export function changeProgram(state, now, profile) {
 
 /** Pick training weekdays (0 = Monday). 2–5 days. Takes effect tomorrow. */
 export function setTrainingDays(state, now, days) {
-  const clean = [...new Set(days)].filter((d) => d >= 0 && d <= 6).sort((a, b) => a - b);
+  const clean = [...new Set(days)].filter((d) => Number.isInteger(d) && d >= 0 && d <= 6).sort((a, b) => a - b);
   if (clean.length < 2 || clean.length > 5) return state;
   const s = structuredClone(state);
   s.pendingTrainingDays = { days: clean, from: addDays(localDate(now), 1) };

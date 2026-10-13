@@ -187,3 +187,14 @@ describe('schedule edits', () => {
     expect(r.state.pendingTrainingDays).toBeNull();
   });
 });
+
+describe('pause input checks', () => {
+  it('a pause length that is not a number changes nothing instead of crashing', () => {
+    const s = player();
+    for (const bad of [NaN, undefined, 'x', Infinity]) {
+      const r = pause(s, at('2026-10-06'), bad);
+      expect(r.state).toBe(s);
+      expect(r.events).toEqual([]);
+    }
+  });
+});

@@ -74,6 +74,7 @@ export function pauseBlocker(state, today) {
 /** Pause for 1–7 days starting today. An open penalty's deadline moves back by the same days. */
 export function pause(state, now, days) {
   const today = localDate(now);
+  if (!Number.isFinite(days)) return { state, events: [] };
   const n = Math.max(1, Math.min(MAX_PAUSE_DAYS, Math.floor(days)));
   if (pauseBlocker(state, today)) return { state, events: [] };
   const s = structuredClone(state);
