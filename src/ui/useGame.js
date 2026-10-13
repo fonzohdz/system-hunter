@@ -25,6 +25,18 @@ export function boot(storage, now) {
 }
 
 /**
+ * Track whether saving works. The warning shows when a run of failed saves
+ * starts, stays dismissed for the rest of that run, and a good save ends it.
+ * @param {{failing:boolean, show:boolean}} prev
+ * @param {boolean} ok whether the latest save was written
+ */
+export function saveWarning(prev, ok) {
+  if (ok) return prev.failing || prev.show ? { failing: false, show: false } : prev;
+  if (prev.failing) return prev;
+  return { failing: true, show: true };
+}
+
+/**
  * Recovery screen "start over": back up the damaged save, then clear it.
  * Refuses (returns null) if the backup couldn't be written, so nothing is lost.
  * @returns {string|null} the backup key
@@ -58,6 +70,7 @@ export function useGame() {
   const [state, setState] = useState(booted.state);
   const [events, setEvents] = useState(booted.events);
   const [damaged, setDamaged] = useState(booted.damaged);
+  const [saveWarn, setSaveWarn] = useState({ failing: false, show: false });
   const [now, setNow] = useState(Date.now());
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -65,7 +78,10 @@ export function useGame() {
   const commit = useCallback((next, evts = []) => {
     stateRef.current = next;
     setState(next);
-    if (next) save(next);
+    if (next) {
+      const ok = save(next);
+      setSaveWarn((w) => saveWarning(w, ok));
+    }
     if (evts.length) setEvents(evts);
   }, []);
 
@@ -81,7 +97,10 @@ export function useGame() {
   }, [commit]);
 
   useEffect(() => {
-    if (booted.changed && booted.state) save(booted.state);
+    if (booted.changed && booted.state) {
+      const ok = save(booted.state);
+      setSaveWarn((w) => saveWarning(w, ok));
+    }
   }, []);
 
   useEffect(() => {
@@ -130,5 +149,10 @@ export function useGame() {
     return true;
   }, [damaged]);
 
-  return { state, events, now, today: localDate(now), act, start, reset, damaged, recover, clearEvents: () => setEvents([]) };
+  const dismissSaveWarn = useCallback(() => setSaveWarn((w) => ({ ...w, show: false })), []);
+
+  return {
+    state, events, now, today: localDate(now), act, start, reset, damaged, recover,
+    saveWarn: saveWarn.show, dismissSaveWarn, clearEvents: () => setEvents([])
+  };
 }

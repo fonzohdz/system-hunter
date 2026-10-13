@@ -1,5 +1,6 @@
 import { useState, useRef } from 'preact/hooks';
 import { Window } from './Window.jsx';
+import { SaveWarning } from './SaveWarning.jsx';
 import { Typed, MenuCursor } from './motion.jsx';
 import { HunterWindow } from './HunterWindow.jsx';
 import { ClearedOverlay, FeedbackPrompt, ExerciseCard } from './Overlays.jsx';
@@ -54,6 +55,7 @@ export function QuestTab({ game }) {
 
   return (
     <main class="screen">
+      <SaveWarning game={game} />
       <Window label="System message" class={`system-line ${line.tone === 'danger' ? 'danger-win' : ''}`}>
         <p class={`sys-text ${line.tone === 'danger' ? 'danger' : line.tone === 'gold' ? 'gold' : ''}`}>
           <span class="px sys-tag">SYSTEM</span> <Typed key={line.text} text={line.text} speed={22} />

@@ -166,6 +166,7 @@ h1, h2, h3, p { margin: 0; }
 /* system line + hunter window */
 .system-line { padding: 10px 14px; }
 .sys-text { font-size: 14px; line-height: 1.45; }
+.save-warn .btn { margin-top: 10px; }
 .sys-tag { font-size: 13px; letter-spacing: 0.12em; color: var(--ice); margin-right: 4px; }
 .sys-text.danger .sys-tag { color: var(--danger); }
 .hunter-name { font-size: 28px; font-weight: 700; }

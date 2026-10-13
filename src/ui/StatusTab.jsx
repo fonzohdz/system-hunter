@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { Window } from './Window.jsx';
+import { SaveWarning } from './SaveWarning.jsx';
 import { levelProgress, stats, nextRankProgress } from '../game/progress.js';
 import { isScheduled, isPaused } from '../game/schedule.js';
 import { addDays, weekday } from '../game/dates.js';
@@ -67,6 +68,7 @@ export function StatusTab({ game }) {
   const nr = nextRankProgress(state);
   return (
     <main class="screen">
+      <SaveWarning game={game} />
       <Window label="Rank">
         <div class="status-top">
           <div class="rank-badge px gold" aria-label={`Rank ${state.rank}`}>{state.rank}</div>

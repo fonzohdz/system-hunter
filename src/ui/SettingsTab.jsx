@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { Window } from './Window.jsx';
+import { SaveWarning } from './SaveWarning.jsx';
 import { Onboarding } from './Onboarding.jsx';
 import { getPrefs, setPref, canVibrate, play } from './sfx.js';
 import { PROGRAMS, defaultTrainingDays } from '../game/programs.js';
@@ -49,6 +50,7 @@ export function SettingsTab({ game }) {
 
   return (
     <main class="screen">
+      <SaveWarning game={game} />
       {savedMsg && <Window key={savedMsg} label="Saved" class="system-line"><p class="sys-text"><span class="px sys-tag">SYSTEM</span> {savedMsg}</p></Window>}
 
       <Window key="program" label="Program">
