@@ -12,7 +12,7 @@ export function TabBar({ tab, setTab, alert }) {
         <button key={t.id} class={`tab px ${tab === t.id ? 'on' : ''}`} aria-current={tab === t.id ? 'page' : undefined} onClick={() => setTab(t.id)}>
           {tab === t.id && <svg width="10" height="10" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2 L12 7 L2 12 Z" fill="currentColor" /></svg>}
           {t.label}
-          {t.id === 'quest' && alert && <span class="tab-dot" aria-label="Quest waiting" />}
+          {t.id === 'quest' && alert && <><span class="tab-dot" aria-hidden="true" /><span class="sr-only">, quest waiting</span></>}
         </button>
       ))}
     </nav>
